@@ -8,7 +8,36 @@
  * - options: symbol, underlying_ticker, type, style, strike, du, theoretical_price, greeks...
  */
 
+
+/* 0. ESTADO GLOBAL */
+window.appState = {
+  metadata: null,
+  underlyings: [],
+  options: [],
+  tickerSelecionado: null
+};
+
+window.selecionarAtivo = function(ticker) {
+  window.appState.tickerSelecionado = ticker;
+  renderizarTudo();
+};
+
+function renderizarTudo() {
+  const { metadata, underlyings, options, tickerSelecionado } = window.appState;
+  if (!metadata) return;
+
+  const filteredOptions = options.filter(o => o.underlying_ticker === tickerSelecionado);
+
+  renderizarMetadadosKPIs(metadata, filteredOptions);
+  renderizarSemaforoMacro(underlyings, tickerSelecionado);
+  renderizarRadarOportunidades(underlyings, tickerSelecionado);
+  renderizarGradeOpcoesB3(filteredOptions);
+  renderizarConeVolatilidade(filteredOptions, "vol-cone-container");
+  renderizarTravaAlta(underlyings, filteredOptions, tickerSelecionado);
+}
+
 /* 1. RENDERIZADOR DE KPIS DE TOPO */
+
 function renderizarMetadadosKPIs(meta, options) {
   if (!meta) return;
 
@@ -45,7 +74,7 @@ function renderizarMetadadosKPIs(meta, options) {
 }
 
 /* 2. RENDERIZADOR DO SEMÁFORO MACRO (TELA 1: TENDÊNCIA E MACD) */
-function renderizarSemaforoMacro(underlyings) {
+function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
   const container = document.getElementById("semaforo-macro-container") || document.getElementById("screen-1-container");
   if (!container) return;
 
@@ -54,8 +83,21 @@ function renderizarSemaforoMacro(underlyings) {
     return;
   }
 
-  let html = "";
-  underlyings.forEach(u => {
+  const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
+
+  let optionsHtml = underlyings.map(x => `<option value="${x.ticker}" ${x.ticker === u.ticker ? 'selected' : ''}>${x.ticker}</option>`).join('');
+
+  let html = `
+    <div style="margin-bottom: 14px;">
+      <label for="seletor-ativo" style="color:#94a3b8; font-size:0.85rem; margin-right:8px;">Selecione o <span translate="no">Ticker</span>:</label>
+      <select id="seletor-ativo" onchange="selecionarAtivo(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:4px; font-weight:bold; font-family:monospace; outline:none; cursor:pointer;">
+        ${optionsHtml}
+      </select>
+    </div>
+  `;
+
+  {
+
     const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
     const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ NENHUMA");
 
@@ -103,7 +145,7 @@ function renderizarSemaforoMacro(underlyings) {
 }
 
 /* 3. RENDERIZADOR DO RADAR DE OPORTUNIDADES (TELAS 2 E 3: GATILHOS & FIBONACCI) */
-function renderizarRadarOportunidades(underlyings, options) {
+function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
   const container = document.getElementById("radar-oportunidades-container") || document.getElementById("screen-2-container");
   if (!container) return;
 
@@ -114,6 +156,8 @@ function renderizarRadarOportunidades(underlyings, options) {
 
   let html = "";
   underlyings.forEach(u => {
+    const isSelected = u.ticker === tickerSelecionado;
+    const borderStyle = isSelected ? "border: 2px solid #38bdf8;" : "border: 1px solid #242f45;";
     if (u.phase !== "INDICACAO_IMEDIATA" && u.phase !== "A_CAMINHO") return;
 
     const spot = Number(u.spot_price);
@@ -124,7 +168,7 @@ function renderizarRadarOportunidades(underlyings, options) {
     const colorSignal = u.phase === "INDICACAO_IMEDIATA" ? "#10b981" : "#fbbf24";
 
     html += `
-      <div style="background:#111622; border-radius:8px; border:1px solid #242f45; padding:14px; margin-bottom:14px;">
+      <div onclick="selecionarAtivo('${u.ticker}')" style="background:#111622; border-radius:8px; ${borderStyle} padding:14px; margin-bottom:14px; cursor:pointer; transition: 0.2s;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div style="font-size:1.1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">
             ${u.ticker} <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
@@ -153,7 +197,7 @@ function renderizarRadarOportunidades(underlyings, options) {
 
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; text-align:center;">
           <div>
-            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (Buy Stop)</div>
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (<span translate="no">Buy Stop</span>)</div>
             <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${gatilho.toFixed(2)}</div>
           </div>
           <div>
@@ -208,7 +252,7 @@ function renderizarGradeOpcoesB3(options) {
     tr.innerHTML = `
       <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;">${opt.symbol}</td>
       <td style="padding:10px 12px; font-family:monospace;">${strikeFmt}</td>
-      <td style="padding:10px 12px;"><span style="font-size:0.7rem; background:rgba(245,158,11,0.15); color:#fde68a; padding:2px 6px; border-radius:4px;">${opt.type} ${opt.style || ''}</span></td>
+      <td style="padding:10px 12px;"><span style="font-size:0.7rem; background:rgba(245,158,11,0.15); color:#fde68a; padding:2px 6px; border-radius:4px;"><span translate="no">${opt.type}</span> ${opt.style || ''}</span></td>
       <td style="padding:10px 12px; font-family:monospace;">${opt.du} DU</td>
       <td style="padding:10px 12px; font-family:monospace; color:#94a3b8;">${opt.maturity_date}</td>
       <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:#f1f5f9;">${premioFmt}</td>
@@ -346,7 +390,7 @@ function renderizarConeVolatilidade(coneOrOptions, containerId = "vol-cone-conta
 }
 
 /* 6. RENDERIZADOR DA TRAVA DE ALTA (BULL CALL SPREAD) */
-function renderizarTravaAlta(underlyings, options) {
+function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
   const container = document.getElementById("trava-alta-container") || document.getElementById("spread-container");
   if (!container) return;
 
@@ -374,13 +418,13 @@ function renderizarTravaAlta(underlyings, options) {
       <div style="display:flex; gap:10px; margin-bottom:14px;">
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #10b981;">
           <div style="font-size:0.65rem; color:#10b981; font-weight:700;">PONTA COMPRADA (LONG)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">${opt ? opt.symbol : 'CALL LONG'}</div>
-          <div style="font-size:0.75rem; color:#94a3b8;">Strike: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">${opt ? opt.symbol : '<span translate="no">CALL</span> LONG'}</div>
+          <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
         </div>
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b;">
           <div style="font-size:0.65rem; color:#f59e0b; font-weight:700;">PONTA VENDIDA (SHORT)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">CALL K${k2Strike.toFixed(0)}</div>
-          <div style="font-size:0.75rem; color:#94a3b8;">Strike: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">CALL</span> K${k2Strike.toFixed(0)}</div>
+          <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
         </div>
       </div>
 
@@ -398,7 +442,7 @@ function renderizarTravaAlta(underlyings, options) {
           <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#fbbf24;">${ratio.toFixed(2)}x (+${(ratio * 100).toFixed(0)}%)</div>
         </div>
         <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Break-Even</div>
+          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;"><span translate="no">Break-Even</span></div>
           <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${(k1Strike + debitoLiquido).toFixed(2)}</div>
         </div>
       </div>
@@ -429,12 +473,13 @@ async function carregarDadosPipeline() {
   }
 
   if (dados) {
-    renderizarMetadadosKPIs(dados.metadata, dados.options);
-    renderizarSemaforoMacro(dados.underlyings);
-    renderizarRadarOportunidades(dados.underlyings, dados.options);
-    renderizarGradeOpcoesB3(dados.options);
-    renderizarConeVolatilidade(dados.options, "vol-cone-container");
-    renderizarTravaAlta(dados.underlyings, dados.options);
+    window.appState.metadata = dados.metadata;
+    window.appState.underlyings = dados.underlyings;
+    window.appState.options = dados.options;
+    if (!window.appState.tickerSelecionado && dados.underlyings.length > 0) {
+      window.appState.tickerSelecionado = dados.underlyings[0].ticker;
+    }
+    renderizarTudo();
   }
 
   if (btnAtualizar) {
