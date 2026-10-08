@@ -17,6 +17,6 @@ def test_process_pipeline_schema_validation():
 
     assert data["metadata"]["schema_version"] == "2.0.0"
     assert data["metadata"]["checksum"] == payload["metadata"]["checksum"]
-    assert len(data["options"]) == 1
+    assert len(data["options"]) == 8
 
     os.remove(out_path)

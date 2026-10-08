@@ -54,46 +54,52 @@ function renderizarSemaforoMacro(underlyings) {
     return;
   }
 
-  const u = underlyings[0];
-  const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
+  let html = "";
+  underlyings.forEach(u => {
+    const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
+    const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ NENHUMA");
 
-  container.innerHTML = `
-    <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
-      <div style="display:flex; flex-direction:column; gap:6px; background:#0b0f19; padding:8px; border-radius:16px; border:1px solid #1e293b;">
-        <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta ? '#f43f5e' : '#1e293b'}; opacity:${!isAlta ? '1' : '0.3'};"></div>
-        <div style="width:14px; height:14px; border-radius:50%; background:#1e293b; opacity:0.3;"></div>
-        <div style="width:14px; height:14px; border-radius:50%; background:${isAlta ? '#10b981' : '#1e293b'}; opacity:${isAlta ? '1' : '0.3'}; box-shadow:${isAlta ? '0 0 10px rgba(16,185,129,0.4)' : 'none'};"></div>
-      </div>
-      <div style="flex:1;">
-        <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px;">
-          <span>${u.ticker} — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
-          <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">TENDÊNCIA: ${u.trend_signal}</span>
+    html += `
+      <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
+        <div style="display:flex; flex-direction:column; gap:6px; background:#0b0f19; padding:8px; border-radius:16px; border:1px solid #1e293b;">
+          <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta ? '#f43f5e' : '#1e293b'}; opacity:${!isAlta ? '1' : '0.3'};"></div>
+          <div style="width:14px; height:14px; border-radius:50%; background:#1e293b; opacity:0.3;"></div>
+          <div style="width:14px; height:14px; border-radius:50%; background:${isAlta ? '#10b981' : '#1e293b'}; opacity:${isAlta ? '1' : '0.3'}; box-shadow:${isAlta ? '0 0 10px rgba(16,185,129,0.4)' : 'none'};"></div>
         </div>
-        <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
-          Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
-        </p>
+        <div style="flex:1;">
+          <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+            <span>${u.ticker} — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
+            <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">TENDÊNCIA: ${u.trend_signal}</span>
+            <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); color:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700;">FASE: ${phaseLabel}</span>
+          </div>
+          <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+            Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
+          </p>
+        </div>
       </div>
-    </div>
 
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px;">
-      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Preço Spot</div>
-        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:#38bdf8;">R$ ${Number(u.spot_price).toFixed(2)}</div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom: 24px;">
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Preço Spot</div>
+          <div style="font-family:monospace; font-size:1rem; font-weight:700; color:#38bdf8;">R$ ${Number(u.spot_price).toFixed(2)}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sinal Triple Screen</div>
+          <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${isAlta ? '#10b981' : '#f43f5e'};">${u.trend_signal}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Filtro Elder / Fase</div>
+          <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#10b981;">${u.phase === "INDICACAO_IMEDIATA" ? "COMPRA LIBERADA" : (u.phase === "A_CAMINHO" ? "A CAMINHO" : "AGUARDAR")}</div>
+        </div>
+        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Telemetria B3</div>
+          <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">TEMPO REAL</div>
+        </div>
       </div>
-      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sinal Triple Screen</div>
-        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${isAlta ? '#10b981' : '#f43f5e'};">${u.trend_signal}</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Filtro Elder</div>
-        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#10b981;">${isAlta ? 'COMPRA LIBERADA' : 'AGUARDAR'}</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Telemetria B3</div>
-        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">TEMPO REAL</div>
-      </div>
-    </div>
-  `;
+    `;
+  });
+
+  container.innerHTML = html;
 }
 
 /* 3. RENDERIZADOR DO RADAR DE OPORTUNIDADES (TELAS 2 E 3: GATILHOS & FIBONACCI) */
@@ -106,57 +112,68 @@ function renderizarRadarOportunidades(underlyings, options) {
     return;
   }
 
-  const u = underlyings[0];
-  const spot = Number(u.spot_price);
-  const gatilho = spot * 1.005;
-  const stopLoss = spot * 0.97;
-  const riscoR = gatilho - stopLoss;
-  const alvo2R = gatilho + (2.0 * riscoR);
+  let html = "";
+  underlyings.forEach(u => {
+    if (u.phase !== "INDICACAO_IMEDIATA" && u.phase !== "A_CAMINHO") return;
 
-  container.innerHTML = `
-    <div style="background:#111622; border-radius:8px; border:1px solid #242f45; padding:14px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <div style="font-size:1.1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">
-          ${u.ticker} <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
+    const spot = Number(u.spot_price);
+    const gatilho = spot * 1.005;
+    const stopLoss = spot * 0.97;
+    const riscoR = gatilho - stopLoss;
+    const alvo2R = gatilho + (2.0 * riscoR);
+    const colorSignal = u.phase === "INDICACAO_IMEDIATA" ? "#10b981" : "#fbbf24";
+
+    html += `
+      <div style="background:#111622; border-radius:8px; border:1px solid #242f45; padding:14px; margin-bottom:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <div style="font-size:1.1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">
+            ${u.ticker} <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
+          </div>
+          <div>
+            <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:${colorSignal}; padding:2px 8px; border-radius:4px; font-weight:700;">
+              ● ${u.phase === "INDICACAO_IMEDIATA" ? "SINAL ARMADO" : "A CAMINHO"}
+            </span>
+          </div>
         </div>
-        <div>
-          <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 8px; border-radius:4px; font-weight:700;">
-            ● SINAL ARMADO
-          </span>
+
+        <div style="margin:10px 0;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8;">
+            <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
+            <span style="color:${colorSignal}; font-family:monospace; font-weight:700;">Recuo para Suporte Fibonacci</span>
+          </div>
+          <div style="height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
+            <div style="width:25%; height:100%; background:${colorSignal}; border-radius:3px;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-top:4px;">
+            <span>0 (Sobrevenda)</span>
+            <span>Suporte 38.2%: R$ ${(spot * 0.985).toFixed(2)}</span>
+            <span>100 (Sobrecompra)</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; text-align:center;">
+          <div>
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (Buy Stop)</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${gatilho.toFixed(2)}</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Stop Loss Macro</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">R$ ${stopLoss.toFixed(2)}</div>
+          </div>
+          <div>
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Alvo 2R (+${(2 * riscoR).toFixed(2)})</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">R$ ${alvo2R.toFixed(2)}</div>
+          </div>
         </div>
       </div>
+    `;
+  });
 
-      <div style="margin:10px 0;">
-        <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8;">
-          <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-          <span style="color:#10b981; font-family:monospace; font-weight:700;">Recuo para Suporte Fibonacci</span>
-        </div>
-        <div style="height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
-          <div style="width:25%; height:100%; background:#10b981; border-radius:3px;"></div>
-        </div>
-        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-top:4px;">
-          <span>0 (Sobrevenda)</span>
-          <span>Suporte 38.2%: R$ ${(spot * 0.985).toFixed(2)}</span>
-          <span>100 (Sobrecompra)</span>
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; text-align:center;">
-        <div>
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (Buy Stop)</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${gatilho.toFixed(2)}</div>
-        </div>
-        <div>
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Stop Loss Macro</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">R$ ${stopLoss.toFixed(2)}</div>
-        </div>
-        <div>
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Alvo 2R (+${(2 * riscoR).toFixed(2)})</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">R$ ${alvo2R.toFixed(2)}</div>
-        </div>
-      </div>
-    </div>
-  `;
+  if (html === "") {
+    container.innerHTML = `<div class="text-muted" style="color:#64748b; padding:16px;">Nenhum sinal ativo no radar.</div>`;
+  } else {
+    container.innerHTML = html;
+  }
 }
 
 /* 4. RENDERIZADOR DA GRADE OFICIAL DE OPÇÕES B3 (GREGAS BLACK-SCHOLES) */
