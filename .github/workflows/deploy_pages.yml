@@ -1,12 +1,13 @@
-name: Deploy Pages
+name: Deploy B3 Dashboard to GitHub Pages
 
 on:
-  schedule:
-    - cron: '30 21 * * 1-5' # 21:30 UTC = 18:30 BRT (pós-fechamento)
+  push:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -15,42 +16,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validar Contrato de Dados (Quality Gate)
+        run: |
+          python -m unittest tests/test_schema_and_pipeline.py
+
+      - name: Preparar Artefatos do Site (_site)
+        run: |
+          mkdir -p _site
+          cp -r frontend/* _site/
+          mkdir -p _site/data
+          cp -r data/* _site/data/
+          touch _site/.nojekyll
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload do Artefato do Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: build
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
-
-      - name: Run Pipeline
-        run: |
-          python src/pipeline.py
-
-      - name: Prepare build artifact
-        run: |
-          mkdir -p dist/data
-          cp -r frontend/* dist/
-          cp data/latest.json dist/data/latest.json || true
-
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: './dist'
-
-      - name: Deploy to GitHub Pages
+      - name: Deploy no GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
