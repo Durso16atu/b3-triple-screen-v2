@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>B3 Triple Screen Quant Dashboard</title>
+  <link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+  <div class="container">
+    <header class="dashboard-header">
+      <div>
+        <h2>Triple Screen v2 | Opções B3</h2>
+      </div>
+      <div class="metadata" id="metadata-bar">
+        Carregando motor quantitativo...
+      </div>
+    </header>
+
+    <div class="filters card">
+      <label>Ativo:
+        <select id="filter-ticker">
+          <option value="ALL">Todos</option>
+          <option value="PETR4">PETR4</option>
+          <option value="VALE3">VALE3</option>
+        </select>
+      </label>
+      <label>Tipo:
+        <select id="filter-type">
+          <option value="ALL">Ambos</option>
+          <option value="CALL">CALL</option>
+          <option value="PUT">PUT</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>Ativos Monitorados</h3>
+      <div id="underlyings-container"></div>
+    </div>
+
+    <div class="card">
+      <h3>Cadeia de Opções Filtrada</h3>
+      <div id="options-container"></div>
+    </div>
+  </div>
+
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

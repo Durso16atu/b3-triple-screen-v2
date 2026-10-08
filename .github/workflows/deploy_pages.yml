@@ -1,0 +1,56 @@
+name: Deploy Pages
+
+on:
+  schedule:
+    - cron: '30 21 * * 1-5' # 21:30 UTC = 18:30 BRT (pós-fechamento)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run Pipeline
+        run: |
+          python src/pipeline.py
+
+      - name: Prepare build artifact
+        run: |
+          mkdir -p dist/data
+          cp -r frontend/* dist/
+          cp data/latest.json dist/data/latest.json || true
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
