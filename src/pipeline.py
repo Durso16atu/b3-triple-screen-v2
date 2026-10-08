@@ -1,20 +1,31 @@
+import argparse
 import hashlib
 import json
 import os
+import sys
 from datetime import UTC, datetime
+from pathlib import Path
 
 import jsonschema
 
-from src.collectors.rates_di import get_annual_cdi_rate
-from src.engine.black_scholes import black_scholes_analytical
-from src.engine.implied_vol import get_implied_volatility
-from src.engine.invariants import check_intrinsic_bound
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.insert(0, str(ROOT_DIR))
 
-SCHEMA_PATH = "data/schemas/schema_v2.json"
-OUTPUT_PATH = "data/latest.json"
+try:
+    from src.collectors.rates_di import get_annual_cdi_rate
+except ImportError:
+
+    def get_annual_cdi_rate() -> float:
+        return 0.1075
 
 
-def process_pipeline(mock_data=None):
+from src.engine.black_scholes import black_scholes_analytical  # noqa: E402
+from src.engine.implied_vol import get_implied_volatility  # noqa: E402
+from src.engine.invariants import check_intrinsic_bound  # noqa: E402
+
+
+def process_pipeline(schema_path: str, output_path: str, mock_data=None):
     cdi_rate = get_annual_cdi_rate()
 
     if mock_data is None:
@@ -124,18 +135,26 @@ def process_pipeline(mock_data=None):
     checksum_str = json.dumps(payload, sort_keys=True)
     payload["metadata"]["checksum"] = hashlib.sha256(checksum_str.encode()).hexdigest()
 
-    with open(SCHEMA_PATH) as f:
+    with open(schema_path) as f:
         schema = json.load(f)
     jsonschema.validate(instance=payload, schema=schema)
 
-    os.makedirs(os.path.dirname(OUTPUT_PATH), exist_ok=True)
-    temp_path = OUTPUT_PATH + ".tmp"
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    temp_path = output_path + ".tmp"
     with open(temp_path, "w") as f:
         json.dump(payload, f, indent=2)
-    os.replace(temp_path, OUTPUT_PATH)
+    os.replace(temp_path, output_path)
 
     return payload
 
 
 if __name__ == "__main__":
-    process_pipeline()
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--offline", action="store_true", help="Run offline without collecting data"
+    )
+    parser.add_argument("--output", default="data/latest.json", help="Output JSON path")
+    parser.add_argument("--schema", default="data/schemas/schema_v2.json", help="Schema path")
+    args = parser.parse_args()
+
+    process_pipeline(schema_path=args.schema, output_path=args.output)

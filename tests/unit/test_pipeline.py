@@ -9,7 +9,7 @@ def test_process_pipeline_schema_validation():
     if os.path.exists(out_path):
         os.remove(out_path)
 
-    payload = process_pipeline()
+    payload = process_pipeline(schema_path="data/schemas/schema_v2.json", output_path=out_path)
 
     assert os.path.exists(out_path)
     with open(out_path) as f:

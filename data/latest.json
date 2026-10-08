@@ -1,0 +1,45 @@
+{
+  "metadata": {
+    "schema_version": "2.0.0",
+    "generated_at_utc": "2026-10-08T21:20:33.391400+00:00",
+    "business_date": "2026-10-08",
+    "cdi_rate_annual": 0.1365,
+    "workdays_per_year": 252,
+    "engine_version": "1.0.0",
+    "checksum": "a9ec3c6112bbf296dd41c4f26fc9202cbb6daeeaaee51814075b3df61e51be9a"
+  },
+  "underlyings": [
+    {
+      "ticker": "PETR4",
+      "spot_price": 40.0,
+      "trend_signal": "ALTA",
+      "updated_at": "2026-10-08T21:20:33.391400+00:00"
+    }
+  ],
+  "options": [
+    {
+      "symbol": "PETRD420",
+      "underlying_ticker": "PETR4",
+      "type": "CALL",
+      "style": "EUROPEAN",
+      "strike": 42.0,
+      "maturity_date": "2026-11-20",
+      "du": 21,
+      "spot_price": 40.0,
+      "market_price": 0.5,
+      "theoretical_price": 0.5,
+      "iv": 0.2360399650345823,
+      "greeks": {
+        "delta": 0.2996,
+        "gamma": 0.1275,
+        "theta_du": -0.0285,
+        "vega": 4.0125,
+        "rho": 0.9571
+      },
+      "actuarial_checks": {
+        "intrinsic_bound_ok": true,
+        "parity_violation_brl": 0.0
+      }
+    }
+  ]
+}
