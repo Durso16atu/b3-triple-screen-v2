@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "B3 Triple Screen Engine Schema V2",
+  "type": "object",
+  "required": [
+    "metadata",
+    "underlyings",
+    "options"
+  ],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "generated_at_utc",
+        "business_date",
+        "cdi_rate_annual",
+        "workdays_per_year",
+        "engine_version",
+        "checksum"
+      ],
+      "properties": {
+        "schema_version": { "type": "string", "enum": ["2.0.0"] },
+        "generated_at_utc": { "type": "string", "format": "date-time" },
+        "business_date": { "type": "string", "format": "date" },
+        "cdi_rate_annual": { "type": "number" },
+        "workdays_per_year": { "type": "integer", "enum": [252] },
+        "engine_version": { "type": "string" },
+        "checksum": { "type": "string" }
+      }
+    },
+    "underlyings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["ticker", "spot_price", "trend_signal", "updated_at"],
+        "properties": {
+          "ticker": { "type": "string" },
+          "spot_price": { "type": "number", "minimum": 0 },
+          "trend_signal": { "type": "string", "enum": ["ALTA", "BAIXA", "NEUTRO"] },
+          "updated_at": { "type": "string", "format": "date-time" }
+        }
+      }
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "symbol",
+          "underlying_ticker",
+          "type",
+          "style",
+          "strike",
+          "maturity_date",
+          "du",
+          "spot_price",
+          "market_price",
+          "theoretical_price",
+          "iv",
+          "greeks",
+          "actuarial_checks"
+        ],
+        "properties": {
+          "symbol": { "type": "string" },
+          "underlying_ticker": { "type": "string" },
+          "type": { "type": "string", "enum": ["CALL", "PUT"] },
+          "style": { "type": "string", "enum": ["EUROPEAN", "AMERICAN"] },
+          "strike": { "type": "number", "minimum": 0 },
+          "maturity_date": { "type": "string", "format": "date" },
+          "du": { "type": "integer", "minimum": 0 },
+          "spot_price": { "type": "number", "minimum": 0 },
+          "market_price": { "type": "number", "minimum": 0 },
+          "theoretical_price": { "type": "number", "minimum": 0 },
+          "iv": { "type": "number", "minimum": 0 },
+          "greeks": {
+            "type": "object",
+            "required": ["delta", "gamma", "theta_du", "vega", "rho"],
+            "properties": {
+              "delta": { "type": "number" },
+              "gamma": { "type": "number" },
+              "theta_du": { "type": "number" },
+              "vega": { "type": "number" },
+              "rho": { "type": "number" }
+            }
+          },
+          "actuarial_checks": {
+            "type": "object",
+            "required": ["intrinsic_bound_ok", "parity_violation_brl"],
+            "properties": {
+              "intrinsic_bound_ok": { "type": "boolean" },
+              "parity_violation_brl": { "type": "number" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

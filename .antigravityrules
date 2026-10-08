@@ -1,0 +1,12 @@
+governance:
+  role: "Maker (Executor Determinístico Local)"
+  checker_authority: "Gemini Spark"
+  strict_mode: true
+  zero_technical_debt: true
+
+inviolable_constraints:
+  root_hygiene:
+    rule: "PROIBIDO salvar qualquer script executável (.py, .sh), dump (.json, .csv) ou arquivo temporário na raiz."
+  execution_model:
+    in_place_only: true
+    atomic_commits: true
