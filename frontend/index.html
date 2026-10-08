@@ -2,48 +2,166 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>B3 Triple Screen Quant Dashboard</title>
-  <link rel="stylesheet" href="./css/main.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>B3 Triple Screen v2.0 - Dashboard Quantitativo</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📈</text></svg>">
+  <style>
+    :root {
+      --bg: #0a0d14;
+      --card: #111622;
+      --border: #242f45;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --dim: #64748b;
+      --green: #10b981;
+      --blue: #38bdf8;
+      --gold: #fbbf24;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding-bottom: 60px; line-height: 1.5; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--card); border-bottom: 1px solid var(--border); position: sticky; top:0; z-index: 100; }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo { background: linear-gradient(135deg, #2563eb, #10b981); color:#fff; font-weight:800; padding: 8px 12px; border-radius: 8px; font-size: 1.1rem; }
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 4px; font-size: 0.72rem; font-weight: 700; font-family: monospace; text-transform: uppercase; }
+    .badge-open { background: rgba(16, 185, 129, 0.15); color: var(--green); border: 1px solid rgba(16,185,129,0.3); }
+    .badge-bullish { background: rgba(56, 189, 248, 0.15); color: var(--blue); border: 1px solid rgba(56,189,248,0.3); }
+    .badge-rec { background: rgba(251, 191, 36, 0.2); color: var(--gold); border: 1px solid rgba(251,191,36,0.4); }
+    .btn-refresh { background: #1e293b; color: var(--text); border: 1px solid var(--border); padding: 8px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; cursor: pointer; }
+    .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px; margin: 20px 0; }
+    .kpi-box { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; }
+    .kpi-title { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+    .kpi-val { font-family: monospace; font-size: 1.35rem; font-weight: 700; margin-top: 4px; }
+    .kpi-desc { font-size: 0.7rem; color: var(--dim); margin-top: 2px; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    @media(max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } }
+    .panel { background: var(--card); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 20px; }
+    .panel-header { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: rgba(22, 29, 45, 0.6); }
+    .panel-title { font-size: 0.95rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .tag { background: rgba(59, 130, 246, 0.2); color: #60a5fa; font-size: 0.68rem; font-family: monospace; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+    .panel-body { padding: 18px; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+    th { background: #0b0f19; color: var(--muted); font-size: 0.72rem; text-transform: uppercase; padding: 12px; border-bottom: 2px solid var(--border); text-align: left; }
+    td { padding: 12px; border-bottom: 1px solid var(--border); font-family: monospace; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 8px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <header class="dashboard-header">
+
+  <header>
+    <div class="brand">
+      <div class="logo">B3</div>
       <div>
-        <h2>Triple Screen v2 | Opções B3</h2>
+        <h2 style="font-size:1.15rem; font-weight:700;">B3 Triple Screen <span style="font-size:0.75rem; background:rgba(56,189,248,0.15); color:var(--blue); padding:2px 8px; border-radius:4px; font-family:monospace;">v2.0 HOMOLOGADO</span></h2>
       </div>
-      <div class="metadata" id="metadata-bar">
-        Carregando motor quantitativo...
+    </div>
+    <div>
+      <button id="btn-atualizar" class="btn-refresh"><span>Atualizar</span></button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <div class="kpi-row">
+      <div class="kpi-box">
+        <div class="kpi-title">Status do Pregão B3</div>
+        <div class="kpi-val" id="kpi-status-mercado"><span class="badge badge-open"><span class="pulse-dot"></span> OPERACIONAL</span></div>
+        <div class="kpi-desc">Horário regular de negociação</div>
       </div>
-    </header>
-
-    <div class="filters card">
-      <label>Ativo:
-        <select id="filter-ticker">
-          <option value="ALL">Todos</option>
-          <option value="PETR4">PETR4</option>
-          <option value="VALE3">VALE3</option>
-        </select>
-      </label>
-      <label>Tipo:
-        <select id="filter-type">
-          <option value="ALL">Ambos</option>
-          <option value="CALL">CALL</option>
-          <option value="PUT">PUT</option>
-        </select>
-      </label>
+      <div class="kpi-box">
+        <div class="kpi-title">Opções / Sinais Ativos</div>
+        <div class="kpi-val" id="kpi-sinais-armados" style="color:var(--green);">1</div>
+        <div class="kpi-desc">Quality Gate Atuarial Aprovado</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-title">Regime de Volatilidade</div>
+        <div class="kpi-val" id="kpi-regime-vol"><span class="badge badge-bullish">COMPRIMIDA (23.6%)</span></div>
+        <div class="kpi-desc">1º Quartil Histórico B3</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-title">Taxa CDI / Selic</div>
+        <div class="kpi-val" id="kpi-taxa-selic" style="color:var(--blue);">10,75% a.a.</div>
+        <div class="kpi-desc">Taxa livre de risco</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-title">Última Atualização</div>
+        <div class="kpi-val" id="kpi-ultima-atualizacao" style="font-size:0.95rem;">--/--/---- --:--</div>
+        <div class="kpi-desc">Pipeline de Dados v2.0</div>
+      </div>
     </div>
 
-    <div class="card">
-      <h3>Ativos Monitorados</h3>
-      <div id="underlyings-container"></div>
+    <div class="grid-2">
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span class="tag">TELA 1</span> Semáforo Macro (Maré Semanal)</div>
+        </div>
+        <div class="panel-body" id="semaforo-macro-container">
+          <div style="color:var(--dim);">Carregando Semáforo Macro...</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-header">
+          <div class="panel-title"><span class="tag">TELAS 2 &amp; 3</span> Radar de Oportunidades &amp; Gatilhos</div>
+        </div>
+        <div class="panel-body" id="radar-oportunidades-container">
+          <div style="color:var(--dim);">Carregando Radar de Oportunidades...</div>
+        </div>
+      </div>
     </div>
 
-    <div class="card">
-      <h3>Cadeia de Opções Filtrada</h3>
-      <div id="options-container"></div>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span class="tag">RISK</span> Cone de Volatilidade Histórica (10 DU a 252 DU)</div>
+        <span class="badge badge-bullish">BASE 252 DIAS ÚTEIS</span>
+      </div>
+      <div class="panel-body">
+        <div id="vol-cone-container">Carregando Cone de Volatilidade...</div>
+      </div>
     </div>
-  </div>
 
-  <script type="module" src="./js/app.js"></script>
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span class="tag">DERIVATIVOS</span> Grade Oficial de Opções B3 (Gregas Black-Scholes)</div>
+        <span class="badge badge-rec">ANBIMA / B3</span>
+      </div>
+      <div class="panel-body" style="padding:0; overflow-x:auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker Opção</th>
+              <th>Strike</th>
+              <th>Tipo</th>
+              <th>DTE</th>
+              <th>Vencimento</th>
+              <th>Prêmio Teórico</th>
+              <th>Delta (&Delta;)</th>
+              <th>Gamma (&Gamma;)</th>
+              <th>Vega (&Nu;)</th>
+              <th>&Theta; Diário</th>
+              <th>Alvo (+150%)</th>
+              <th>Status / Recomendação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-grade-opcoes-corpo">
+            <tr><td colspan="12" style="text-align:center; padding:16px; color:var(--dim);">Carregando grade de opções...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">
+        <div class="panel-title"><span class="tag">ESTRUTURA</span> Trava de Alta Recomendada (Bull Call Spread)</div>
+      </div>
+      <div class="panel-body" id="trava-alta-container">
+        <div style="color:var(--dim);">Carregando estrutura recomendada...</div>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="js/app.js"></script>
 </body>
 </html>
