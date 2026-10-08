@@ -5,7 +5,7 @@ from src.pipeline import process_pipeline
 
 
 def test_process_pipeline_schema_validation():
-    out_path = "data/latest.json"
+    out_path = "data/test_latest.json"
     if os.path.exists(out_path):
         os.remove(out_path)
 

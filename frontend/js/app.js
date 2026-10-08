@@ -1,14 +1,3 @@
-/**
- * ==============================================================================
- * DASHBOARD QUANTITATIVO B3 - FRONT-END COMPLETO AUTO-CONTIDO (v2.0)
- * ==============================================================================
- * Contrato Oficial do Commit 2b3404e:
- * - metadata: schema_version, generated_at_utc, business_date, cdi_rate_annual...
- * - underlyings: ticker, spot_price, trend_signal, updated_at
- * - options: symbol, underlying_ticker, type, style, strike, du, theoretical_price, greeks...
- */
-
-
 /* 0. ESTADO GLOBAL */
 window.appState = {
   metadata: null,
@@ -37,7 +26,6 @@ function renderizarTudo() {
 }
 
 /* 1. RENDERIZADOR DE KPIS DE TOPO */
-
 function renderizarMetadadosKPIs(meta, options) {
   if (!meta) return;
 
@@ -96,50 +84,47 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
     </div>
   `;
 
-  {
+  const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
+  const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ NENHUMA");
 
-    const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
-    const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ NENHUMA");
-
-    html += `
-      <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
-        <div style="display:flex; flex-direction:column; gap:6px; background:#0b0f19; padding:8px; border-radius:16px; border:1px solid #1e293b;">
-          <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta ? '#f43f5e' : '#1e293b'}; opacity:${!isAlta ? '1' : '0.3'};"></div>
-          <div style="width:14px; height:14px; border-radius:50%; background:#1e293b; opacity:0.3;"></div>
-          <div style="width:14px; height:14px; border-radius:50%; background:${isAlta ? '#10b981' : '#1e293b'}; opacity:${isAlta ? '1' : '0.3'}; box-shadow:${isAlta ? '0 0 10px rgba(16,185,129,0.4)' : 'none'};"></div>
-        </div>
-        <div style="flex:1;">
-          <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
-            <span>${u.ticker} — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
-            <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">TENDÊNCIA: ${u.trend_signal}</span>
-            <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); color:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700;">FASE: ${phaseLabel}</span>
-          </div>
-          <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
-            Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
-          </p>
-        </div>
+  html += `
+    <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
+      <div style="display:flex; flex-direction:column; gap:6px; background:#0b0f19; padding:8px; border-radius:16px; border:1px solid #1e293b;">
+        <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta ? '#f43f5e' : '#1e293b'}; opacity:${!isAlta ? '1' : '0.3'};"></div>
+        <div style="width:14px; height:14px; border-radius:50%; background:#1e293b; opacity:0.3;"></div>
+        <div style="width:14px; height:14px; border-radius:50%; background:${isAlta ? '#10b981' : '#1e293b'}; opacity:${isAlta ? '1' : '0.3'}; box-shadow:${isAlta ? '0 0 10px rgba(16,185,129,0.4)' : 'none'};"></div>
       </div>
-
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom: 24px;">
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Preço Spot</div>
-          <div style="font-family:monospace; font-size:1rem; font-weight:700; color:#38bdf8;">R$ ${Number(u.spot_price).toFixed(2)}</div>
+      <div style="flex:1;">
+        <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span><span translate="no">${u.ticker}</span> — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
+          <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">TENDÊNCIA: ${u.trend_signal}</span>
+          <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); color:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700;">FASE: ${phaseLabel}</span>
         </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sinal Triple Screen</div>
-          <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${isAlta ? '#10b981' : '#f43f5e'};">${u.trend_signal}</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Filtro Elder / Fase</div>
-          <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#10b981;">${u.phase === "INDICACAO_IMEDIATA" ? "COMPRA LIBERADA" : (u.phase === "A_CAMINHO" ? "A CAMINHO" : "AGUARDAR")}</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Telemetria B3</div>
-          <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">TEMPO REAL</div>
-        </div>
+        <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
+          Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
+        </p>
       </div>
-    `;
-  });
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom: 24px;">
+      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Preço Spot</div>
+        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:#38bdf8;">R$ ${Number(u.spot_price).toFixed(2)}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sinal Triple Screen</div>
+        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${isAlta ? '#10b981' : '#f43f5e'};">${u.trend_signal}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Filtro Elder / Fase</div>
+        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#10b981;">${u.phase === "INDICACAO_IMEDIATA" ? "COMPRA LIBERADA" : (u.phase === "A_CAMINHO" ? "A CAMINHO" : "AGUARDAR")}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
+        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Telemetria B3</div>
+        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">TEMPO REAL</div>
+      </div>
+    </div>
+  `;
 
   container.innerHTML = html;
 }
@@ -171,7 +156,7 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
       <div onclick="selecionarAtivo('${u.ticker}')" style="background:#111622; border-radius:8px; ${borderStyle} padding:14px; margin-bottom:14px; cursor:pointer; transition: 0.2s;">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
           <div style="font-size:1.1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">
-            ${u.ticker} <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
+            <span translate="no">${u.ticker}</span> <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
           </div>
           <div>
             <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:${colorSignal}; padding:2px 8px; border-radius:4px; font-weight:700;">
@@ -250,8 +235,8 @@ function renderizarGradeOpcoesB3(options) {
     const alvo150 = (Number(opt.theoretical_price) * 2.5).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 
     tr.innerHTML = `
-      <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;">${opt.symbol}</td>
-      <td style="padding:10px 12px; font-family:monospace;">${strikeFmt}</td>
+      <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;"><span translate="no">${opt.symbol}</span></td>
+      <td style="padding:10px 12px; font-family:monospace;"><span translate="no">${strikeFmt}</span></td>
       <td style="padding:10px 12px;"><span style="font-size:0.7rem; background:rgba(245,158,11,0.15); color:#fde68a; padding:2px 6px; border-radius:4px;"><span translate="no">${opt.type}</span> ${opt.style || ''}</span></td>
       <td style="padding:10px 12px; font-family:monospace;">${opt.du} DU</td>
       <td style="padding:10px 12px; font-family:monospace; color:#94a3b8;">${opt.maturity_date}</td>
@@ -394,6 +379,7 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
   const container = document.getElementById("trava-alta-container") || document.getElementById("spread-container");
   if (!container) return;
 
+  const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
   const opt = options && options.length ? options[0] : null;
   const k1Strike = opt ? Number(opt.strike) : 42.0;
   const k2Strike = k1Strike + 2.0;
@@ -407,7 +393,7 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
     <div style="background:linear-gradient(135deg, rgba(30,41,59,0.5), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:10px; padding:16px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div>
-          <h4 style="font-size:1rem; font-weight:700; color:#f1f5f9;">Trava de Alta (Bull Call Spread) — ${opt ? opt.underlying_ticker : 'PETR4'}</h4>
+          <h4 style="font-size:1rem; font-weight:700; color:#f1f5f9;">Trava de Alta (Bull Call Spread) — <span translate="no">${u.ticker}</span></h4>
           <span style="font-size:0.75rem; color:#64748b;">Horizonte: Vencimento ${opt ? opt.maturity_date : ''} (${opt ? opt.du : 21} DU)</span>
         </div>
         <div>
@@ -418,12 +404,12 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
       <div style="display:flex; gap:10px; margin-bottom:14px;">
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #10b981;">
           <div style="font-size:0.65rem; color:#10b981; font-weight:700;">PONTA COMPRADA (LONG)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;">${opt ? opt.symbol : '<span translate="no">CALL</span> LONG'}</div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${opt ? opt.symbol : 'CALL LONG'}</span></div>
           <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
         </div>
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b;">
           <div style="font-size:0.65rem; color:#f59e0b; font-weight:700;">PONTA VENDIDA (SHORT)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">CALL</span> K${k2Strike.toFixed(0)}</div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">CALL K${k2Strike.toFixed(0)}</span></div>
           <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
         </div>
       </div>

@@ -1,12 +1,12 @@
 {
   "metadata": {
     "schema_version": "2.0.0",
-    "generated_at_utc": "2026-10-08T22:56:41.720102+00:00",
+    "generated_at_utc": "2026-10-08T23:18:38.351421+00:00",
     "business_date": "2026-10-08",
-    "cdi_rate_annual": 0.105,
+    "cdi_rate_annual": 0.1365,
     "workdays_per_year": 252,
     "engine_version": "1.0.0",
-    "checksum": "5fe10885496e8bb394f333c8381ae80e9b935b227bee7f4735349e200cf8b3b5"
+    "checksum": "56688be7aa468c6e45ac7c5763f533d2d8a6660a4d96eafd48e0088b23211b3a"
   },
   "underlyings": [
     {
@@ -14,42 +14,42 @@
       "spot_price": 40.5,
       "trend_signal": "ALTA",
       "phase": "INDICACAO_IMEDIATA",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     },
     {
       "ticker": "ITUB4",
       "spot_price": 45.0,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     },
     {
       "ticker": "VALE3",
       "spot_price": 60.0,
       "trend_signal": "BAIXA",
       "phase": "NENHUMA",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     },
     {
       "ticker": "BOVA11",
       "spot_price": 130.0,
       "trend_signal": "NEUTRO",
       "phase": "NENHUMA",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     },
     {
       "ticker": "BBAS3",
       "spot_price": 27.5,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     },
     {
       "ticker": "BBDC4",
       "spot_price": 14.0,
       "trend_signal": "BAIXA",
       "phase": "NENHUMA",
-      "updated_at": "2026-10-08T22:56:41.720102+00:00"
+      "updated_at": "2026-10-08T23:18:38.351421+00:00"
     }
   ],
   "options": [
@@ -64,13 +64,13 @@
       "spot_price": 40.5,
       "market_price": 3.1,
       "theoretical_price": 3.1,
-      "iv": 0.187555225196787,
+      "iv": 0.1282140455030972,
       "greeks": {
-        "delta": 0.8851,
-        "gamma": 0.074,
-        "theta_du": -0.0215,
-        "vega": 2.7115,
-        "rho": 3.8982
+        "delta": 0.9646,
+        "gamma": 0.0435,
+        "theta_du": -0.0206,
+        "vega": 1.0899,
+        "rho": 4.2817
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -88,13 +88,13 @@
       "spot_price": 40.5,
       "market_price": 2.3,
       "theoretical_price": 2.3,
-      "iv": 0.19089544060898944,
+      "iv": 0.1642315483109398,
       "greeks": {
-        "delta": 0.7842,
-        "gamma": 0.1098,
-        "theta_du": -0.0248,
-        "vega": 4.092,
-        "rho": 3.5071
+        "delta": 0.8323,
+        "gamma": 0.1093,
+        "theta_du": -0.0256,
+        "vega": 3.5057,
+        "rho": 3.7389
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -112,13 +112,13 @@
       "spot_price": 40.5,
       "market_price": 1.6,
       "theoretical_price": 1.6,
-      "iv": 0.18927861947929817,
+      "iv": 0.17224266611730418,
       "greeks": {
-        "delta": 0.6572,
-        "gamma": 0.139,
-        "theta_du": -0.0263,
-        "vega": 5.1361,
-        "rho": 2.9782
+        "delta": 0.6897,
+        "gamma": 0.1466,
+        "theta_du": -0.0277,
+        "vega": 4.9318,
+        "rho": 3.135
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -136,13 +136,13 @@
       "spot_price": 40.5,
       "market_price": 1.05,
       "theoretical_price": 1.05,
-      "iv": 0.18973763927776274,
+      "iv": 0.17768779565616946,
       "greeks": {
-        "delta": 0.5107,
-        "gamma": 0.1504,
-        "theta_du": -0.0255,
-        "vega": 5.5727,
-        "rho": 2.3374
+        "delta": 0.5315,
+        "gamma": 0.1602,
+        "theta_du": -0.027,
+        "vega": 5.5574,
+        "rho": 2.4375
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -160,13 +160,13 @@
       "spot_price": 40.5,
       "market_price": 0.65,
       "theoretical_price": 0.65,
-      "iv": 0.19111308262411922,
+      "iv": 0.18195521642341822,
       "greeks": {
-        "delta": 0.3676,
-        "gamma": 0.1411,
-        "theta_du": -0.0225,
-        "vega": 5.2647,
-        "rho": 1.6948
+        "delta": 0.3801,
+        "gamma": 0.1498,
+        "theta_du": -0.0237,
+        "vega": 5.321,
+        "rho": 1.7552
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -184,13 +184,13 @@
       "spot_price": 40.5,
       "market_price": 0.38,
       "theoretical_price": 0.38,
-      "iv": 0.19283223183062806,
+      "iv": 0.18550171463101284,
       "greeks": {
-        "delta": 0.2456,
-        "gamma": 0.1168,
-        "theta_du": -0.0179,
-        "vega": 4.3988,
-        "rho": 1.139
+        "delta": 0.2528,
+        "gamma": 0.1233,
+        "theta_du": -0.0188,
+        "vega": 4.4663,
+        "rho": 1.1734
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -208,13 +208,13 @@
       "spot_price": 45.0,
       "market_price": 1.8,
       "theoretical_price": 1.8,
-      "iv": 0.13587654346205902,
+      "iv": 0.10822775963944267,
       "greeks": {
-        "delta": 0.7753,
-        "gamma": 0.1421,
-        "theta_du": -0.0237,
-        "vega": 4.6534,
-        "rho": 3.939
+        "delta": 0.8481,
+        "gamma": 0.1399,
+        "theta_du": -0.0251,
+        "vega": 3.6503,
+        "rho": 4.3292
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -232,13 +232,13 @@
       "spot_price": 45.0,
       "market_price": 0.7,
       "theoretical_price": 0.7,
-      "iv": 0.14619962972462416,
+      "iv": 0.13574105432655748,
       "greeks": {
-        "delta": 0.4306,
-        "gamma": 0.1731,
-        "theta_du": -0.0223,
-        "vega": 6.1002,
-        "rho": 2.2234
+        "delta": 0.452,
+        "gamma": 0.1879,
+        "theta_du": -0.0239,
+        "vega": 6.1493,
+        "rho": 2.3381
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
