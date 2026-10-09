@@ -432,13 +432,32 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
   if (!container) return;
 
   const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
-  const opt = options && options.length ? options[0] : null;
-  const k1Strike = opt ? Number(opt.strike) : 42.0;
-  const k2Strike = k1Strike + 2.0;
-  const premioK1 = opt ? Number(opt.theoretical_price) : 0.50;
-  const premioK2 = premioK1 * 0.45;
-  const debitoLiquido = premioK1 - premioK2;
-  const ganhoMaximo = (k2Strike - k1Strike) - debitoLiquido;
+
+  // Find ATM or close to ATM for K1
+  let optK1 = null;
+  let optK2 = null;
+
+  if (options && options.length >= 2) {
+      // Sort options by strike
+      const sortedOptions = [...options].sort((a, b) => Number(a.strike) - Number(b.strike));
+      // Find first strike >= spot
+      optK1 = sortedOptions.find(o => Number(o.strike) >= Number(u.spot_price));
+      if (!optK1) optK1 = sortedOptions[sortedOptions.length - 2];
+
+      const k1Index = sortedOptions.indexOf(optK1);
+      optK2 = sortedOptions[Math.min(k1Index + 1, sortedOptions.length - 1)];
+      if (optK1 === optK2 && k1Index > 0) {
+          optK1 = sortedOptions[k1Index - 1];
+      }
+  }
+
+  const k1Strike = optK1 ? Number(optK1.strike) : 42.0;
+  const k2Strike = optK2 ? Number(optK2.strike) : k1Strike + 2.0;
+  const premioK1 = optK1 ? Number(optK1.theoretical_price) : 0.50;
+  const premioK2 = optK2 ? Number(optK2.theoretical_price) : premioK1 * 0.45;
+
+  const debitoLiquido = Math.max(0.01, premioK1 - premioK2);
+  const ganhoMaximo = Math.max(0, (k2Strike - k1Strike) - debitoLiquido);
   const ratio = ganhoMaximo / debitoLiquido;
 
   container.innerHTML = `
@@ -446,7 +465,7 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
         <div>
           <h4 style="font-size:1rem; font-weight:700; color:#f1f5f9;">Trava de Alta (Bull Call Spread) — <span translate="no">${u.ticker}</span></h4>
-          <span style="font-size:0.75rem; color:#64748b;">Horizonte: Vencimento ${opt ? opt.maturity_date : ''} (${opt ? opt.du : 21} DU)</span>
+          <span style="font-size:0.75rem; color:#64748b;">Horizonte: Vencimento ${optK1 ? optK1.maturity_date : ''} (${optK1 ? optK1.du : 21} DU)</span>
         </div>
         <div>
           <span style="font-size:0.7rem; background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.4); padding:2px 8px; border-radius:4px; font-weight:700;">HOMOLOGADA</span>
@@ -456,12 +475,12 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
       <div style="display:flex; gap:10px; margin-bottom:14px;">
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #10b981;">
           <div style="font-size:0.65rem; color:#10b981; font-weight:700;">PONTA COMPRADA (LONG)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${opt ? opt.symbol : 'CALL LONG'}</span></div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optK1 ? optK1.symbol : 'CALL LONG'}</span></div>
           <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
         </div>
         <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b;">
           <div style="font-size:0.65rem; color:#f59e0b; font-weight:700;">PONTA VENDIDA (SHORT)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">CALL K${k2Strike.toFixed(0)}</span></div>
+          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optK2 ? optK2.symbol : 'CALL SHORT'}</span></div>
           <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
         </div>
       </div>

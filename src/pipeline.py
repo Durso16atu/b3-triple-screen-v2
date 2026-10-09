@@ -99,98 +99,40 @@ def process_pipeline(schema_path: str, output_path: str, mock_data=None):
                 }
             )
 
+        options_mock = []
+        for und in underlyings_mock:
+            spot = und["spot_price"]
+            ticker = und["ticker"]
+            base_symbol = ticker[:4] + "K"
+
+            # Gerar 6 strikes em torno do spot (aprox -10% a +15%)
+            for i in range(-2, 4):
+                strike = round(spot * (1 + i * 0.05), 1)
+                if strike <= 0:
+                    continue
+
+                intrinsic = max(0, spot - strike)
+                # mock price to ensure implied volatility is computable and bounds respected
+                time_val = max(0.2, spot * 0.03 * (1 - abs(i) * 0.15))
+                market_price = round(intrinsic + time_val, 2)
+
+                options_mock.append(
+                    {
+                        "symbol": f"{base_symbol}{int(strike * 10)}",
+                        "underlying_ticker": ticker,
+                        "type": "CALL",
+                        "style": "EUROPEAN",
+                        "strike": strike,
+                        "maturity_date": "2026-11-20",
+                        "du": 30,
+                        "spot_price": spot,
+                        "market_price": market_price,
+                    }
+                )
+
         mock_data = {
             "underlyings": underlyings_mock,
-            "options": [
-                {
-                    "symbol": "PETRK380",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 38.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 3.10,
-                },
-                {
-                    "symbol": "PETRK390",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 39.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 2.30,
-                },
-                {
-                    "symbol": "PETRK400",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 40.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 1.60,
-                },
-                {
-                    "symbol": "PETRK410",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 41.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 1.05,
-                },
-                {
-                    "symbol": "PETRK420",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 42.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 0.65,
-                },
-                {
-                    "symbol": "PETRK430",
-                    "underlying_ticker": "PETR4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 43.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 40.50,
-                    "market_price": 0.38,
-                },
-                {
-                    "symbol": "ITUBK44",
-                    "underlying_ticker": "ITUB4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 44.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 45.00,
-                    "market_price": 1.80,
-                },
-                {
-                    "symbol": "ITUBK46",
-                    "underlying_ticker": "ITUB4",
-                    "type": "CALL",
-                    "style": "EUROPEAN",
-                    "strike": 46.0,
-                    "maturity_date": "2026-11-20",
-                    "du": 30,
-                    "spot_price": 45.00,
-                    "market_price": 0.70,
-                },
-            ],
+            "options": options_mock,
         }
 
     now_utc = datetime.now(UTC).isoformat()
