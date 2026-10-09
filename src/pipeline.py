@@ -29,45 +29,78 @@ def process_pipeline(schema_path: str, output_path: str, mock_data=None):
     cdi_rate = get_annual_cdi_rate()
 
     if mock_data is None:
+        CESTA_ACOES = [
+            "PETR4",
+            "VALE3",
+            "ITUB4",
+            "B3SA3",
+            "BBAS3",
+            "ABEV3",
+            "BBDC4",
+            "PETR3",
+            "ELET3",
+            "JBSS3",
+            "CSNA3",
+            "GGBR4",
+            "MGLU3",
+            "LREN3",
+            "BHIA3",
+            "CASH3",
+            "ITSA4",
+            "USIM5",
+            "MRVE3",
+            "IRBR3",
+            "CIEL3",
+            "PCAR3",
+            "AZUL4",
+            "COGN3",
+            "VBBR3",
+            "ASAI3",
+            "EQTL3",
+            "RADL3",
+            "SUZB3",
+            "BRFS3",
+            "RAIL3",
+        ]
+
+        import random
+
+        random.seed(42)  # For reproducible mock data
+
+        underlyings_mock = []
+        for ticker in CESTA_ACOES:
+            spot = round(random.uniform(5.0, 100.0), 2)
+            if ticker == "PETR4":
+                spot = 40.50
+            if ticker == "ITUB4":
+                spot = 45.00
+            if ticker == "VALE3":
+                spot = 60.00
+            if ticker == "BBAS3":
+                spot = 27.50
+
+            # Simple mock logic for trend and phase
+            trend = random.choice(["ALTA", "BAIXA", "NEUTRO"])
+            if trend == "ALTA":
+                phase = random.choice(["INDICACAO_IMEDIATA", "A_CAMINHO"])
+            else:
+                phase = "AGUARDANDO"
+
+            underlyings_mock.append(
+                {
+                    "ticker": ticker,
+                    "spot_price": spot,
+                    "trend_signal": trend,
+                    "phase": phase,
+                    "suporte_fibonacci": round(spot * 0.95, 2),
+                    "gatilho_entrada": round(spot * 1.01, 2),
+                    "stop_loss": round(spot * 0.93, 2),
+                    "alvo_2r": round(spot * 1.15, 2),
+                }
+            )
+
         mock_data = {
-            "underlyings": [
-                {
-                    "ticker": "PETR4",
-                    "spot_price": 40.50,
-                    "trend_signal": "ALTA",
-                    "phase": "INDICACAO_IMEDIATA",
-                },
-                {
-                    "ticker": "ITUB4",
-                    "spot_price": 45.00,
-                    "trend_signal": "ALTA",
-                    "phase": "A_CAMINHO",
-                },
-                {
-                    "ticker": "VALE3",
-                    "spot_price": 60.00,
-                    "trend_signal": "BAIXA",
-                    "phase": "NENHUMA",
-                },
-                {
-                    "ticker": "BOVA11",
-                    "spot_price": 130.00,
-                    "trend_signal": "NEUTRO",
-                    "phase": "NENHUMA",
-                },
-                {
-                    "ticker": "BBAS3",
-                    "spot_price": 27.50,
-                    "trend_signal": "ALTA",
-                    "phase": "A_CAMINHO",
-                },
-                {
-                    "ticker": "BBDC4",
-                    "spot_price": 14.00,
-                    "trend_signal": "BAIXA",
-                    "phase": "NENHUMA",
-                },
-            ],
+            "underlyings": underlyings_mock,
             "options": [
                 {
                     "symbol": "PETRK380",
@@ -228,7 +261,13 @@ def process_pipeline(schema_path: str, output_path: str, mock_data=None):
                 "ticker": und["ticker"],
                 "spot_price": und["spot_price"],
                 "trend_signal": und["trend_signal"],
-                "phase": und.get("phase", "NENHUMA"),
+                "phase": und.get("phase", "AGUARDANDO"),
+                "suporte_fibonacci": und.get(
+                    "suporte_fibonacci", round(und["spot_price"] * 0.95, 2)
+                ),
+                "gatilho_entrada": und.get("gatilho_entrada", round(und["spot_price"] * 1.01, 2)),
+                "stop_loss": und.get("stop_loss", round(und["spot_price"] * 0.93, 2)),
+                "alvo_2r": und.get("alvo_2r", round(und["spot_price"] * 1.15, 2)),
                 "updated_at": now_utc,
             }
         )

@@ -1,55 +1,354 @@
 {
   "metadata": {
     "schema_version": "2.0.0",
-    "generated_at_utc": "2026-10-09T18:57:14.573016+00:00",
+    "generated_at_utc": "2026-10-09T19:07:26.508910+00:00",
     "business_date": "2026-10-09",
     "cdi_rate_annual": 0.1365,
     "workdays_per_year": 252,
     "engine_version": "1.0.0",
-    "checksum": "ac442abb5c32c4b41b6ac47c23ff1cf1a2ff86cf3e2bc57e8fca7c6d4553b126"
+    "checksum": "79a0a5b73bac27fa81e38acd58a44fbaedac146715fb1d032b4a72e75b6e2199"
   },
   "underlyings": [
     {
       "ticker": "PETR4",
       "spot_price": 40.5,
       "trend_signal": "ALTA",
-      "phase": "INDICACAO_IMEDIATA",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
-    },
-    {
-      "ticker": "ITUB4",
-      "spot_price": 45.0,
-      "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
+      "suporte_fibonacci": 38.48,
+      "gatilho_entrada": 40.91,
+      "stop_loss": 37.66,
+      "alvo_2r": 46.57,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
     },
     {
       "ticker": "VALE3",
       "spot_price": 60.0,
-      "trend_signal": "BAIXA",
-      "phase": "NENHUMA",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
+      "trend_signal": "ALTA",
+      "phase": "INDICACAO_IMEDIATA",
+      "suporte_fibonacci": 57.0,
+      "gatilho_entrada": 60.6,
+      "stop_loss": 55.8,
+      "alvo_2r": 69.0,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
     },
     {
-      "ticker": "BOVA11",
-      "spot_price": 130.0,
+      "ticker": "ITUB4",
+      "spot_price": 45.0,
       "trend_signal": "NEUTRO",
-      "phase": "NENHUMA",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 42.75,
+      "gatilho_entrada": 45.45,
+      "stop_loss": 41.85,
+      "alvo_2r": 51.75,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "B3SA3",
+      "spot_price": 13.26,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 12.6,
+      "gatilho_entrada": 13.39,
+      "stop_loss": 12.33,
+      "alvo_2r": 15.25,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
     },
     {
       "ticker": "BBAS3",
       "spot_price": 27.5,
       "trend_signal": "ALTA",
-      "phase": "A_CAMINHO",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
+      "phase": "INDICACAO_IMEDIATA",
+      "suporte_fibonacci": 26.12,
+      "gatilho_entrada": 27.77,
+      "stop_loss": 25.58,
+      "alvo_2r": 31.62,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "ABEV3",
+      "spot_price": 27.1,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 25.75,
+      "gatilho_entrada": 27.37,
+      "stop_loss": 25.2,
+      "alvo_2r": 31.16,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
     },
     {
       "ticker": "BBDC4",
-      "spot_price": 14.0,
+      "spot_price": 7.52,
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
+      "suporte_fibonacci": 7.14,
+      "gatilho_entrada": 7.6,
+      "stop_loss": 6.99,
+      "alvo_2r": 8.65,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "PETR3",
+      "spot_price": 25.94,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 24.64,
+      "gatilho_entrada": 26.2,
+      "stop_loss": 24.12,
+      "alvo_2r": 29.83,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "ELET3",
+      "spot_price": 31.43,
+      "trend_signal": "ALTA",
+      "phase": "INDICACAO_IMEDIATA",
+      "suporte_fibonacci": 29.86,
+      "gatilho_entrada": 31.74,
+      "stop_loss": 29.23,
+      "alvo_2r": 36.14,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "JBSS3",
+      "spot_price": 71.32,
       "trend_signal": "BAIXA",
-      "phase": "NENHUMA",
-      "updated_at": "2026-10-09T18:57:14.573016+00:00"
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 67.75,
+      "gatilho_entrada": 72.03,
+      "stop_loss": 66.33,
+      "alvo_2r": 82.02,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "CSNA3",
+      "spot_price": 31.4,
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
+      "suporte_fibonacci": 29.83,
+      "gatilho_entrada": 31.71,
+      "stop_loss": 29.2,
+      "alvo_2r": 36.11,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "GGBR4",
+      "spot_price": 14.71,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 13.97,
+      "gatilho_entrada": 14.86,
+      "stop_loss": 13.68,
+      "alvo_2r": 16.92,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "MGLU3",
+      "spot_price": 14.19,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 13.48,
+      "gatilho_entrada": 14.33,
+      "stop_loss": 13.2,
+      "alvo_2r": 16.32,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "LREN3",
+      "spot_price": 62.35,
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
+      "suporte_fibonacci": 59.23,
+      "gatilho_entrada": 62.97,
+      "stop_loss": 57.99,
+      "alvo_2r": 71.7,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "BHIA3",
+      "spot_price": 55.94,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 53.14,
+      "gatilho_entrada": 56.5,
+      "stop_loss": 52.02,
+      "alvo_2r": 64.33,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "CASH3",
+      "spot_price": 12.49,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 11.87,
+      "gatilho_entrada": 12.61,
+      "stop_loss": 11.62,
+      "alvo_2r": 14.36,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "ITSA4",
+      "spot_price": 83.79,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 79.6,
+      "gatilho_entrada": 84.63,
+      "stop_loss": 77.92,
+      "alvo_2r": 96.36,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "USIM5",
+      "spot_price": 89.12,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 84.66,
+      "gatilho_entrada": 90.01,
+      "stop_loss": 82.88,
+      "alvo_2r": 102.49,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "MRVE3",
+      "spot_price": 59.85,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 56.86,
+      "gatilho_entrada": 60.45,
+      "stop_loss": 55.66,
+      "alvo_2r": 68.83,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "IRBR3",
+      "spot_price": 11.61,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 11.03,
+      "gatilho_entrada": 11.73,
+      "stop_loss": 10.8,
+      "alvo_2r": 13.35,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "CIEL3",
+      "spot_price": 26.65,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 25.32,
+      "gatilho_entrada": 26.92,
+      "stop_loss": 24.78,
+      "alvo_2r": 30.65,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "PCAR3",
+      "spot_price": 98.6,
+      "trend_signal": "ALTA",
+      "phase": "INDICACAO_IMEDIATA",
+      "suporte_fibonacci": 93.67,
+      "gatilho_entrada": 99.59,
+      "stop_loss": 91.7,
+      "alvo_2r": 113.39,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "AZUL4",
+      "spot_price": 41.11,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 39.05,
+      "gatilho_entrada": 41.52,
+      "stop_loss": 38.23,
+      "alvo_2r": 47.28,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "COGN3",
+      "spot_price": 65.39,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 62.12,
+      "gatilho_entrada": 66.04,
+      "stop_loss": 60.81,
+      "alvo_2r": 75.2,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "VBBR3",
+      "spot_price": 20.45,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 19.43,
+      "gatilho_entrada": 20.65,
+      "stop_loss": 19.02,
+      "alvo_2r": 23.52,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "ASAI3",
+      "spot_price": 24.9,
+      "trend_signal": "BAIXA",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 23.65,
+      "gatilho_entrada": 25.15,
+      "stop_loss": 23.16,
+      "alvo_2r": 28.63,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "EQTL3",
+      "spot_price": 71.67,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 68.09,
+      "gatilho_entrada": 72.39,
+      "stop_loss": 66.65,
+      "alvo_2r": 82.42,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "RADL3",
+      "spot_price": 66.56,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 63.23,
+      "gatilho_entrada": 67.23,
+      "stop_loss": 61.9,
+      "alvo_2r": 76.54,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "SUZB3",
+      "spot_price": 65.32,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 62.05,
+      "gatilho_entrada": 65.97,
+      "stop_loss": 60.75,
+      "alvo_2r": 75.12,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "BRFS3",
+      "spot_price": 74.27,
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
+      "suporte_fibonacci": 70.56,
+      "gatilho_entrada": 75.01,
+      "stop_loss": 69.07,
+      "alvo_2r": 85.41,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
+    },
+    {
+      "ticker": "RAIL3",
+      "spot_price": 41.05,
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "suporte_fibonacci": 39.0,
+      "gatilho_entrada": 41.46,
+      "stop_loss": 38.18,
+      "alvo_2r": 47.21,
+      "updated_at": "2026-10-09T19:07:26.508910+00:00"
     }
   ],
   "options": [

@@ -38,7 +38,11 @@
           "ticker": { "type": "string" },
           "spot_price": { "type": "number", "minimum": 0 },
           "trend_signal": { "type": "string", "enum": ["ALTA", "BAIXA", "NEUTRO"] },
-          "phase": { "type": "string", "enum": ["INDICACAO_IMEDIATA", "A_CAMINHO", "NENHUMA"] },
+          "phase": { "type": "string", "enum": ["INDICACAO_IMEDIATA", "A_CAMINHO", "AGUARDANDO", "NENHUMA"] },
+          "suporte_fibonacci": { "type": "number", "minimum": 0 },
+          "gatilho_entrada": { "type": "number", "minimum": 0 },
+          "stop_loss": { "type": "number", "minimum": 0 },
+          "alvo_2r": { "type": "number", "minimum": 0 },
           "updated_at": { "type": "string", "format": "date-time" }
         }
       }

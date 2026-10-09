@@ -52,7 +52,9 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
             data = json.load(f)
         underlyings = data.get("underlyings", [])
         self.assertIsInstance(underlyings, list)
-        self.assertGreaterEqual(len(underlyings), 1, "Deve conter pelo menos 1 ativo subjacente")
+        self.assertGreaterEqual(
+            len(underlyings), 30, "Deve conter pelo menos 30 ativos subjacentes homologados"
+        )
 
         ativo = underlyings[0]
         self.assertIn("ticker", ativo)
