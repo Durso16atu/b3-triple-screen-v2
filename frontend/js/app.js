@@ -3,11 +3,31 @@ window.appState = {
   metadata: null,
   underlyings: [],
   options: [],
-  tickerSelecionado: null
+  tickerSelecionado: null,
+  faseSelecionada: "TODAS"
+};
+
+window.selecionarFase = function(fase) {
+  window.appState.faseSelecionada = fase;
+  // Pick the first ticker of this phase if it's not "TODAS"
+  const underlyings = window.appState.underlyings;
+  let filtered = underlyings;
+  if (fase !== "TODAS") {
+    filtered = underlyings.filter(u => u.phase === fase);
+  }
+  if (filtered.length > 0) {
+    window.appState.tickerSelecionado = filtered[0].ticker;
+  }
+  renderizarTudo();
 };
 
 window.selecionarAtivo = function(ticker) {
   window.appState.tickerSelecionado = ticker;
+  // Sincroniza a fase com o ticker selecionado
+  const u = window.appState.underlyings.find(x => x.ticker === ticker);
+  if (u) {
+    window.appState.faseSelecionada = u.phase;
+  }
   renderizarTudo();
 };
 
@@ -72,15 +92,33 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
   }
 
   const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
+  const faseSel = window.appState.faseSelecionada;
 
-  let optionsHtml = underlyings.map(x => `<option value="${x.ticker}" ${x.ticker === u.ticker ? 'selected' : ''}>${x.ticker}</option>`).join('');
+  // Filter tickers for the ticker dropdown based on selected phase
+  let tickersParaMostrar = underlyings;
+  if (faseSel !== "TODAS") {
+    tickersParaMostrar = underlyings.filter(x => x.phase === faseSel);
+  }
+
+  let optionsHtml = tickersParaMostrar.map(x => `<option value="${x.ticker}" ${x.ticker === u.ticker ? 'selected' : ''}>${x.ticker}</option>`).join('');
 
   let html = `
-    <div style="margin-bottom: 14px;">
-      <label for="seletor-ativo" style="color:#94a3b8; font-size:0.85rem; margin-right:8px;">Selecione o <span translate="no">Ticker</span>:</label>
-      <select id="seletor-ativo" onchange="selecionarAtivo(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:4px; font-weight:bold; font-family:monospace; outline:none; cursor:pointer;">
-        ${optionsHtml}
-      </select>
+    <div style="margin-bottom: 14px; display: flex; gap: 16px; flex-wrap: wrap;">
+      <div>
+        <label for="seletor-fase" style="color:#94a3b8; font-size:0.85rem; margin-right:8px;">Filtro de Fase:</label>
+        <select id="seletor-fase" onchange="selecionarFase(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:4px; font-weight:bold; font-family:monospace; outline:none; cursor:pointer;">
+          <option value="TODAS" ${faseSel === 'TODAS' ? 'selected' : ''}>TODAS</option>
+          <option value="INDICACAO_IMEDIATA" ${faseSel === 'INDICACAO_IMEDIATA' ? 'selected' : ''}>🟢 INDICAÇÃO IMEDIATA</option>
+          <option value="A_CAMINHO" ${faseSel === 'A_CAMINHO' ? 'selected' : ''}>🟡 A CAMINHO</option>
+          <option value="AGUARDANDO" ${faseSel === 'AGUARDANDO' ? 'selected' : ''}>⚪ AGUARDANDO</option>
+        </select>
+      </div>
+      <div>
+        <label for="seletor-ativo" style="color:#94a3b8; font-size:0.85rem; margin-right:8px;">Selecione o <span translate="no">Ticker</span>:</label>
+        <select id="seletor-ativo" onchange="selecionarAtivo(this.value)" style="background:#0f172a; color:#f8fafc; border:1px solid #334155; padding:6px 12px; border-radius:4px; font-weight:bold; font-family:monospace; outline:none; cursor:pointer;">
+          ${optionsHtml}
+        </select>
+      </div>
     </div>
   `;
 
@@ -140,17 +178,31 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
   }
 
   let html = "";
+  const faseSel = window.appState.faseSelecionada;
+
   underlyings.forEach(u => {
     const isSelected = u.ticker === tickerSelecionado;
     const borderStyle = isSelected ? "border: 2px solid #38bdf8;" : "border: 1px solid #242f45;";
-    if (u.phase !== "INDICACAO_IMEDIATA" && u.phase !== "A_CAMINHO") return;
+
+    // Se a fase selecionada for diferente de TODAS e diferente da fase do ativo, ignora
+    if (faseSel !== "TODAS" && u.phase !== faseSel) return;
+
+    // Se a fase for TODAS, opcionalmente a gente exibe só os operacionais ou exibe todos?
+    // O pedido original diz "exibe apenas os cards dos papéis dessa fase".
+    // Se "TODAS", exibe todos. Mas se não for "TODAS", filtra.
+    // Opcionalmente podemos manter o filtro original de exibir apenas "INDICACAO_IMEDIATA" e "A_CAMINHO"
+    // caso faseSel === "TODAS"? Vou permitir todos se TODAS estiver selecionado.
 
     const spot = Number(u.spot_price);
-    const gatilho = spot * 1.005;
-    const stopLoss = spot * 0.97;
+    const gatilho = Number(u.gatilho_entrada || spot * 1.005);
+    const stopLoss = Number(u.stop_loss || spot * 0.97);
+    const alvo2R = Number(u.alvo_2r || gatilho + 2 * (gatilho - stopLoss));
     const riscoR = gatilho - stopLoss;
-    const alvo2R = gatilho + (2.0 * riscoR);
-    const colorSignal = u.phase === "INDICACAO_IMEDIATA" ? "#10b981" : "#fbbf24";
+
+    let colorSignal = "#fbbf24";
+    let statusText = "A CAMINHO";
+    if (u.phase === "INDICACAO_IMEDIATA") { colorSignal = "#10b981"; statusText = "SINAL ARMADO"; }
+    if (u.phase === "AGUARDANDO") { colorSignal = "#64748b"; statusText = "AGUARDANDO"; }
 
     html += `
       <div onclick="selecionarAtivo('${u.ticker}')" style="background:#111622; border-radius:8px; ${borderStyle} padding:14px; margin-bottom:14px; cursor:pointer; transition: 0.2s;">
@@ -160,7 +212,7 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
           </div>
           <div>
             <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:${colorSignal}; padding:2px 8px; border-radius:4px; font-weight:700;">
-              ● ${u.phase === "INDICACAO_IMEDIATA" ? "SINAL ARMADO" : "A CAMINHO"}
+              ● ${statusText}
             </span>
           </div>
         </div>
