@@ -56,7 +56,8 @@
         <h2 style="font-size:1.15rem; font-weight:700;">B3 Triple Screen <span style="font-size:0.75rem; background:rgba(56,189,248,0.15); color:var(--blue); padding:2px 8px; border-radius:4px; font-family:monospace;">v2.0 HOMOLOGADO</span></h2>
       </div>
     </div>
-    <div>
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span id="badge-fonte-dados" class="badge" style="background:rgba(56,189,248,0.15); color:var(--blue); border:1px solid rgba(56,189,248,0.3); font-size:0.72rem;">Fonte: Cache Estático (CDN)</span>
       <button id="btn-atualizar" class="btn-refresh"><span>Atualizar</span></button>
     </div>
   </header>
@@ -87,7 +88,7 @@
       <div class="kpi-box">
         <div class="kpi-title">Última Atualização</div>
         <div class="kpi-val" id="kpi-ultima-atualizacao" style="font-size:0.95rem;">--/--/---- --:--</div>
-        <div class="kpi-desc">Pipeline de Dados v2.0</div>
+        <div class="kpi-desc" id="kpi-fonte-dados">Fonte: Cache Estático (CDN)</div>
       </div>
     </div>
 
@@ -162,6 +163,6 @@
 
   </main>
 
-  <script src="js/app.js?v=2.4"></script>
+  <script src="js/app.js?v=2.5"></script>
 </body>
 </html>

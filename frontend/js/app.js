@@ -51,7 +51,8 @@ function renderizarMetadadosKPIs(meta, options) {
 
   const elStatus = document.getElementById("kpi-status-mercado") || document.getElementById("market-status");
   if (elStatus) {
-    elStatus.innerHTML = `<span class="badge badge-open" style="color:#10b981; font-weight:700;"><span class="pulse-dot"></span> PREGÃO OPERACIONAL</span>`;
+    const statusTxt = meta.market_status || "PREGÃO OPERACIONAL";
+    elStatus.innerHTML = `<span class="badge badge-open" style="color:#10b981; font-weight:700;"><span class="pulse-dot"></span> ${statusTxt}</span>`;
   }
 
   const elUpdate = document.getElementById("kpi-ultima-atualizacao") || document.getElementById("last-update");
@@ -507,17 +508,68 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
   `;
 }
 
-/* 7. ORQUESTRADOR PRINCIPAL E POLLING */
+/* 7. ORQUESTRADOR PRINCIPAL E CONEXÃO HÍBRIDA COM APPS SCRIPT */
 const DATA_PATHS = ["../data/latest.json", "data/latest.json", "./data/latest.json"];
+const APPS_SCRIPT_WEBAPP_URL = window.APPS_SCRIPT_WEBAPP_URL || "https://script.google.com/macros/s/AKfycbz_BASE_MESTRE_B3_TRIPLE_SCREEN/exec";
 
-async function carregarDadosPipeline() {
-  const btnAtualizar = document.getElementById("btn-atualizar");
-  if (btnAtualizar) {
-    btnAtualizar.classList.add("loading");
-    const spanText = btnAtualizar.querySelector("span");
-    if (spanText) spanText.innerText = "Atualizando...";
+/**
+ * Atualiza o badge e a descrição da fonte de dados na interface.
+ */
+function atualizarBadgeFonte(texto, tipo = "cdn") {
+  const badge = document.getElementById("badge-fonte-dados");
+  const kpiDesc = document.getElementById("kpi-fonte-dados");
+
+  let color = "#38bdf8";
+  let bg = "rgba(56, 189, 248, 0.15)";
+  let border = "1px solid rgba(56, 189, 248, 0.3)";
+
+  if (tipo === "live") {
+    color = "#10b981";
+    bg = "rgba(16, 185, 129, 0.15)";
+    border = "1px solid rgba(16, 185, 129, 0.3)";
+  } else if (tipo === "fallback") {
+    color = "#f59e0b";
+    bg = "rgba(245, 158, 11, 0.15)";
+    border = "1px solid rgba(245, 158, 11, 0.3)";
+  } else if (tipo === "loading") {
+    color = "#a855f7";
+    bg = "rgba(168, 85, 247, 0.15)";
+    border = "1px solid rgba(168, 85, 247, 0.3)";
   }
 
+  if (badge) {
+    badge.innerText = texto;
+    badge.style.color = color;
+    badge.style.background = bg;
+    badge.style.border = border;
+  }
+  if (kpiDesc) {
+    kpiDesc.innerText = texto;
+  }
+}
+
+/**
+ * Popula o estado global e aciona a renderização de todos os módulos.
+ */
+function aplicarDadosNoEstado(dados) {
+  if (!dados || !dados.underlyings) return false;
+
+  window.appState.metadata = dados.metadata || {};
+  window.appState.underlyings = dados.underlyings || [];
+  window.appState.options = dados.options || [];
+
+  if (!window.appState.tickerSelecionado && window.appState.underlyings.length > 0) {
+    window.appState.tickerSelecionado = window.appState.underlyings[0].ticker;
+  }
+
+  renderizarTudo();
+  return true;
+}
+
+/**
+ * Carrega os dados estáticos do cache local (CDN).
+ */
+async function carregarFallbackEstatico() {
   let dados = null;
   for (const path of DATA_PATHS) {
     try {
@@ -528,29 +580,79 @@ async function carregarDadosPipeline() {
       }
     } catch (e) {}
   }
+  return aplicarDadosNoEstado(dados);
+}
 
-  if (dados) {
-    window.appState.metadata = dados.metadata;
-    window.appState.underlyings = dados.underlyings;
-    window.appState.options = dados.options;
-    if (!window.appState.tickerSelecionado && dados.underlyings.length > 0) {
-      window.appState.tickerSelecionado = dados.underlyings[0].ticker;
+/**
+ * Estratégia Híbrida:
+ * - Boot (false): busca cache CDN estático e marca status como "Fonte: Cache Estático (CDN)".
+ * - Atualizar (true): busca endpoint Web App do Apps Script com timeout de 8s e fallback transparente.
+ */
+async function carregarDadosPipeline(forcarAtualizacaoAoVivo = false) {
+  const btnAtualizar = document.getElementById("btn-atualizar");
+  const spanText = btnAtualizar ? btnAtualizar.querySelector("span") : null;
+
+  if (forcarAtualizacaoAoVivo) {
+    // 1. Feedback visual de sincronização intradiária
+    if (btnAtualizar) btnAtualizar.classList.add("loading");
+    if (spanText) spanText.innerText = "Sincronizando com Base Mestre...";
+    atualizarBadgeFonte("Sincronizando com Base Mestre...", "loading");
+
+    // 2. Timeout estrito de 8 segundos com AbortController
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+    try {
+      const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
+        method: "GET",
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+
+      if (!resp.ok) {
+        throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
+      }
+
+      const dados = await resp.json();
+      if (!dados || !dados.underlyings || !dados.options) {
+        throw new Error("Payload da planilha inválido ou fora do contrato SSOT");
+      }
+
+      aplicarDadosNoEstado(dados);
+      atualizarBadgeFonte("Fonte: Planilha ao Vivo (Google Sheets)", "live");
+    } catch (erro) {
+      clearTimeout(timeoutId);
+      console.warn(
+        "[Dashboard B3] Falha na conexão com Google Sheets via Apps Script:",
+        erro.message,
+        "- Ativando fallback para cache estático..."
+      );
+      atualizarBadgeFonte("Fonte: Cache Estático (Fallback de Erro)", "fallback");
+      await carregarFallbackEstatico();
+    } finally {
+      if (btnAtualizar) btnAtualizar.classList.remove("loading");
+      if (spanText) spanText.innerText = "Atualizar";
     }
-    renderizarTudo();
-  }
+  } else {
+    // Carga inicial rápida (CDN) ou polling
+    if (btnAtualizar) btnAtualizar.classList.add("loading");
+    if (spanText) spanText.innerText = "Atualizando...";
 
-  if (btnAtualizar) {
-    btnAtualizar.classList.remove("loading");
-    const spanText = btnAtualizar.querySelector("span");
+    const sucesso = await carregarFallbackEstatico();
+    if (sucesso) {
+      atualizarBadgeFonte("Fonte: Cache Estático (CDN)", "cdn");
+    }
+
+    if (btnAtualizar) btnAtualizar.classList.remove("loading");
     if (spanText) spanText.innerText = "Atualizar";
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  carregarDadosPipeline();
+  carregarDadosPipeline(false);
   const btnAtualizar = document.getElementById("btn-atualizar");
   if (btnAtualizar) {
-    btnAtualizar.addEventListener("click", carregarDadosPipeline);
+    btnAtualizar.addEventListener("click", () => carregarDadosPipeline(true));
   }
-  setInterval(carregarDadosPipeline, 60000);
+  setInterval(() => carregarDadosPipeline(false), 60000);
 });
