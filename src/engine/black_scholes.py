@@ -79,3 +79,29 @@ def black_scholes_analytical(
         theta_du = 0.0
 
     return OptionPricingResult(price, delta, gamma, theta_du, vega, rho_t)
+
+
+class BlackScholesEngine:
+    """Motor analítico de precificação Black-Scholes para ações e opções B3."""
+
+    @staticmethod
+    def call_price(
+        spot: float, strike: float, r_c: float, t_years: float, sigma: float, q: float = 0.0
+    ) -> float:
+        if t_years <= 0:
+            return max(0.0, spot - strike)
+        d1, d2 = compute_d1_d2(spot, strike, r_c, q, sigma, t_years)
+        return spot * math.exp(-q * t_years) * norm.cdf(d1) - strike * math.exp(
+            -r_c * t_years
+        ) * norm.cdf(d2)
+
+    @staticmethod
+    def put_price(
+        spot: float, strike: float, r_c: float, t_years: float, sigma: float, q: float = 0.0
+    ) -> float:
+        if t_years <= 0:
+            return max(0.0, strike - spot)
+        d1, d2 = compute_d1_d2(spot, strike, r_c, q, sigma, t_years)
+        return strike * math.exp(-r_c * t_years) * norm.cdf(-d2) - spot * math.exp(
+            -q * t_years
+        ) * norm.cdf(-d1)

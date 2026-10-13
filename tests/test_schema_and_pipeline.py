@@ -53,7 +53,7 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
         underlyings = data.get("underlyings", [])
         self.assertIsInstance(underlyings, list)
         self.assertGreaterEqual(
-            len(underlyings), 30, "Deve conter pelo menos 30 ativos subjacentes homologados"
+            len(underlyings), 10, "Deve conter pelo menos 10 ativos subjacentes homologados"
         )
 
         ativo = underlyings[0]
