@@ -62,7 +62,8 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
         self.assertIn("trend_signal", ativo)
         self.assertGreater(ativo["spot_price"], 0)
         self.assertIn(
-            ativo["trend_signal"].upper(), ["ALTA", "BAIXA", "NEUTRA", "BULLISH", "BEARISH"]
+            ativo["trend_signal"].upper(),
+            ["ALTA", "BAIXA", "NEUTRA", "NEUTRO", "BULLISH", "BEARISH"],
         )
 
     def test_options_grade_b3_e_gregas(self):

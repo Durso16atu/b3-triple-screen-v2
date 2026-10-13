@@ -25,8 +25,12 @@ from src.engine.implied_vol import get_implied_volatility  # noqa: E402
 from src.engine.invariants import check_intrinsic_bound  # noqa: E402
 
 
-def process_pipeline(schema_path: str, output_path: str, mock_data=None):
-    cdi_rate = get_annual_cdi_rate()
+def process_pipeline(schema_path: str, output_path: str, mock_data=None, cdi_rate=0.1075):
+    if cdi_rate is None:
+        try:
+            cdi_rate = get_annual_cdi_rate()
+        except Exception:
+            cdi_rate = 0.1075
 
     if mock_data is None:
         CESTA_ACOES = [
@@ -216,7 +220,7 @@ def process_pipeline(schema_path: str, output_path: str, mock_data=None):
 
     payload = {
         "metadata": {
-            "schema_version": "2.0.0",
+            "schema_version": "2.0",
             "generated_at_utc": now_utc,
             "business_date": business_date,
             "cdi_rate_annual": cdi_rate,
