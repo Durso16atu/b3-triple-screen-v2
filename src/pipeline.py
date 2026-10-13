@@ -243,6 +243,7 @@ def process_pipeline(schema_path: str, output_path: str, mock_data=None, cdi_rat
     temp_path = output_path + ".tmp"
     with open(temp_path, "w") as f:
         json.dump(payload, f, indent=2)
+        f.write("\n")
     os.replace(temp_path, output_path)
 
     return payload
