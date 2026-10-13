@@ -510,7 +510,8 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
 
 /* 7. ORQUESTRADOR PRINCIPAL E CONEXÃO HÍBRIDA COM APPS SCRIPT */
 const DATA_PATHS = ["../data/latest.json", "data/latest.json", "./data/latest.json"];
-const APPS_SCRIPT_WEBAPP_URL = window.APPS_SCRIPT_WEBAPP_URL || "https://script.google.com/macros/s/AKfycbz_BASE_MESTRE_B3_TRIPLE_SCREEN/exec";
+const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || window.APPS_SCRIPT_WEBAPP_URL || "https://script.google.com/macros/s/AKfycbzu5DncpNSRdJqNttvUcDvyBaEZXyLyGtnl7m4BUQZ72X3NDOdqd_ZlQb8FBtam6_iF/exec";
+const APPS_SCRIPT_WEBAPP_URL = APPS_SCRIPT_URL;
 
 /**
  * Atualiza o badge e a descrição da fonte de dados na interface.
