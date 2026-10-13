@@ -1,4 +1,4 @@
-name: B3 Intraday Monitor
+name: B3 Triple Screen Real-Time Monitor
 
 on:
   schedule:
@@ -27,15 +27,20 @@ jobs:
           pip install -r requirements.txt
           pip install pytest
 
-      - name: Run Pipeline
+      - name: Rodar o pipeline atuarial
         run: python src/pipeline.py
 
-      - name: Run Tests
-        run: pytest tests/ -v
+      - name: Rodar os testes de validação do contrato (Quality Gate)
+        run: python -m unittest tests/test_schema_and_pipeline.py
 
-      - name: Commit and Push if changed
+      - name: Commitar e fazer push do data/latest.json caso haja alteração
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add data/latest.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(pipeline): atualizar data/latest.json automático" && git push)
+          if git diff --staged --quiet; then
+            echo "Nenhuma alteração de dados detectada."
+          else
+            git commit -m "chore(data): atualizar latest.json intradiario [skip ci]"
+            git push origin main
+          fi
