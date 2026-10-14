@@ -51,22 +51,59 @@ function renderizarMetadadosKPIs(meta, options) {
 
   const elStatus = document.getElementById("kpi-status-mercado") || document.getElementById("market-status");
   if (elStatus) {
-    const statusTxt = meta.market_status || "PREGÃO OPERACIONAL";
+    const statusTxt = meta.market_status || "OPERACIONAL";
     elStatus.innerHTML = `<span class="badge badge-open" style="color:#10b981; font-weight:700;"><span class="pulse-dot"></span> ${statusTxt}</span>`;
+  }
+
+  const elDescSessao = document.getElementById("kpi-desc-sessao");
+  if (elDescSessao) {
+    const sDate = meta.session_date || meta.business_date || "—";
+    elDescSessao.innerText = `Sessão B3: ${sDate}`;
+  }
+
+  const elVencimento = document.getElementById("kpi-vencimento-ativo");
+  const elSeries = document.getElementById("kpi-series-ativas");
+  if (meta.active_maturity) {
+    const am = meta.active_maturity;
+    const matDateStr = am.maturity_date || "—";
+    const du = am.days_to_maturity_du !== undefined ? am.days_to_maturity_du : "—";
+    const callS = am.call_series || "—";
+    const putS = am.put_series || "—";
+    const rolledText = am.rolled ? " • Rolado" : "";
+    if (elVencimento) {
+      elVencimento.innerText = `${matDateStr} (${du} DU)`;
+    }
+    if (elSeries) {
+      elSeries.innerText = `Calls: ${callS} | Puts: ${putS}${rolledText}`;
+    }
   }
 
   const elUpdate = document.getElementById("kpi-ultima-atualizacao") || document.getElementById("last-update");
   if (elUpdate) {
-    const ts = meta.generated_at_utc || meta.business_date;
+    const ts = meta.generated_at || meta.generated_at_utc || meta.business_date;
     if (ts) {
       const d = new Date(ts);
-      elUpdate.innerText = isNaN(d.getTime()) ? ts : d.toLocaleString("pt-BR");
+      elUpdate.innerText = isNaN(d.getTime()) ? ts : d.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
     }
+  }
+
+  const elFonte = document.getElementById("kpi-fonte-dados");
+  if (elFonte) {
+    const src = meta.data_source || "yfinance";
+    elFonte.innerText = `Fonte: ${src} (America/Sao_Paulo)`;
+  }
+
+  const badgeFonte = document.getElementById("badge-fonte-dados");
+  if (badgeFonte) {
+    const src = meta.data_source || "yfinance";
+    badgeFonte.innerText = `Fonte: ${src} (America/Sao_Paulo)`;
   }
 
   const elSinais = document.getElementById("kpi-sinais-armados") || document.getElementById("active-signals");
   if (elSinais) {
-    elSinais.innerText = options && options.length ? options.length : 1;
+    const underlyings = window.appState.underlyings || [];
+    const countArmados = underlyings.filter(u => u.phase === "INDICACAO_IMEDIATA" && u.gatilho_entrada != null).length;
+    elSinais.innerText = countArmados;
   }
 
   const elSelic = document.getElementById("kpi-taxa-selic") || document.getElementById("selic-rate");
@@ -195,15 +232,45 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
     // caso faseSel === "TODAS"? Vou permitir todos se TODAS estiver selecionado.
 
     const spot = Number(u.spot_price);
-    const gatilho = Number(u.gatilho_entrada || spot * 1.005);
-    const stopLoss = Number(u.stop_loss || spot * 0.97);
-    const alvo2R = Number(u.alvo_2r || gatilho + 2 * (gatilho - stopLoss));
-    const riscoR = gatilho - stopLoss;
+    const hasTriggers = u.gatilho_entrada != null && u.stop_loss != null && u.alvo_2r != null;
+    const isArmed = u.phase === "INDICACAO_IMEDIATA" && hasTriggers;
+
+    const gatilho = hasTriggers ? Number(u.gatilho_entrada) : null;
+    const stopLoss = hasTriggers ? Number(u.stop_loss) : null;
+    const alvo2R = hasTriggers ? Number(u.alvo_2r) : null;
+    const riscoR = (gatilho != null && stopLoss != null) ? (gatilho - stopLoss) : null;
 
     let colorSignal = "#fbbf24";
     let statusText = "A CAMINHO";
-    if (u.phase === "INDICACAO_IMEDIATA") { colorSignal = "#10b981"; statusText = "SINAL ARMADO"; }
-    if (u.phase === "AGUARDANDO") { colorSignal = "#64748b"; statusText = "AGUARDANDO"; }
+    if (isArmed) {
+      colorSignal = "#10b981";
+      statusText = "SINAL ARMADO";
+    } else if (u.phase === "AGUARDANDO" || u.trend_signal === "NEUTRO" || u.trend_signal === "BAIXA") {
+      colorSignal = "#64748b";
+      statusText = "AGUARDANDO SETUP";
+    }
+
+    const gatilhoHtml = gatilho != null && !isNaN(gatilho)
+      ? `R$ ${gatilho.toFixed(2)}`
+      : `<span style="color:#64748b; font-weight:600;">—</span>`;
+
+    const stopLossHtml = stopLoss != null && !isNaN(stopLoss)
+      ? `R$ ${stopLoss.toFixed(2)}`
+      : `<span style="color:#64748b; font-weight:600;">—</span>`;
+
+    const alvo2RHtml = alvo2R != null && !isNaN(alvo2R)
+      ? `R$ ${alvo2R.toFixed(2)}`
+      : `<span style="color:#64748b; font-weight:600;">—</span>`;
+
+    const alvoLabel = (riscoR != null && !isNaN(riscoR))
+      ? `Alvo 2R (+R$ ${(2 * riscoR).toFixed(2)})`
+      : `Alvo 2R`;
+
+    const statusBadge = isArmed
+      ? `<span class="badge" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4);"><span class="pulse-dot"></span> SINAL ARMADO</span>`
+      : (u.phase === "A_CAMINHO"
+        ? `<span class="badge" style="background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.4);">A CAMINHO</span>`
+        : `<span class="badge" style="background:rgba(100,116,139,0.2); color:#94a3b8; border:1px solid rgba(100,116,139,0.3);">AGUARDANDO SETUP</span>`);
 
     html += `
       <div onclick="selecionarAtivo('${u.ticker}')" style="background:#111622; border-radius:8px; ${borderStyle} padding:14px; margin-bottom:14px; cursor:pointer; transition: 0.2s;">
@@ -212,23 +279,21 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
             <span translate="no">${u.ticker}</span> <span style="font-size:0.85rem; color:#94a3b8; font-weight:normal;">R$ ${spot.toFixed(2)}</span>
           </div>
           <div>
-            <span style="font-size:0.7rem; background:rgba(16,185,129,0.2); color:${colorSignal}; padding:2px 8px; border-radius:4px; font-weight:700;">
-              ● ${statusText}
-            </span>
+            ${statusBadge}
           </div>
         </div>
 
         <div style="margin:10px 0;">
           <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8;">
             <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-            <span style="color:${colorSignal}; font-family:monospace; font-weight:700;">Recuo para Suporte Fibonacci</span>
+            <span style="color:${colorSignal}; font-family:monospace; font-weight:700;">${isArmed ? "Recuo Concluído / Gatilho Ativo" : (u.phase === "A_CAMINHO" ? "Recuo em Andamento" : "Aguardando Recuo")}</span>
           </div>
           <div style="height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
-            <div style="width:25%; height:100%; background:${colorSignal}; border-radius:3px;"></div>
+            <div style="width:${isArmed ? '45%' : (u.phase === 'A_CAMINHO' ? '25%' : '10%')}; height:100%; background:${colorSignal}; border-radius:3px;"></div>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-top:4px;">
             <span>0 (Sobrevenda)</span>
-            <span>Suporte 38.2%: R$ ${(spot * 0.985).toFixed(2)}</span>
+            <span>Suporte: R$ ${u.suporte_fibonacci && u.suporte_fibonacci > 0 ? Number(u.suporte_fibonacci).toFixed(2) : (spot * 0.985).toFixed(2)}</span>
             <span>100 (Sobrecompra)</span>
           </div>
         </div>
@@ -236,15 +301,15 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; text-align:center;">
           <div>
             <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (<span translate="no">Buy Stop</span>)</div>
-            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${gatilho.toFixed(2)}</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">${gatilhoHtml}</div>
           </div>
           <div>
             <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Stop Loss Macro</div>
-            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">R$ ${stopLoss.toFixed(2)}</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">${stopLossHtml}</div>
           </div>
           <div>
-            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Alvo 2R (+${(2 * riscoR).toFixed(2)})</div>
-            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">R$ ${alvo2R.toFixed(2)}</div>
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">${alvoLabel}</div>
+            <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">${alvo2RHtml}</div>
           </div>
         </div>
       </div>

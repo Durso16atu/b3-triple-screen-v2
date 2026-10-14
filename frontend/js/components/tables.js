@@ -100,29 +100,41 @@ function renderizarRadarOportunidades(underlyings, options) {
 
   const u = underlyings[0];
   const spot = Number(u.spot_price);
-  const gatilho = spot * 1.005;
-  const stopLoss = spot * 0.97;
-  const riscoR = gatilho - stopLoss;
-  const alvo2R = gatilho + (2.0 * riscoR);
+  const hasTriggers = u.gatilho_entrada != null && u.stop_loss != null && u.alvo_2r != null;
+  const isArmed = u.phase === "INDICACAO_IMEDIATA" && hasTriggers;
+
+  const gatilho = hasTriggers ? Number(u.gatilho_entrada) : null;
+  const stopLoss = hasTriggers ? Number(u.stop_loss) : null;
+  const alvo2R = hasTriggers ? Number(u.alvo_2r) : null;
+  const riscoR = (gatilho != null && stopLoss != null) ? (gatilho - stopLoss) : null;
+
+  const gatilhoStr = gatilho != null ? `R$ ${gatilho.toFixed(2)}` : "—";
+  const stopLossStr = stopLoss != null ? `R$ ${stopLoss.toFixed(2)}` : "—";
+  const alvo2RStr = alvo2R != null ? `R$ ${alvo2R.toFixed(2)}` : "—";
+  const alvoLabel = riscoR != null ? `Alvo 2R (+${(2 * riscoR).toFixed(2)})` : "Alvo 2R";
+
+  const badgeHtml = isArmed
+    ? `<span class="badge badge-bullish"><span class="pulse-dot"></span> SINAL ARMADO</span>`
+    : `<span class="badge badge-neutral">AGUARDANDO SETUP</span>`;
 
   container.innerHTML = `
     <div class="radar-card">
       <div class="radar-header">
         <div class="radar-ticker">${u.ticker} <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: normal;">R$ ${spot.toFixed(2)}</span></div>
-        <div><span class="badge badge-bullish"><span class="pulse-dot"></span> SINAL ARMADO</span></div>
+        <div>${badgeHtml}</div>
       </div>
 
       <div class="stoch-meter">
         <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;">
           <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-          <span class="text-green font-mono"><strong>Recuo para Suporte Fibonacci</strong></span>
+          <span class="text-green font-mono"><strong>${isArmed ? "Recuo Concluído / Gatilho Ativo" : "Aguardando Recuo"}</strong></span>
         </div>
         <div class="stoch-bar-bg">
-          <div class="stoch-bar-fill" style="width: 25%; background: var(--accent-green);"></div>
+          <div class="stoch-bar-fill" style="width: ${isArmed ? '45%' : '15%'}; background: var(--accent-green);"></div>
         </div>
         <div class="fibo-levels">
           <span>0 (Sobrevenda &lt; 20)</span>
-          <span>Retração 38.2% (R$ ${(spot * 0.985).toFixed(2)})</span>
+          <span>Retração: R$ ${u.suporte_fibonacci && u.suporte_fibonacci > 0 ? Number(u.suporte_fibonacci).toFixed(2) : (spot * 0.985).toFixed(2)}</span>
           <span>100 (Sobrecompra &gt; 80)</span>
         </div>
       </div>
@@ -130,15 +142,15 @@ function renderizarRadarOportunidades(underlyings, options) {
       <div class="trade-targets">
         <div class="target-item">
           <div class="lbl">Gatilho (Buy Stop)</div>
-          <div class="val text-blue">R$ ${gatilho.toFixed(2)}</div>
+          <div class="val text-blue">${gatilhoStr}</div>
         </div>
         <div class="target-item">
           <div class="lbl">Stop Loss Macro</div>
-          <div class="val text-red">R$ ${stopLoss.toFixed(2)}</div>
+          <div class="val text-red">${stopLossStr}</div>
         </div>
         <div class="target-item">
-          <div class="lbl">Alvo 2R (+${(2 * riscoR).toFixed(2)})</div>
-          <div class="val text-green">R$ ${alvo2R.toFixed(2)}</div>
+          <div class="lbl">${alvoLabel}</div>
+          <div class="val text-green">${alvo2RStr}</div>
         </div>
       </div>
     </div>

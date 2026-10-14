@@ -9,6 +9,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      TZ: America/Sao_Paulo
     steps:
     - uses: actions/checkout@v4
 
@@ -16,6 +18,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.12"
+        cache: 'pip'
 
     - name: Install dependencies
       run: |
@@ -24,12 +27,12 @@ jobs:
 
     - name: Lint with Ruff
       run: |
-        ruff check src/ tests/
-        ruff format --check src/ tests/
+        ruff check .
+        ruff format --check .
 
     - name: Pre-commit
       run: pre-commit run --all-files
 
     - name: Test with pytest
       run: |
-        pytest tests/
+        pytest -v tests/

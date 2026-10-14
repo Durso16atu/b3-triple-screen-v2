@@ -68,11 +68,16 @@
       <div class="kpi-box">
         <div class="kpi-title">Status do Pregão B3</div>
         <div class="kpi-val" id="kpi-status-mercado"><span class="badge badge-open"><span class="pulse-dot"></span> OPERACIONAL</span></div>
-        <div class="kpi-desc">Horário regular de negociação</div>
+        <div class="kpi-desc" id="kpi-desc-sessao">Sessão B3: --/--/----</div>
+      </div>
+      <div class="kpi-box">
+        <div class="kpi-title">Vencimento Ativo B3</div>
+        <div class="kpi-val" id="kpi-vencimento-ativo" style="color:var(--gold);">--/--/---- (-- DU)</div>
+        <div class="kpi-desc" id="kpi-series-ativas">Séries: Calls A-L | Puts M-X</div>
       </div>
       <div class="kpi-box">
         <div class="kpi-title">Opções / Sinais Ativos</div>
-        <div class="kpi-val" id="kpi-sinais-armados" style="color:var(--green);">1</div>
+        <div class="kpi-val" id="kpi-sinais-armados" style="color:var(--green);">0</div>
         <div class="kpi-desc">Quality Gate Atuarial Aprovado</div>
       </div>
       <div class="kpi-box">
@@ -88,7 +93,7 @@
       <div class="kpi-box">
         <div class="kpi-title">Última Atualização</div>
         <div class="kpi-val" id="kpi-ultima-atualizacao" style="font-size:0.95rem;">--/--/---- --:--</div>
-        <div class="kpi-desc" id="kpi-fonte-dados">Fonte: Cache Estático (CDN)</div>
+        <div class="kpi-desc" id="kpi-fonte-dados">Fonte: yfinance (America/Sao_Paulo)</div>
       </div>
     </div>
 
