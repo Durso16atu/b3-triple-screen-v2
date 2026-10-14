@@ -52,12 +52,12 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase origin main
           git add data/latest.json
           if git diff --staged --quiet; then
             echo "Nenhuma alteração de dados detectada."
           else
             git commit -m "chore(data): atualizar latest.json intradiario [skip ci]"
+            git pull --rebase -X theirs origin main
             git push origin main
           fi
 

@@ -652,12 +652,17 @@ async function carregarFallbackEstatico() {
       }
     } catch (e) {}
   }
-  return aplicarDadosNoEstado(dados);
+  const aplicado = aplicarDadosNoEstado(dados);
+  if (aplicado) {
+    const fonte = dados?.metadata?.data_source || "yfinance";
+    atualizarBadgeFonte(`Fonte: ${fonte} (America/Sao_Paulo)`, "cdn");
+  }
+  return aplicado;
 }
 
 /**
  * Estratégia Híbrida:
- * - Boot (false): busca cache CDN estático e marca status como "Fonte: Cache Estático (CDN)".
+ * - Boot (false): busca cache local/CDN e marca status com a procedência real.
  * - Atualizar (true): busca endpoint Web App do Apps Script com timeout de 8s e fallback transparente.
  */
 async function carregarDadosPipeline(forcarAtualizacaoAoVivo = false) {
@@ -697,10 +702,11 @@ async function carregarDadosPipeline(forcarAtualizacaoAoVivo = false) {
       console.warn(
         "[Dashboard B3] Falha na conexão com Google Sheets via Apps Script:",
         erro.message,
-        "- Ativando fallback para cache estático..."
+        "- Ativando fallback para dados estáticos..."
       );
-      atualizarBadgeFonte("Fonte: Cache Estático (Fallback de Erro)", "fallback");
       await carregarFallbackEstatico();
+      const fonte = window.appState.metadata?.data_source || "yfinance";
+      atualizarBadgeFonte(`Fonte: ${fonte} (America/Sao_Paulo)`, "fallback");
     } finally {
       if (btnAtualizar) btnAtualizar.classList.remove("loading");
       if (spanText) spanText.innerText = "Atualizar";
@@ -712,7 +718,8 @@ async function carregarDadosPipeline(forcarAtualizacaoAoVivo = false) {
 
     const sucesso = await carregarFallbackEstatico();
     if (sucesso) {
-      atualizarBadgeFonte("Fonte: Cache Estático (CDN)", "cdn");
+      const fonte = window.appState.metadata?.data_source || "yfinance";
+      atualizarBadgeFonte(`Fonte: ${fonte} (America/Sao_Paulo)`, "cdn");
     }
 
     if (btnAtualizar) btnAtualizar.classList.remove("loading");
