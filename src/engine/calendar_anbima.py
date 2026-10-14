@@ -1,6 +1,58 @@
 """Calendário de dias úteis B3/ANBIMA com suporte à Lei 14.759/2023 e vencimentos de opções."""
 
+import functools
 from datetime import date, timedelta
+
+
+def _normalize_date(d: date | str) -> date:
+    """Converte string ISO ou datetime para date puro."""
+    if isinstance(d, str):
+        return date.fromisoformat(d.split("T")[0])
+    if type(d) is not date and hasattr(d, "date"):  # cobre subclasses como datetime
+        return d.date()
+    return d
+
+
+def _calc_easter(year: int) -> date:
+    """Calcula o Domingo de Páscoa (algoritmo Meeus/Jones/Butcher)."""
+    a = year % 19
+    b = year // 100
+    c = year % 100
+    d = b // 4
+    e = b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i = c // 4
+    k = c % 4
+    ll = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * ll) // 451
+    month = (h + ll - 7 * m + 114) // 31
+    day = ((h + ll - 7 * m + 114) % 31) + 1
+    return date(year, month, day)
+
+
+@functools.lru_cache(maxsize=128)
+def get_holidays(year: int) -> frozenset[date]:
+    """Gera conjunto imutável de feriados B3/ANBIMA para o ano com cache LRU.
+
+    Inclui feriados fixos nacionais, feriados móveis calculados a partir da Páscoa
+    (Carnaval -48 e -47 dias, Sexta-Feira Santa -2 dias, Corpus Christi +60 dias)
+    e o feriado do Dia Nacional da Consciência Negra (20 de novembro), introduzido
+    exclusivamente a partir de 2024 pela Lei 14.759/2023.
+    """
+    holidays = {date(year, m, d) for m, d in B3Calendar.FIXED_HOLIDAYS}
+    if year >= B3Calendar.LEI_14759_START_YEAR:
+        holidays.add(date(year, *B3Calendar.CONSCIENCIA_NEGRA))
+
+    pascoa = _calc_easter(year)
+    carnaval_seg = pascoa - timedelta(days=48)
+    carnaval_ter = pascoa - timedelta(days=47)
+    sexta_santa = pascoa - timedelta(days=2)
+    corpus_christi = pascoa + timedelta(days=60)
+
+    holidays.update([carnaval_seg, carnaval_ter, sexta_santa, corpus_christi])
+    return frozenset(holidays)
 
 
 class B3Calendar:
@@ -14,63 +66,71 @@ class B3Calendar:
         (10, 12),  # N. Sra. Aparecida
         (11, 2),  # Finados
         (11, 15),  # Proclamação da República
-        (11, 20),  # Consciência Negra (Lei 14.759/2023)
         (12, 25),  # Natal
+    }
+    LEI_14759_START_YEAR = 2024
+    CONSCIENCIA_NEGRA = (11, 20)
+
+    # Dias sem pregão na B3 além dos feriados nacionais bancários
+    B3_NON_TRADING_DAYS = {
+        (12, 24),  # Véspera de Natal (sem pregão na B3)
+        (12, 31),  # Último dia útil do ano (sem pregão na B3)
     }
 
     @staticmethod
     def _easter(year: int) -> date:
         """Calcula o Domingo de Páscoa (algoritmo Meeus/Jones/Butcher)."""
-        a = year % 19
-        b = year // 100
-        c = year % 100
-        d = b // 4
-        e = b % 4
-        f = (b + 8) // 25
-        g = (b - f + 1) // 3
-        h = (19 * a + b - d - g + 15) % 30
-        i = c // 4
-        k = c % 4
-        ll = (32 + 2 * e + 2 * i - h - k) % 7
-        m = (a + 11 * h + 22 * ll) // 451
-        month = (h + ll - 7 * m + 114) // 31
-        day = ((h + ll - 7 * m + 114) % 31) + 1
-        return date(year, month, day)
+        return _calc_easter(year)
 
-    def get_holidays(self, year: int) -> set[date]:
-        """Gera todos os feriados B3/ANBIMA para o ano."""
-        holidays = {date(year, m, d) for m, d in self.FIXED_HOLIDAYS}
-
-        pascoa = self._easter(year)
-        carnaval_seg = pascoa - timedelta(days=48)
-        carnaval_ter = pascoa - timedelta(days=47)
-        sexta_santa = pascoa - timedelta(days=2)
-        corpus_christi = pascoa + timedelta(days=60)
-
-        holidays.update([carnaval_seg, carnaval_ter, sexta_santa, corpus_christi])
-        return holidays
+    @staticmethod
+    def get_holidays(year: int) -> frozenset[date]:
+        """Gera todos os feriados B3/ANBIMA para o ano (com cache LRU)."""
+        return get_holidays(year)
 
     def is_working_day(self, d: date | str) -> bool:
-        """Verifica se é dia útil na B3."""
-        if isinstance(d, str):
-            d = date.fromisoformat(d)
-        if d.weekday() >= 5:
+        """Verifica se é dia útil segundo a convenção bancária ANBIMA."""
+        dt = _normalize_date(d)
+        if dt.weekday() >= 5:
             return False
-        return d not in self.get_holidays(d.year)
+        return dt not in self.get_holidays(dt.year)
+
+    def is_anbima_workday(self, d: date | str) -> bool:
+        """Alias explícito para is_working_day (convenção ANBIMA 252)."""
+        return self.is_working_day(d)
+
+    def is_trading_day(self, d: date | str) -> bool:
+        """Verifica se há sessão de pregão na B3 na data especificada."""
+        dt = _normalize_date(d)
+        if dt.weekday() >= 5:
+            return False
+        if dt in self.get_holidays(dt.year):
+            return False
+        return (dt.month, dt.day) not in self.B3_NON_TRADING_DAYS
 
     def get_workdays(self, start_date: date | str, end_date: date | str) -> int:
-        """Calcula dias úteis no intervalo [start_date, end_date)."""
-        if isinstance(start_date, str):
-            start_date = date.fromisoformat(start_date)
-        if isinstance(end_date, str):
-            end_date = date.fromisoformat(end_date)
-
-        if start_date >= end_date:
+        """Calcula dias úteis ANBIMA no intervalo semi-aberto [start_date, end_date)."""
+        start = _normalize_date(start_date)
+        end = _normalize_date(end_date)
+        if start >= end:
             return 0
-        cur = start_date
+        cur = start
         count = 0
-        while cur < end_date:
+        while cur < end:
             if self.is_working_day(cur):
+                count += 1
+            cur += timedelta(days=1)
+        return count
+
+    def get_trading_days(self, start_date: date | str, end_date: date | str) -> int:
+        """Calcula dias de pregão B3 no intervalo semi-aberto [start_date, end_date)."""
+        start = _normalize_date(start_date)
+        end = _normalize_date(end_date)
+        if start >= end:
+            return 0
+        cur = start
+        count = 0
+        while cur < end:
+            if self.is_trading_day(cur):
                 count += 1
             cur += timedelta(days=1)
         return count
@@ -82,13 +142,48 @@ class B3Calendar:
         third_friday = date(year, month, first_friday_day + 14)
 
         target = third_friday
-        while not self.is_working_day(target):
+        while not self.is_trading_day(target):
             target -= timedelta(days=1)
 
         return target
 
+    def is_last_trading_day_of_week(self, d: date | str) -> bool:
+        """Verifica se a data é o último dia de pregão B3 da respectiva semana."""
+        dt = _normalize_date(d)
+        if not self.is_trading_day(dt):
+            return False
+        friday = dt + timedelta(days=(4 - dt.weekday()))
+        cur = dt + timedelta(days=1)
+        while cur <= friday:
+            if self.is_trading_day(cur):
+                return False
+            cur += timedelta(days=1)
+        return True
+
+    def get_previous_trading_day(self, d: date | str) -> date:
+        """Retorna o dia de pregão B3 anterior à data informada."""
+        cur = _normalize_date(d) - timedelta(days=1)
+        while not self.is_trading_day(cur):
+            cur -= timedelta(days=1)
+        return cur
+
 
 _calendar = B3Calendar()
+
+
+def is_working_day(d: date | str) -> bool:
+    """Verifica se é dia útil segundo a convenção bancária ANBIMA."""
+    return _calendar.is_working_day(d)
+
+
+def is_anbima_workday(d: date | str) -> bool:
+    """Verifica se é dia útil segundo a convenção bancária ANBIMA."""
+    return _calendar.is_anbima_workday(d)
+
+
+def is_trading_day(d: date | str) -> bool:
+    """Verifica se há sessão de pregão na B3 na data informada."""
+    return _calendar.is_trading_day(d)
 
 
 def get_workdays(start_date: date | str, end_date: date | str) -> int:
@@ -96,6 +191,21 @@ def get_workdays(start_date: date | str, end_date: date | str) -> int:
     return _calendar.get_workdays(start_date, end_date)
 
 
+def get_trading_days(start_date: date | str, end_date: date | str) -> int:
+    """Calcula os dias de pregão B3 entre start_date e end_date."""
+    return _calendar.get_trading_days(start_date, end_date)
+
+
 def get_option_maturity(year: int, month: int) -> date:
     """Calcula a data oficial de vencimento de opções na B3 para o mês/ano."""
     return _calendar.get_option_maturity(year, month)
+
+
+def is_last_trading_day_of_week(d: date | str) -> bool:
+    """Verifica se a data é o último dia de pregão B3 da respectiva semana."""
+    return _calendar.is_last_trading_day_of_week(d)
+
+
+def get_previous_trading_day(d: date | str) -> date:
+    """Retorna o dia de pregão B3 anterior à data informada."""
+    return _calendar.get_previous_trading_day(d)

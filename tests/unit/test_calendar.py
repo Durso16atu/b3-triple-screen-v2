@@ -1,6 +1,24 @@
-from datetime import date
+import sys
+from datetime import date, datetime
 
-from src.engine.calendar_anbima import B3Calendar, get_option_maturity, get_workdays
+from src.engine.calendar_anbima import (
+    B3Calendar,
+    get_holidays,
+    get_option_maturity,
+    get_trading_days,
+    get_workdays,
+    is_anbima_workday,
+    is_trading_day,
+    is_working_day,
+)
+
+
+def test_no_workalendar_dependency():
+    """Garante que o módulo de calendário não utiliza ou requer o pacote workalendar."""
+    assert "workalendar" not in sys.modules
+    with open("requirements.txt") as f:
+        content = f.read()
+    assert "workalendar" not in content
 
 
 def test_workdays_same_date():
@@ -23,9 +41,103 @@ def test_consciencia_negra_holiday_lei_14759():
     # 20/11/2026 is Friday, must be recognized as national holiday
     assert not cal.is_working_day(date(2026, 11, 20))
     assert not cal.is_working_day("2026-11-20")
-
     # Day before (Thursday 19/11/2026) is a working day
     assert cal.is_working_day(date(2026, 11, 19))
+
+
+def test_lei_14759_historical_validity():
+    """Verifica que o feriado de 20/11 é estritamente válido apenas para year >= 2024."""
+    cal = B3Calendar()
+
+    # Em 2023 (antes da vigência da Lei 14.759/2023), 20/11 foi segunda-feira e dia útil
+    nov_20_2023 = date(2023, 11, 20)
+    assert nov_20_2023 not in cal.get_holidays(2023)
+    assert cal.is_working_day(nov_20_2023)
+    assert cal.is_trading_day(nov_20_2023)
+
+    # A partir de 2024, 20/11 é feriado nacional permanente
+    nov_20_2024 = date(2024, 11, 20)
+    assert nov_20_2024 in cal.get_holidays(2024)
+    assert not cal.is_working_day(nov_20_2024)
+    assert not cal.is_trading_day(nov_20_2024)
+
+    # Em 2026, 20/11 é sexta-feira e feriado nacional
+    nov_20_2026 = date(2026, 11, 20)
+    assert nov_20_2026 in cal.get_holidays(2026)
+    assert not cal.is_working_day(nov_20_2026)
+    assert not cal.is_working_day("2026-11-20")
+    assert not cal.is_trading_day(nov_20_2026)
+    assert cal.is_working_day(date(2026, 11, 19))
+
+
+def test_lru_cache_determinism():
+    """Valida que get_holidays utiliza cache determinístico com frozenset."""
+    get_holidays.cache_clear()
+    h1 = get_holidays(2026)
+    assert isinstance(h1, frozenset)
+
+    cal = B3Calendar()
+    h2 = cal.get_holidays(2026)
+    assert h1 is h2
+
+    info = get_holidays.cache_info()
+    assert info.hits >= 1
+
+
+def test_easter_and_mobile_holidays_accuracy():
+    """Testa a precisão dos feriados móveis calculados por Meeus/Jones/Butcher."""
+    cal = B3Calendar()
+    # 2024: Páscoa em 31/03/2024
+    h2024 = cal.get_holidays(2024)
+    assert date(2024, 2, 12) in h2024  # Carnaval Seg
+    assert date(2024, 2, 13) in h2024  # Carnaval Ter
+    assert date(2024, 3, 29) in h2024  # Sexta-Feira Santa
+    assert date(2024, 5, 30) in h2024  # Corpus Christi
+
+    # 2026: Páscoa em 05/04/2026
+    h2026 = cal.get_holidays(2026)
+    assert date(2026, 2, 16) in h2026  # Carnaval Seg
+    assert date(2026, 2, 17) in h2026  # Carnaval Ter
+    assert date(2026, 4, 3) in h2026  # Sexta-Feira Santa
+    assert date(2026, 6, 4) in h2026  # Corpus Christi
+
+
+def test_separation_anbima_workday_vs_b3_trading_day():
+    """Verifica a separação estrita entre convenção ANBIMA (DU de taxas) e Pregão B3."""
+    cal = B3Calendar()
+
+    # 24/12/2026 é quinta-feira: dia útil bancário ANBIMA, mas sem pregão na B3
+    d_24_12 = date(2026, 12, 24)
+    assert cal.is_working_day(d_24_12)
+    assert cal.is_anbima_workday(d_24_12)
+    assert is_anbima_workday(d_24_12)
+    assert is_working_day(d_24_12)
+    assert not cal.is_trading_day(d_24_12)
+    assert not is_trading_day(d_24_12)
+
+    # 31/12/2026 é quinta-feira: dia útil bancário ANBIMA, mas sem pregão na B3
+    d_31_12 = date(2026, 12, 31)
+    assert cal.is_working_day(d_31_12)
+    assert not cal.is_trading_day(d_31_12)
+
+    # Semana de 21/12 a 26/12/2026:
+    # Seg 21, Ter 22, Qua 23, Qui 24, Sex 25 (Natal)
+    # Dias úteis ANBIMA: 21, 22, 23, 24 = 4
+    # Dias de pregão B3: 21, 22, 23 = 3
+    assert get_workdays("2026-12-21", "2026-12-26") == 4
+    assert get_trading_days("2026-12-21", "2026-12-26") == 3
+
+
+def test_datetime_and_string_normalization():
+    """Garante compatibilidade robusta com objetos datetime e strings ISO."""
+    cal = B3Calendar()
+    dt_holiday = datetime(2026, 11, 20, 14, 30)
+    dt_workday = datetime(2026, 11, 19, 10, 0)
+
+    assert not cal.is_working_day(dt_holiday)
+    assert cal.is_working_day(dt_workday)
+    assert not cal.is_trading_day(dt_holiday)
+    assert cal.is_trading_day(dt_workday)
 
 
 def test_get_option_maturity_november_2026_anticipation():

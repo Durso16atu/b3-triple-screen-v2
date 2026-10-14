@@ -10,12 +10,17 @@ from src.engine.invariants import verify_call_convexity
 
 def test_calendar_holiday_20_november_and_option_maturity():
     cal = B3Calendar()
+    # Lei 14.759/2023: vigência a partir de 2024
+    assert cal.is_working_day(date(2023, 11, 20))
+
     feriado_20_nov = date(2026, 11, 20)
     assert not cal.is_working_day(feriado_20_nov)
+    assert not cal.is_trading_day(feriado_20_nov)
 
     maturity_nov_2026 = cal.get_option_maturity(2026, 11)
     assert maturity_nov_2026 == date(2026, 11, 19)
     assert cal.is_working_day(maturity_nov_2026)
+    assert cal.is_trading_day(maturity_nov_2026)
 
 
 def test_target_2r_exact_consistency():
