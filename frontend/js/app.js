@@ -639,7 +639,13 @@ async function carregarFallbackEstatico() {
   let dados = null;
   for (const path of DATA_PATHS) {
     try {
-      const resp = await fetch(`${path}?_t=${Date.now()}`);
+      const resp = await fetch(`${path}?t=${Date.now()}`, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          "Pragma": "no-cache"
+        }
+      });
       if (resp.ok) {
         dados = await resp.json();
         break;

@@ -8,6 +8,8 @@ on:
     workflows: ["B3 Triple Screen Real-Time Monitor"]
     types:
       - completed
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:

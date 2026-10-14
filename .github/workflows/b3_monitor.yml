@@ -2,14 +2,23 @@ name: B3 Triple Screen Real-Time Monitor
 
 on:
   schedule:
-    - cron: '*/30 13-20 * * 1-5'
+    - cron: '*/30 13-21 * * 1-5'
   workflow_dispatch:
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   run-pipeline:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     permissions:
       contents: write
+      pages: write
+      id-token: write
     env:
       TZ: America/Sao_Paulo
 
@@ -43,6 +52,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase origin main
           git add data/latest.json
           if git diff --staged --quiet; then
             echo "Nenhuma alteração de dados detectada."
@@ -50,3 +60,23 @@ jobs:
             git commit -m "chore(data): atualizar latest.json intradiario [skip ci]"
             git push origin main
           fi
+
+      - name: Preparar Artefatos do Site (_site)
+        run: |
+          mkdir -p _site
+          cp -r frontend/* _site/
+          mkdir -p _site/data
+          cp -r data/* _site/data/
+          touch _site/.nojekyll
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload do Artefato do Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy no GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
