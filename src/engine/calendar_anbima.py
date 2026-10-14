@@ -2,6 +2,7 @@
 
 import functools
 from datetime import date, timedelta
+from typing import Any
 
 
 def _normalize_date(d: date | str) -> date:
@@ -167,6 +168,69 @@ class B3Calendar:
             cur -= timedelta(days=1)
         return cur
 
+    def get_active_maturity(self, ref_date: date | str, min_du: int = 5) -> dict[str, Any]:
+        """Calcula o vencimento ativo de opções da B3 com rolagem automática.
+
+        Se restarem menos de min_du dias de pregão até o vencimento do mês corrente,
+        ou se a data de referência já ultrapassou o vencimento, rola automaticamente
+        para o mês subsequente.
+        """
+        ref_dt = _normalize_date(ref_date)
+        cur_year = ref_dt.year
+        cur_month = ref_dt.month
+
+        mat_date = self.get_option_maturity(cur_year, cur_month)
+        du = self.get_trading_days(ref_dt, mat_date)
+        rolled = False
+
+        if du < min_du or ref_dt >= mat_date:
+            rolled = True
+            if cur_month == 12:
+                cur_year += 1
+                cur_month = 1
+            else:
+                cur_month += 1
+            mat_date = self.get_option_maturity(cur_year, cur_month)
+            du = self.get_trading_days(ref_dt, mat_date)
+
+        return {
+            "maturity_date": mat_date,
+            "days_to_maturity_du": int(du),
+            "call_series": CALL_SERIES[cur_month],
+            "put_series": PUT_SERIES[cur_month],
+            "rolled": rolled,
+        }
+
+
+CALL_SERIES = {
+    1: "A",
+    2: "B",
+    3: "C",
+    4: "D",
+    5: "E",
+    6: "F",
+    7: "G",
+    8: "H",
+    9: "I",
+    10: "J",
+    11: "K",
+    12: "L",
+}
+
+PUT_SERIES = {
+    1: "M",
+    2: "N",
+    3: "O",
+    4: "P",
+    5: "Q",
+    6: "R",
+    7: "S",
+    8: "T",
+    9: "U",
+    10: "V",
+    11: "W",
+    12: "X",
+}
 
 _calendar = B3Calendar()
 
@@ -209,3 +273,8 @@ def is_last_trading_day_of_week(d: date | str) -> bool:
 def get_previous_trading_day(d: date | str) -> date:
     """Retorna o dia de pregão B3 anterior à data informada."""
     return _calendar.get_previous_trading_day(d)
+
+
+def get_active_maturity(ref_date: date | str, min_du: int = 5) -> dict[str, Any]:
+    """Calcula o vencimento ativo de opções da B3 com rolagem automática."""
+    return _calendar.get_active_maturity(ref_date, min_du)

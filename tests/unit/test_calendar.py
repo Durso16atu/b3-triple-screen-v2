@@ -3,6 +3,7 @@ from datetime import date, datetime
 
 from src.engine.calendar_anbima import (
     B3Calendar,
+    get_active_maturity,
     get_holidays,
     get_option_maturity,
     get_trading_days,
@@ -156,8 +157,35 @@ def test_get_option_maturity_regular_month():
 
 
 def test_get_workdays_exact_calculation():
-    # Between 2026-10-13 and 2026-11-19 (maturity)
     # Contains 2/11 (Finados, Mon) and 15/11 (Proclamação, Sun)
     du = get_workdays("2026-10-13", "2026-11-19")
     assert du == 26
     assert get_workdays("2026-11-19", "2026-10-13") == 0
+
+
+def test_get_active_maturity_rules():
+    """Valida a regra de rolagem automática quando dias úteis < min_du e séries B3."""
+    cal = B3Calendar()
+
+    # Em 14/10/2026: vencimento de outubro é 16/10 (2 DU < 5 DU) -> Rola para novembro
+    act_nov = cal.get_active_maturity("2026-10-14", min_du=5)
+    assert get_active_maturity("2026-10-14", min_du=5) == act_nov
+    assert act_nov["maturity_date"] == date(2026, 11, 19)
+    assert act_nov["call_series"] == "K"
+    assert act_nov["put_series"] == "W"
+    assert act_nov["rolled"] is True
+    assert act_nov["days_to_maturity_du"] == 25
+
+    # Em 01/10/2026: restam 10 DU (>= 5 DU) -> Mantém outubro
+    act_oct = cal.get_active_maturity("2026-10-01", min_du=5)
+    assert act_oct["maturity_date"] == date(2026, 10, 16)
+    assert act_oct["call_series"] == "J"
+    assert act_oct["put_series"] == "V"
+    assert act_oct["rolled"] is False
+
+    # Em 15/12/2026: restam 3 DU até 18/12 -> Rola para Janeiro/2027
+    act_jan = cal.get_active_maturity("2026-12-15", min_du=5)
+    assert act_jan["maturity_date"] == date(2027, 1, 15)
+    assert act_jan["call_series"] == "A"
+    assert act_jan["put_series"] == "M"
+    assert act_jan["rolled"] is True
