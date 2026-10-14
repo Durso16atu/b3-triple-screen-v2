@@ -205,6 +205,64 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
   container.innerHTML = html;
 }
 
+function calcularDescricaoEstocastico(u, isArmed) {
+  const k = u.stoch_k != null && !isNaN(u.stoch_k) ? Number(u.stoch_k) : null;
+  const d = u.stoch_d != null && !isNaN(u.stoch_d) ? Number(u.stoch_d) : null;
+
+  if (isArmed) {
+    const kStr = k != null ? k.toFixed(1) : "--.-";
+    const dStr = d != null ? d.toFixed(1) : "--.-";
+    const barWidth = k != null ? Math.min(100, Math.max(0, k)).toFixed(1) : "45.0";
+    return {
+      texto: `Pullback Confirmado (%K: ${kStr}% | %D: ${dStr}%) — Gatilho Armado`,
+      cor: "#10b981",
+      larguraBarra: barWidth
+    };
+  }
+
+  if (k != null && d != null) {
+    const kStr = k.toFixed(1);
+    const dStr = d.toFixed(1);
+    const barWidth = Math.min(100, Math.max(0, k)).toFixed(1);
+
+    if (k > 70) {
+      return {
+        texto: `Sobrecompra (%K: ${kStr}% | %D: ${dStr}%) — Aguardar Recuo`,
+        cor: "#f43f5e",
+        larguraBarra: barWidth
+      };
+    }
+    if (k >= 30 && k <= 70) {
+      if (k < d) {
+        return {
+          texto: `Recuo em Andamento (%K: ${kStr}% | %D: ${dStr}%)`,
+          cor: "#fbbf24",
+          larguraBarra: barWidth
+        };
+      } else {
+        return {
+          texto: `Zona Neutra (%K: ${kStr}% | %D: ${dStr}%)`,
+          cor: "#94a3b8",
+          larguraBarra: barWidth
+        };
+      }
+    }
+    if (k < 30) {
+      return {
+        texto: `Sobrevenda (%K: ${kStr}% | %D: ${dStr}%) — Aguardando Virada`,
+        cor: "#38bdf8",
+        larguraBarra: barWidth
+      };
+    }
+  }
+
+  return {
+    texto: u.phase === "A_CAMINHO" ? "Aguardando Recuo" : "Aguardando Setup",
+    cor: "#64748b",
+    larguraBarra: "15.0"
+  };
+}
+
 /* 3. RENDERIZADOR DO RADAR DE OPORTUNIDADES (TELAS 2 E 3: GATILHOS & FIBONACCI) */
 function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
   const container = document.getElementById("radar-oportunidades-container") || document.getElementById("screen-2-container");
@@ -222,14 +280,7 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
     const isSelected = u.ticker === tickerSelecionado;
     const borderStyle = isSelected ? "border: 2px solid #38bdf8;" : "border: 1px solid #242f45;";
 
-    // Se a fase selecionada for diferente de TODAS e diferente da fase do ativo, ignora
     if (faseSel !== "TODAS" && u.phase !== faseSel) return;
-
-    // Se a fase for TODAS, opcionalmente a gente exibe só os operacionais ou exibe todos?
-    // O pedido original diz "exibe apenas os cards dos papéis dessa fase".
-    // Se "TODAS", exibe todos. Mas se não for "TODAS", filtra.
-    // Opcionalmente podemos manter o filtro original de exibir apenas "INDICACAO_IMEDIATA" e "A_CAMINHO"
-    // caso faseSel === "TODAS"? Vou permitir todos se TODAS estiver selecionado.
 
     const spot = Number(u.spot_price);
     const hasTriggers = u.gatilho_entrada != null && u.stop_loss != null && u.alvo_2r != null;
@@ -249,6 +300,8 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
       colorSignal = "#64748b";
       statusText = "AGUARDANDO SETUP";
     }
+
+    const stochInfo = calcularDescricaoEstocastico(u, isArmed);
 
     const gatilhoHtml = gatilho != null && !isNaN(gatilho)
       ? `R$ ${gatilho.toFixed(2)}`
@@ -286,15 +339,15 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
         <div style="margin:10px 0;">
           <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8;">
             <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-            <span style="color:${colorSignal}; font-family:monospace; font-weight:700;">${isArmed ? "Recuo Concluído / Gatilho Ativo" : (u.phase === "A_CAMINHO" ? "Recuo em Andamento" : "Aguardando Recuo")}</span>
+            <span style="color:${stochInfo.cor}; font-family:monospace; font-weight:700;">${stochInfo.texto}</span>
           </div>
           <div style="height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
-            <div style="width:${isArmed ? '45%' : (u.phase === 'A_CAMINHO' ? '25%' : '10%')}; height:100%; background:${colorSignal}; border-radius:3px;"></div>
+            <div style="width:${stochInfo.larguraBarra}%; height:100%; background:${stochInfo.cor}; border-radius:3px; transition: width 0.3s ease;"></div>
           </div>
           <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#64748b; margin-top:4px;">
-            <span>0 (Sobrevenda)</span>
+            <span>0 (Sobrevenda &lt; 30)</span>
             <span>Suporte: R$ ${u.suporte_fibonacci && u.suporte_fibonacci > 0 ? Number(u.suporte_fibonacci).toFixed(2) : (spot * 0.985).toFixed(2)}</span>
-            <span>100 (Sobrecompra)</span>
+            <span>100 (Sobrecompra &gt; 70)</span>
           </div>
         </div>
 

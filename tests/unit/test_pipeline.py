@@ -119,6 +119,10 @@ def test_process_pipeline_schema_validation_and_provenance(mock_fetch, tmp_path)
     # Subjacentes e níveis null
     assert len(data["underlyings"]) == 10
     for und in data["underlyings"]:
+        assert "stoch_k" in und
+        assert "stoch_d" in und
+        assert "force_ema2" in und
+        assert "wave_daily" in und
         if und["phase"] != "INDICACAO_IMEDIATA":
             assert und["gatilho_entrada"] is None
             assert und["stop_loss"] is None

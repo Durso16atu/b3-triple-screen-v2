@@ -137,12 +137,38 @@ def process_pipeline(
                     gatilho = None
                     stop = None
                     alvo = None
+
+                stoch_k = (
+                    round(max(0.0, min(100.0, float(screening.stoch_k))), 2)
+                    if screening.stoch_k is not None and not np.isnan(screening.stoch_k)
+                    else None
+                )
+                stoch_d = (
+                    round(max(0.0, min(100.0, float(screening.stoch_d))), 2)
+                    if screening.stoch_d is not None and not np.isnan(screening.stoch_d)
+                    else None
+                )
+                force_ema2 = (
+                    round(float(screening.force_index_ema2), 2)
+                    if (
+                        screening.force_index_ema2 is not None
+                        and not np.isnan(screening.force_index_ema2)
+                    )
+                    else None
+                )
+                wave_daily = (
+                    str(screening.wave_daily) if screening.wave_daily is not None else "NEUTRO"
+                )
             else:
                 trend = "NEUTRO"
                 phase = "AGUARDANDO"
                 gatilho = None
                 stop = None
                 alvo = None
+                stoch_k = None
+                stoch_d = None
+                force_ema2 = None
+                wave_daily = "NEUTRO"
 
             recent_low_14 = float(df["Low"].rolling(min(14, len(df))).min().iloc[-1])
             suporte_fibo = round(recent_low_14, 2)
@@ -157,6 +183,10 @@ def process_pipeline(
                     "gatilho_entrada": gatilho,
                     "stop_loss": stop,
                     "alvo_2r": alvo,
+                    "stoch_k": stoch_k,
+                    "stoch_d": stoch_d,
+                    "force_ema2": force_ema2,
+                    "wave_daily": wave_daily,
                     "updated_at": generated_at_sp,
                 }
             )

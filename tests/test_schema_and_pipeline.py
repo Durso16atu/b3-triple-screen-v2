@@ -102,6 +102,20 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
                     f"{field} inválido para {ativo['ticker']}: {val}",
                 )
 
+            # Indicadores reais da Tela 2
+            self.assertIn("stoch_k", ativo)
+            self.assertIn("stoch_d", ativo)
+            self.assertIn("force_ema2", ativo)
+            self.assertIn("wave_daily", ativo)
+
+            if ativo["stoch_k"] is not None:
+                self.assertGreaterEqual(ativo["stoch_k"], 0.0)
+                self.assertLessEqual(ativo["stoch_k"], 100.0)
+            if ativo["stoch_d"] is not None:
+                self.assertGreaterEqual(ativo["stoch_d"], 0.0)
+                self.assertLessEqual(ativo["stoch_d"], 100.0)
+            self.assertIn(ativo["wave_daily"], ["SOBREVENDA", "SOBRECOMPRA", "NEUTRO"])
+
     def test_options_grade_b3_e_gregas(self):
         """Valida a grade de opções B3, precificação Black-Scholes e gregas atuariais."""
         options = self.data.get("options", [])

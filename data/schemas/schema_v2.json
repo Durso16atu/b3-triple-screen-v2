@@ -48,7 +48,17 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": ["ticker", "spot_price", "trend_signal", "phase", "updated_at"],
+        "required": [
+          "ticker",
+          "spot_price",
+          "trend_signal",
+          "phase",
+          "stoch_k",
+          "stoch_d",
+          "force_ema2",
+          "wave_daily",
+          "updated_at"
+        ],
         "properties": {
           "ticker": { "type": "string" },
           "spot_price": { "type": "number", "minimum": 0 },
@@ -58,6 +68,10 @@
           "gatilho_entrada": { "type": ["number", "null"], "minimum": 0 },
           "stop_loss": { "type": ["number", "null"], "minimum": 0 },
           "alvo_2r": { "type": ["number", "null"], "minimum": 0 },
+          "stoch_k": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+          "stoch_d": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
+          "force_ema2": { "type": ["number", "null"] },
+          "wave_daily": { "type": "string" },
           "updated_at": { "type": "string" }
         }
       }

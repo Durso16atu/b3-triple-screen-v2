@@ -89,6 +89,64 @@ function renderizarSemaforoMacro(underlyings) {
   `;
 }
 
+function calcularDescricaoEstocastico(u, isArmed) {
+  const k = u.stoch_k != null && !isNaN(u.stoch_k) ? Number(u.stoch_k) : null;
+  const d = u.stoch_d != null && !isNaN(u.stoch_d) ? Number(u.stoch_d) : null;
+
+  if (isArmed) {
+    const kStr = k != null ? k.toFixed(1) : "--.-";
+    const dStr = d != null ? d.toFixed(1) : "--.-";
+    const barWidth = k != null ? Math.min(100, Math.max(0, k)).toFixed(1) : "45.0";
+    return {
+      texto: `Pullback Confirmado (%K: ${kStr}% | %D: ${dStr}%) — Gatilho Armado`,
+      cor: "#10b981",
+      larguraBarra: barWidth
+    };
+  }
+
+  if (k != null && d != null) {
+    const kStr = k.toFixed(1);
+    const dStr = d.toFixed(1);
+    const barWidth = Math.min(100, Math.max(0, k)).toFixed(1);
+
+    if (k > 70) {
+      return {
+        texto: `Sobrecompra (%K: ${kStr}% | %D: ${dStr}%) — Aguardar Recuo`,
+        cor: "#f43f5e",
+        larguraBarra: barWidth
+      };
+    }
+    if (k >= 30 && k <= 70) {
+      if (k < d) {
+        return {
+          texto: `Recuo em Andamento (%K: ${kStr}% | %D: ${dStr}%)`,
+          cor: "#fbbf24",
+          larguraBarra: barWidth
+        };
+      } else {
+        return {
+          texto: `Zona Neutra (%K: ${kStr}% | %D: ${dStr}%)`,
+          cor: "#94a3b8",
+          larguraBarra: barWidth
+        };
+      }
+    }
+    if (k < 30) {
+      return {
+        texto: `Sobrevenda (%K: ${kStr}% | %D: ${dStr}%) — Aguardando Virada`,
+        cor: "#38bdf8",
+        larguraBarra: barWidth
+      };
+    }
+  }
+
+  return {
+    texto: u.phase === "A_CAMINHO" ? "Aguardando Recuo" : "Aguardando Setup",
+    cor: "#64748b",
+    larguraBarra: "15.0"
+  };
+}
+
 function renderizarRadarOportunidades(underlyings, options) {
   const container = document.getElementById("radar-oportunidades-container");
   if (!container) return;
@@ -117,6 +175,8 @@ function renderizarRadarOportunidades(underlyings, options) {
     ? `<span class="badge badge-bullish"><span class="pulse-dot"></span> SINAL ARMADO</span>`
     : `<span class="badge badge-neutral">AGUARDANDO SETUP</span>`;
 
+  const stochInfo = calcularDescricaoEstocastico(u, isArmed);
+
   container.innerHTML = `
     <div class="radar-card">
       <div class="radar-header">
@@ -127,15 +187,15 @@ function renderizarRadarOportunidades(underlyings, options) {
       <div class="stoch-meter">
         <div style="display: flex; justify-content: space-between; font-size: 0.75rem; margin-bottom: 4px;">
           <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-          <span class="text-green font-mono"><strong>${isArmed ? "Recuo Concluído / Gatilho Ativo" : "Aguardando Recuo"}</strong></span>
+          <span style="color:${stochInfo.cor};" class="font-mono"><strong>${stochInfo.texto}</strong></span>
         </div>
         <div class="stoch-bar-bg">
-          <div class="stoch-bar-fill" style="width: ${isArmed ? '45%' : '15%'}; background: var(--accent-green);"></div>
+          <div class="stoch-bar-fill" style="width: ${stochInfo.larguraBarra}%; background: ${stochInfo.cor};"></div>
         </div>
         <div class="fibo-levels">
-          <span>0 (Sobrevenda &lt; 20)</span>
+          <span>0 (Sobrevenda &lt; 30)</span>
           <span>Retração: R$ ${u.suporte_fibonacci && u.suporte_fibonacci > 0 ? Number(u.suporte_fibonacci).toFixed(2) : (spot * 0.985).toFixed(2)}</span>
-          <span>100 (Sobrecompra &gt; 80)</span>
+          <span>100 (Sobrecompra &gt; 70)</span>
         </div>
       </div>
 
