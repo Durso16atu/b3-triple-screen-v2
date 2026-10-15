@@ -162,6 +162,7 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
 
   const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
   const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ AGUARDANDO");
+  const tooltipFaseTela1 = obterTooltipFase(u.phase, false);
 
   html += `
     <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
@@ -173,8 +174,20 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
       <div style="flex:1;">
         <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span><span translate="no">${u.ticker}</span> — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
-          <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700;">TENDÊNCIA: ${u.trend_signal}</span>
-          <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); color:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700;">FASE: ${phaseLabel}</span>
+          <span class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+            <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700; cursor:help;">TENDÊNCIA: ${u.trend_signal}</span>
+            <div class="tooltip-bubble" onclick="event.stopPropagation()">
+              <div class="tooltip-title">🧭 Tela 1: A Maré Semanal (Alexander Elder)</div>
+              <div class="tooltip-text">Consenso entre a Média Móvel Exponencial de 13 semanas (EMA 13) e o MACD Histograma semanal. Somente tendências de ALTA autorizam operações de compra no sistema.</div>
+            </div>
+          </span>
+          <span class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+            <span style="font-size:0.75rem; background:rgba(255,255,255,0.1); color:#e2e8f0; padding:2px 6px; border-radius:4px; font-weight:700; cursor:help;">FASE: ${phaseLabel}</span>
+            <div class="tooltip-bubble" onclick="event.stopPropagation()">
+              <div class="tooltip-title">${tooltipFaseTela1.titulo}</div>
+              <div class="tooltip-text">${tooltipFaseTela1.texto}</div>
+            </div>
+          </span>
         </div>
         <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
           Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
@@ -205,6 +218,25 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
   container.innerHTML = html;
 }
 
+function obterTooltipFase(phase, isArmed) {
+  if (isArmed) {
+    return {
+      titulo: "🟢 Sinal Armado — Consenso Triple Screen",
+      texto: "Maré Semanal (Tela 1) em alta e recuo diário (Tela 2) finalizado com exaustão vendedora. Ordem de compra 'Buy Stop' ativa na máxima anterior com Stop Loss na mínima de proteção e Alvo 2R calculado estatisticamente."
+    };
+  }
+  if (phase === "A_CAMINHO") {
+    return {
+      titulo: "🟡 A Caminho — Maré Semanal de Alta",
+      texto: "Tendência principal de alta confirmada pela EMA 13 semanal e MACD Histograma. Papel sob monitoramento ativo aguardando o ponto ótimo de recuo diário (Tela 2) para disparar compra com risco reduzido."
+    };
+  }
+  return {
+    titulo: "⚪ Aguardando Setup — Sem Tendência de Alta",
+    texto: "A Maré Semanal (Tela 1) não apresenta viés altista confirmado (tendência neutra ou de baixa). Pelo princípio de preservação de capital do Triple Screen, nenhuma operação de compra está autorizada até o alinhamento das telas."
+  };
+}
+
 function calcularDescricaoEstocastico(u, isArmed) {
   const k = u.stoch_k != null && !isNaN(u.stoch_k) ? Number(u.stoch_k) : null;
   const d = u.stoch_d != null && !isNaN(u.stoch_d) ? Number(u.stoch_d) : null;
@@ -216,7 +248,9 @@ function calcularDescricaoEstocastico(u, isArmed) {
     return {
       texto: `Pullback Confirmado (%K: ${kStr}% | %D: ${dStr}%) — Gatilho Armado`,
       cor: "#10b981",
-      larguraBarra: barWidth
+      larguraBarra: barWidth,
+      tooltipTitulo: "🚀 Pullback Finalizado e Gatilho Ativo",
+      tooltipTexto: `O recuo diário encerrou-se e os compradores retomaram a iniciativa (%K: ${kStr}% e %D: ${dStr}%). Ordem Buy Stop ativada na Tela 3 com Stop Loss na mínima de proteção e alvo de lucro 2R.`
     };
   }
 
@@ -229,7 +263,9 @@ function calcularDescricaoEstocastico(u, isArmed) {
       return {
         texto: `Sobrecompra (%K: ${kStr}% | %D: ${dStr}%) — Aguardar Recuo`,
         cor: "#f43f5e",
-        larguraBarra: barWidth
+        larguraBarra: barWidth,
+        tooltipTitulo: "⚠️ Estocástico em Sobrecompra (%K > 70)",
+        tooltipTexto: `Preço à vista esticado no curto prazo (%K: ${kStr}% | %D: ${dStr}% > 70%). Comprar nesta faixa eleva o risco de drawdown corretivo imediato. O algoritmo aguarda um recuo diário na Tela 2 para baratear a entrada antes de armar o gatilho.`
       };
     }
     if (k >= 30 && k <= 70) {
@@ -237,13 +273,17 @@ function calcularDescricaoEstocastico(u, isArmed) {
         return {
           texto: `Recuo em Andamento (%K: ${kStr}% | %D: ${dStr}%)`,
           cor: "#fbbf24",
-          larguraBarra: barWidth
+          larguraBarra: barWidth,
+          tooltipTitulo: "⏳ Recuo Corretivo em Andamento (%K < %D)",
+          tooltipTexto: `Realização de lucros saudável contra a maré semanal altista (%K: ${kStr}% cruzou abaixo de %D: ${dStr}%). Ponto ideal de monitoramento: o algoritmo aguarda a exaustão da pressão vendedora para disparar o sinal.`
         };
       } else {
         return {
           texto: `Zona Neutra (%K: ${kStr}% | %D: ${dStr}%)`,
           cor: "#94a3b8",
-          larguraBarra: barWidth
+          larguraBarra: barWidth,
+          tooltipTitulo: "⚖️ Oscilador em Zona de Equilíbrio",
+          tooltipTexto: `Estocástico Lento na faixa intermediária (%K: ${kStr}% | %D: ${dStr}% entre 30% e 70%). Sem sobrecompra nem recuo expressivo. O sistema monitora o Force Index EMA-2 aguardando retração técnica com menor risco.`
         };
       }
     }
@@ -251,7 +291,9 @@ function calcularDescricaoEstocastico(u, isArmed) {
       return {
         texto: `Sobrevenda (%K: ${kStr}% | %D: ${dStr}%) — Aguardando Virada`,
         cor: "#38bdf8",
-        larguraBarra: barWidth
+        larguraBarra: barWidth,
+        tooltipTitulo: "🎯 Estocástico em Sobrevenda (%K < 30)",
+        tooltipTexto: `Ativo em zona de barganha no gráfico diário (%K: ${kStr}% | %D: ${dStr}% < 30%) enquanto a tendência macro semanal segue compradora. Aguarda-se a inflexão compradora de %K e do Force Index para validar o suporte e armar a compra.`
       };
     }
   }
@@ -259,7 +301,11 @@ function calcularDescricaoEstocastico(u, isArmed) {
   return {
     texto: u.phase === "A_CAMINHO" ? "Aguardando Recuo" : "Aguardando Setup",
     cor: "#64748b",
-    larguraBarra: "15.0"
+    larguraBarra: "15.0",
+    tooltipTitulo: u.phase === "A_CAMINHO" ? "🟡 Monitorando Recuo Diário" : "⚪ Aguardando Setup",
+    tooltipTexto: u.phase === "A_CAMINHO"
+      ? "Tendência primária semanal altista confirmada. Aguardando oscilação corretiva na Tela 2 para mensuração do oscilador e posicionamento de gatilho."
+      : "Aguardando alinhamento favorável da Maré Semanal (Tela 1) e indicadores de momentum para autorizar compras."
   };
 }
 
@@ -291,17 +337,8 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
     const alvo2R = hasTriggers ? Number(u.alvo_2r) : null;
     const riscoR = (gatilho != null && stopLoss != null) ? (gatilho - stopLoss) : null;
 
-    let colorSignal = "#fbbf24";
-    let statusText = "A CAMINHO";
-    if (isArmed) {
-      colorSignal = "#10b981";
-      statusText = "SINAL ARMADO";
-    } else if (u.phase === "AGUARDANDO" || u.trend_signal === "NEUTRO" || u.trend_signal === "BAIXA") {
-      colorSignal = "#64748b";
-      statusText = "AGUARDANDO SETUP";
-    }
-
     const stochInfo = calcularDescricaoEstocastico(u, isArmed);
+    const tooltipFase = obterTooltipFase(u.phase, isArmed);
 
     const gatilhoHtml = gatilho != null && !isNaN(gatilho)
       ? `R$ ${gatilho.toFixed(2)}`
@@ -319,11 +356,21 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
       ? `Alvo 2R (+R$ ${(2 * riscoR).toFixed(2)})`
       : `Alvo 2R`;
 
-    const statusBadge = isArmed
+    const badgeElement = isArmed
       ? `<span class="badge" style="background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4);"><span class="pulse-dot"></span> SINAL ARMADO</span>`
       : (u.phase === "A_CAMINHO"
         ? `<span class="badge" style="background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.4);">A CAMINHO</span>`
         : `<span class="badge" style="background:rgba(100,116,139,0.2); color:#94a3b8; border:1px solid rgba(100,116,139,0.3);">AGUARDANDO SETUP</span>`);
+
+    const statusBadge = `
+      <div class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+        ${badgeElement}
+        <div class="tooltip-bubble" onclick="event.stopPropagation()">
+          <div class="tooltip-title">${tooltipFase.titulo}</div>
+          <div class="tooltip-text">${tooltipFase.texto}</div>
+        </div>
+      </div>
+    `;
 
     html += `
       <div onclick="selecionarAtivo('${u.ticker}')" style="background:#111622; border-radius:8px; ${borderStyle} padding:14px; margin-bottom:14px; cursor:pointer; transition: 0.2s;">
@@ -337,9 +384,21 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
         </div>
 
         <div style="margin:10px 0;">
-          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8;">
-            <span>Estocástico Lento (Tela 2 - Onda Diária)</span>
-            <span style="color:${stochInfo.cor}; font-family:monospace; font-weight:700;">${stochInfo.texto}</span>
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-bottom:4px; color:#94a3b8; gap:8px;">
+            <span class="tooltip-wrap tooltip-left" onclick="event.stopPropagation()">
+              <span style="text-decoration:underline dotted rgba(148,163,184,0.5); text-underline-offset:3px; cursor:help;">Estocástico Lento (Tela 2 - Onda Diária)</span>
+              <div class="tooltip-bubble" onclick="event.stopPropagation()">
+                <div class="tooltip-title">🌊 Tela 2: A Onda Diária (Alexander Elder)</div>
+                <div class="tooltip-text">Mede o ímpeto corretivo diário contra a tendência semanal principal. O objetivo atuarial é identificar pontos de recuo técnico para compras com risco reduzido e alta assimetria.</div>
+              </div>
+            </span>
+            <span class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+              <span style="color:${stochInfo.cor}; font-family:monospace; font-weight:700; text-decoration:underline dotted ${stochInfo.cor}88; text-underline-offset:3px; cursor:help;">${stochInfo.texto}</span>
+              <div class="tooltip-bubble" onclick="event.stopPropagation()">
+                <div class="tooltip-title" style="color:${stochInfo.cor};">${stochInfo.tooltipTitulo}</div>
+                <div class="tooltip-text">${stochInfo.tooltipTexto}</div>
+              </div>
+            </span>
           </div>
           <div style="height:6px; background:#1e293b; border-radius:3px; overflow:hidden;">
             <div style="width:${stochInfo.larguraBarra}%; height:100%; background:${stochInfo.cor}; border-radius:3px; transition: width 0.3s ease;"></div>
@@ -352,17 +411,29 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
         </div>
 
         <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:8px; margin-top:12px; background:rgba(0,0,0,0.25); padding:8px; border-radius:6px; text-align:center;">
-          <div>
-            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Gatilho (<span translate="no">Buy Stop</span>)</div>
+          <div class="tooltip-wrap tooltip-center" onclick="event.stopPropagation()" style="display:block;">
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase; text-decoration:underline dotted rgba(100,116,139,0.5); text-underline-offset:2px; cursor:help;">Gatilho (<span translate="no">Buy Stop</span>)</div>
             <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">${gatilhoHtml}</div>
+            <div class="tooltip-bubble" onclick="event.stopPropagation()">
+              <div class="tooltip-title">🎯 Gatilho Tela 3 (Buy Stop)</div>
+              <div class="tooltip-text">Preço de disparo posicionado 1 centavo acima da máxima anterior. A compra só ocorre se o mercado confirmar força compradora rompendo esse patamar.</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Stop Loss Macro</div>
+          <div class="tooltip-wrap tooltip-center" onclick="event.stopPropagation()" style="display:block;">
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase; text-decoration:underline dotted rgba(100,116,139,0.5); text-underline-offset:2px; cursor:help;">Stop Loss Macro</div>
             <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">${stopLossHtml}</div>
+            <div class="tooltip-bubble" onclick="event.stopPropagation()">
+              <div class="tooltip-title">🛑 Stop Loss Macro (1R)</div>
+              <div class="tooltip-text">Ponto de saída de emergência posicionado abaixo do suporte recente ou mínima anterior. Define o risco unitário (R) da operação para proteção estrita de capital.</div>
+            </div>
           </div>
-          <div>
-            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">${alvoLabel}</div>
+          <div class="tooltip-wrap tooltip-center" onclick="event.stopPropagation()" style="display:block;">
+            <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase; text-decoration:underline dotted rgba(100,116,139,0.5); text-underline-offset:2px; cursor:help;">${alvoLabel}</div>
             <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">${alvo2RHtml}</div>
+            <div class="tooltip-bubble" onclick="event.stopPropagation()">
+              <div class="tooltip-title">🏆 Alvo de Lucro (2R)</div>
+              <div class="tooltip-text">Projeção matemática de ganho dimensionada em 2 vezes o risco inicial (2R). Garante expectativa matemática positiva mesmo com taxa de acerto conservadora.</div>
+            </div>
           </div>
         </div>
       </div>
