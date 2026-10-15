@@ -28,17 +28,47 @@ logger = logging.getLogger(__name__)
 SP_TZ = ZoneInfo("America/Sao_Paulo")
 
 CESTA_LIDER = [
+    # Top 5 Principais
     "PETR4",
     "VALE3",
     "ITUB4",
     "BBDC4",
     "BBAS3",
-    "BOVA11",
-    "RENT3",
+    # Setor Financeiro e Holding (Alta Liquidez)
+    "B3SA3",
+    "ITSA4",
+    "BBSE3",
+    "SANB11",
+    "BPAC11",
+    # Commodities, Energia e Siderurgia
+    "PETR3",
     "PRIO3",
-    "WEGE3",
+    "GGBR4",
+    "CSNA3",
+    "USIM5",
+    "SUZB3",
+    "ELET3",
+    "CMIG4",
+    # Consumo, Varejo e Logística
     "ABEV3",
+    "MGLU3",
+    "LREN3",
+    "NTCO3",
+    "RAIZ4",
+    "RENT3",
+    "VAMO3",
+    "JBSS3",
+    # Benchmarks Adicionais de Alta Liquidez
+    "BOVA11",
+    "WEGE3",
 ]
+
+# Mapeamento de tickers que passaram por reorganização societária/renomeação no yfinance
+TICKER_YFINANCE_MAP = {
+    "ELET3": "AXIA3.SA",  # Eletrobras renomeada para Axia Energia (AXIA3)
+    "NTCO3": "NATU3.SA",  # Natura Cosméticos retornou ao ticker histórico NATU3
+    "JBSS3": "JBSS32.SA",  # JBS N.V. negociada via BDRs JBSS32 na B3
+}
 
 
 def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
@@ -46,14 +76,16 @@ def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
     try:
         import yfinance as yf
 
-        yf_tickers = [f"{t}.SA" for t in tickers]
+        yf_syms = [TICKER_YFINANCE_MAP.get(t, f"{t}.SA") for t in tickers]
+        sym_to_ticker = {TICKER_YFINANCE_MAP.get(t, f"{t}.SA"): t for t in tickers}
+
         df_download = yf.download(
-            yf_tickers,
+            yf_syms,
             period="2y",
             interval="1d",
             group_by="ticker",
             auto_adjust=True,
-            timeout=20,
+            timeout=35,
             progress=False,
         )
     except Exception as e:
@@ -65,10 +97,17 @@ def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
         raise RuntimeError("yfinance retornou DataFrame vazio para a cesta líder.")
 
     data_dict: dict[str, pd.DataFrame] = {}
-    for t in tickers:
-        yf_sym = f"{t}.SA"
-        if yf_sym in df_download and not df_download[yf_sym].dropna().empty:
+    for yf_sym, t in sym_to_ticker.items():
+        if len(yf_syms) == 1:
+            df_t = df_download.dropna()
+            if len(df_t) >= 60:
+                data_dict[t] = df_t
+        elif yf_sym in df_download and not df_download[yf_sym].dropna().empty:
             df_t = df_download[yf_sym].dropna()
+            if len(df_t) >= 60:
+                data_dict[t] = df_t
+        elif f"{t}.SA" in df_download and not df_download[f"{t}.SA"].dropna().empty:
+            df_t = df_download[f"{t}.SA"].dropna()
             if len(df_t) >= 60:
                 data_dict[t] = df_t
 

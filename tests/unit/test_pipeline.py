@@ -117,7 +117,7 @@ def test_process_pipeline_schema_validation_and_provenance(mock_fetch, tmp_path)
     assert isinstance(active_mat["days_to_maturity_du"], int)
 
     # Subjacentes e níveis null
-    assert len(data["underlyings"]) == 10
+    assert len(data["underlyings"]) == len(CESTA_LIDER)
     for und in data["underlyings"]:
         assert "stoch_k" in und
         assert "stoch_d" in und
