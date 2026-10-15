@@ -2,7 +2,9 @@ name: B3 Triple Screen Real-Time Monitor
 
 on:
   schedule:
-    - cron: '*/30 13-21 * * 1-5'
+    # Executa nos minutos 15 e 45 entre 12h e 21h UTC (09h15 às 18h45 BRT, cobrindo pré-mercado e pregão B3).
+    # Minutos fora de pico (:15 e :45) evitam os congestionamentos de fila do runner em :00 e :30.
+    - cron: '15,45 12-21 * * 1-5'
   workflow_dispatch:
 
 concurrency:

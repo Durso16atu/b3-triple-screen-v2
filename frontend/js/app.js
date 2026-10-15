@@ -627,9 +627,16 @@ function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
 }
 
 /* 7. ORQUESTRADOR PRINCIPAL E CONEXÃO HÍBRIDA COM APPS SCRIPT */
-const DATA_PATHS = ["../data/latest.json", "data/latest.json", "./data/latest.json"];
-const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || window.APPS_SCRIPT_WEBAPP_URL || "https://script.google.com/macros/s/AKfycbzu5DncpNSRdJqNttvUcDvyBaEZXyLyGtnl7m4BUQZ72X3NDOdqd_ZlQb8FBtam6_iF/exec";
-const APPS_SCRIPT_WEBAPP_URL = APPS_SCRIPT_URL;
+function obterCaminhosDados() {
+  const pathAtual = window.location.pathname;
+  const basePath = pathAtual.endsWith("/")
+    ? pathAtual
+    : pathAtual.substring(0, pathAtual.lastIndexOf("/") + 1);
+  const urlAbsoluta = `${window.location.origin}${basePath}data/latest.json`;
+  return [urlAbsoluta, "data/latest.json", "./data/latest.json", "../data/latest.json"];
+}
+
+const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "";
 
 /**
  * Atualiza o badge e a descrição da fonte de dados na interface.
@@ -690,7 +697,8 @@ function aplicarDadosNoEstado(dados) {
  */
 async function carregarFallbackEstatico() {
   let dados = null;
-  for (const path of DATA_PATHS) {
+  const paths = obterCaminhosDados();
+  for (const path of paths) {
     try {
       const resp = await fetch(`${path}?t=${Date.now()}`, {
         cache: "no-store",
@@ -709,63 +717,60 @@ async function carregarFallbackEstatico() {
   if (aplicado) {
     const fonte = dados?.metadata?.data_source || "yfinance";
     atualizarBadgeFonte(`Fonte: ${fonte} (America/Sao_Paulo)`, "cdn");
+    const kpiFonte = document.getElementById("kpi-fonte-dados");
+    if (kpiFonte) {
+      const horaCheck = new Date().toLocaleTimeString("pt-BR", { timeZone: "America/Sao_Paulo" });
+      kpiFonte.innerText = `Fonte: ${fonte} (Sinc: ${horaCheck})`;
+    }
   }
   return aplicado;
 }
 
 /**
- * Estratégia Híbrida:
- * - Boot (false): busca cache local/CDN e marca status com a procedência real.
- * - Atualizar (true): busca endpoint Web App do Apps Script com timeout de 8s e fallback transparente.
+ * Orquestrador de Carga e Atualização Contínua:
+ * - Imediato e reativo: busca a versão mais fresca de data/latest.json sem travar a interface.
+ * - Suporta polling periódico a cada 60s e atualização sob demanda via clique no botão.
  */
 async function carregarDadosPipeline(forcarAtualizacaoAoVivo = false) {
   const btnAtualizar = document.getElementById("btn-atualizar");
   const spanText = btnAtualizar ? btnAtualizar.querySelector("span") : null;
 
   if (forcarAtualizacaoAoVivo) {
-    // 1. Feedback visual de sincronização intradiária
+    // 1. Feedback visual imediato
     if (btnAtualizar) btnAtualizar.classList.add("loading");
-    if (spanText) spanText.innerText = "Sincronizando com Base Mestre...";
-    atualizarBadgeFonte("Sincronizando com Base Mestre...", "loading");
+    if (spanText) spanText.innerText = "Atualizando...";
+    atualizarBadgeFonte("Sincronizando...", "loading");
 
-    // 2. Timeout estrito de 8 segundos com AbortController
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    // 2. Busca os dados mais recentes do pipeline com cache-busting estrito
+    const sucesso = await carregarFallbackEstatico();
 
-    try {
-      const resp = await fetch(APPS_SCRIPT_WEBAPP_URL, {
-        method: "GET",
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-
-      if (!resp.ok) {
-        throw new Error(`HTTP ${resp.status}: ${resp.statusText}`);
-      }
-
-      const dados = await resp.json();
-      if (!dados || !dados.underlyings || !dados.options) {
-        throw new Error("Payload da planilha inválido ou fora do contrato SSOT");
-      }
-
-      aplicarDadosNoEstado(dados);
-      atualizarBadgeFonte("Fonte: Planilha ao Vivo (Google Sheets)", "live");
-    } catch (erro) {
-      clearTimeout(timeoutId);
-      console.warn(
-        "[Dashboard B3] Falha na conexão com Google Sheets via Apps Script:",
-        erro.message,
-        "- Ativando fallback para dados estáticos..."
-      );
-      await carregarFallbackEstatico();
-      const fonte = window.appState.metadata?.data_source || "yfinance";
-      atualizarBadgeFonte(`Fonte: ${fonte} (America/Sao_Paulo)`, "fallback");
-    } finally {
-      if (btnAtualizar) btnAtualizar.classList.remove("loading");
-      if (spanText) spanText.innerText = "Atualizar";
+    // 3. Tenta endpoint opcional externo caso explicitamente configurado no window
+    if (window.APPS_SCRIPT_URL && window.APPS_SCRIPT_URL !== "") {
+      try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const resp = await fetch(window.APPS_SCRIPT_URL, {
+          method: "GET",
+          signal: controller.signal
+        });
+        clearTimeout(timeoutId);
+        if (resp.ok) {
+          const dados = await resp.json();
+          if (dados && dados.underlyings && dados.options) {
+            aplicarDadosNoEstado(dados);
+            atualizarBadgeFonte("Fonte: Planilha ao Vivo (Google Sheets)", "live");
+          }
+        }
+      } catch (e) {}
     }
+
+    if (btnAtualizar) btnAtualizar.classList.remove("loading");
+    if (spanText) spanText.innerText = "Atualizado!";
+    setTimeout(() => {
+      if (spanText) spanText.innerText = "Atualizar";
+    }, 1500);
   } else {
-    // Carga inicial rápida (CDN) ou polling
+    // Carga inicial rápida (CDN) ou polling periódico
     if (btnAtualizar) btnAtualizar.classList.add("loading");
     if (spanText) spanText.innerText = "Atualizando...";
 
