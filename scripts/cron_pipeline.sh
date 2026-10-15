@@ -45,7 +45,7 @@ git add data/latest.json
 if git diff --staged --quiet; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nenhuma alteração de dados detectada."
 else
-  git commit -m "chore(data): atualizar latest.json intradiario (auto local) [skip ci]"
+  git commit -m "chore(data): atualizar latest.json intradiario (auto local)"
   git pull --rebase -X theirs origin main
   git push origin main
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Dados atualizados e enviados com sucesso para o GitHub Pages!"

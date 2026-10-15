@@ -704,7 +704,8 @@ function obterCaminhosDados() {
     ? pathAtual
     : pathAtual.substring(0, pathAtual.lastIndexOf("/") + 1);
   const urlAbsoluta = `${window.location.origin}${basePath}data/latest.json`;
-  return [urlAbsoluta, "data/latest.json", "./data/latest.json", "../data/latest.json"];
+  const urlRawGitHub = "https://raw.githubusercontent.com/Durso16atu/b3-triple-screen-v2/main/data/latest.json";
+  return [urlRawGitHub, urlAbsoluta, "data/latest.json", "./data/latest.json", "../data/latest.json"];
 }
 
 const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "";
