@@ -93,18 +93,18 @@ function obterTooltipFase(phase, isArmed) {
   if (isArmed) {
     return {
       titulo: "🟢 Sinal Armado — Consenso Triple Screen",
-      texto: "Maré Semanal (Tela 1) em alta e recuo diário (Tela 2) finalizado com exaustão vendedora. Ordem de compra 'Buy Stop' ativa na máxima anterior com Stop Loss na mínima de proteção e Alvo 2R calculado estatisticamente."
+      texto: "Maré Semanal (Tela 1) em ALTA e recuo diário (Tela 2) em Sobrevenda (%K < 30%) com inflexão compradora confirmada. Ordem Buy Stop ativa na máxima de D-1 + R$ 0,01 com Stop Loss e Alvo 2R. Para mudar de status: volta para A CAMINHO se %K subir para >= 30%, ou para AGUARDANDO se a Tela 1 perder a alta."
     };
   }
   if (phase === "A_CAMINHO") {
     return {
       titulo: "🟡 A Caminho — Maré Semanal de Alta",
-      texto: "Tendência principal de alta confirmada pela EMA 13 semanal e MACD Histograma. Papel sob monitoramento ativo aguardando o ponto ótimo de recuo diário (Tela 2) para disparar compra com risco reduzido."
+      texto: "Tendência semanal de ALTA confirmada (EMA 13 e MACD Histograma subindo), mas aguardando recuo na Tela 2. Critério para mudar para 🟢 SINAL ARMADO: o Estocástico Lento deve cair para Sobrevenda (%K < 30%) e confirmar virada (%K > %D ou Force Index EMA-2 < 0 subindo). Cai para ⚪ AGUARDANDO se a Tela 1 perder a alta."
     };
   }
   return {
     titulo: "⚪ Aguardando Setup — Sem Tendência de Alta",
-    texto: "A Maré Semanal (Tela 1) não apresenta viés altista confirmado (tendência neutra ou de baixa). Pelo princípio de preservação de capital do Triple Screen, nenhuma operação de compra está autorizada até o alinhamento das telas."
+    texto: "A Maré Semanal (Tela 1) está em BAIXA ou NEUTRO, bloqueando compras. Critério para mudar de status: avança para 🟡 A CAMINHO quando EMA 13 e MACD Histograma semanais subirem juntos (Tela 1 = ALTA), ou para 🟢 SINAL ARMADO se além da Tela 1 em ALTA houver %K < 30% com virada compradora."
   };
 }
 
@@ -121,7 +121,7 @@ function calcularDescricaoEstocastico(u, isArmed) {
       cor: "#10b981",
       larguraBarra: barWidth,
       tooltipTitulo: "🚀 Pullback Finalizado e Gatilho Ativo",
-      tooltipTexto: `O recuo diário encerrou-se e os compradores retomaram a iniciativa (%K: ${kStr}% e %D: ${dStr}%). Ordem Buy Stop ativada na Tela 3 com Stop Loss na mínima de proteção e alvo de lucro 2R.`
+      tooltipTexto: `O recuo diário atingiu Sobrevenda (%K: ${kStr}% < 30% | %D: ${dStr}%) e confirmou retomada compradora. Status alterado para 🟢 SINAL ARMADO com Buy Stop na máxima de D-1 + R$ 0,01, Stop Loss na mínima do recuo - R$ 0,01 e Alvo 2R.`
     };
   }
 
@@ -135,8 +135,8 @@ function calcularDescricaoEstocastico(u, isArmed) {
         texto: `Sobrecompra (%K: ${kStr}% | %D: ${dStr}%) — Aguardar Recuo`,
         cor: "#f43f5e",
         larguraBarra: barWidth,
-        tooltipTitulo: "⚠️ Estocástico em Sobrecompra (%K > 70)",
-        tooltipTexto: `Preço à vista esticado no curto prazo (%K: ${kStr}% | %D: ${dStr}% > 70%). Comprar nesta faixa eleva o risco de drawdown corretivo imediato. O algoritmo aguarda um recuo diário na Tela 2 para baratear a entrada antes de armar o gatilho.`
+        tooltipTitulo: "⚠️ Estocástico em Sobrecompra (%K > 70%)",
+        tooltipTexto: `Preço à vista esticado no curto prazo (%K: ${kStr}% > 70% | %D: ${dStr}%). Não contempla mudança para compra agora pois comprar no topo eleva o risco de correção imediata. Para mudar para 🟢 SINAL ARMADO: manter Tela 1 em ALTA, recuar na Tela 2 até Sobrevenda (%K < 30%) e confirmar virada (%K > %D ou Force Index EMA-2 < 0 subindo).`
       };
     }
     if (k >= 30 && k <= 70) {
@@ -146,25 +146,28 @@ function calcularDescricaoEstocastico(u, isArmed) {
           cor: "#fbbf24",
           larguraBarra: barWidth,
           tooltipTitulo: "⏳ Recuo Corretivo em Andamento (%K < %D)",
-          tooltipTexto: `Realização de lucros saudável contra a maré semanal altista (%K: ${kStr}% cruzou abaixo de %D: ${dStr}%). Ponto ideal de monitoramento: o algoritmo aguarda a exaustão da pressão vendedora para disparar o sinal.`
+          tooltipTexto: `Realização de lucros em curso (%K: ${kStr}% abaixo de %D: ${dStr}%, faixa 30%–70%). Ainda não contempla disparo de compra. Para mudar para 🟢 SINAL ARMADO: manter Tela 1 em ALTA, aprofundar o recuo até Sobrevenda (%K < 30%) e confirmar inflexão compradora (%K > %D ou Force Index EMA-2 < 0 subindo).`
         };
       } else {
         return {
           texto: `Zona Neutra (%K: ${kStr}% | %D: ${dStr}%)`,
           cor: "#94a3b8",
           larguraBarra: barWidth,
-          tooltipTitulo: "⚖️ Oscilador em Zona de Equilíbrio",
-          tooltipTexto: `Estocástico Lento na faixa intermediária (%K: ${kStr}% | %D: ${dStr}% entre 30% e 70%). Sem sobrecompra nem recuo expressivo. O sistema monitora o Force Index EMA-2 aguardando retração técnica com menor risco.`
+          tooltipTitulo: "⚖️ Oscilador em Zona de Equilíbrio (30% a 70%)",
+          tooltipTexto: `Estocástico Lento na faixa intermediária (%K: ${kStr}% | %D: ${dStr}% entre 30% e 70%), sem desconto suficiente para gatilho. Para mudar para 🟢 SINAL ARMADO: manter Tela 1 em ALTA, recuar até Sobrevenda (%K < 30%) e confirmar virada (%K > %D ou Force Index EMA-2 < 0 subindo).`
         };
       }
     }
     if (k < 30) {
+      const faltaSoVirada = u.phase === "A_CAMINHO";
       return {
         texto: `Sobrevenda (%K: ${kStr}% | %D: ${dStr}%) — Aguardando Virada`,
         cor: "#38bdf8",
         larguraBarra: barWidth,
-        tooltipTitulo: "🎯 Estocástico em Sobrevenda (%K < 30)",
-        tooltipTexto: `Ativo em zona de barganha no gráfico diário (%K: ${kStr}% | %D: ${dStr}% < 30%) enquanto a tendência macro semanal segue compradora. Aguarda-se a inflexão compradora de %K e do Force Index para validar o suporte e armar a compra.`
+        tooltipTitulo: "🎯 Estocástico em Sobrevenda (%K < 30%)",
+        tooltipTexto: faltaSoVirada
+          ? `Ativo já descontado na Tela 2 (%K: ${kStr}% < 30% | %D: ${dStr}%) com Maré Semanal em ALTA, mas ainda sem confirmação de virada. Para mudar para 🟢 SINAL ARMADO: basta %K cruzar acima de %D (%K > %D) ou o Force Index EMA-2 (< 0) virar para cima no fechamento diário.`
+          : `Apesar de o diário estar em Sobrevenda (%K: ${kStr}% < 30% | %D: ${dStr}%), a Maré Semanal (Tela 1: ${u.trend_signal || "BAIXA/NEUTRO"}) bloqueia compras contra a tendência. Para mudar de status: aguardar EMA 13 e MACD Histograma semanais virarem para ALTA e confirmar inflexão na Tela 2.`
       };
     }
   }
@@ -175,8 +178,8 @@ function calcularDescricaoEstocastico(u, isArmed) {
     larguraBarra: "15.0",
     tooltipTitulo: u.phase === "A_CAMINHO" ? "🟡 Monitorando Recuo Diário" : "⚪ Aguardando Setup",
     tooltipTexto: u.phase === "A_CAMINHO"
-      ? "Tendência primária semanal altista confirmada. Aguardando oscilação corretiva na Tela 2 para mensuração do oscilador e posicionamento de gatilho."
-      : "Aguardando alinhamento favorável da Maré Semanal (Tela 1) e indicadores de momentum para autorizar compras."
+      ? "Tendência primária semanal altista confirmada. Para mudar para 🟢 SINAL ARMADO: aguardar recuo diário até Sobrevenda (%K < 30%) com confirmação de virada compradora (%K > %D ou Force Index EMA-2 < 0 subindo)."
+      : "Aguardando alinhamento da Maré Semanal (Tela 1 em ALTA) e recuo diário (%K < 30% com inflexão compradora) para autorizar compras."
   };
 }
 
