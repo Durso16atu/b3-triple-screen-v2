@@ -168,12 +168,10 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   if (candles.length === 0) return "";
 
   const lastC = candles[candles.length - 1];
-  const prevC = candles.length >= 2 ? candles[candles.length - 2] : lastC;
   const recent14 = candles.slice(-14);
-  const min14 = u.suporte_fibonacci && u.suporte_fibonacci > 0
-    ? Number(u.suporte_fibonacci)
-    : Math.min(...recent14.map(c => Number(c.low)));
-  const max14 = Math.max(...recent14.map(c => Number(c.high)));
+  const low14 = Math.min(...recent14.map(c => Number(c.low)));
+  const high14 = Math.max(...recent14.map(c => Number(c.high)));
+  const amp14 = Math.max(0.20, high14 - low14);
 
   const trend = String(u.trend_signal || "NEUTRO").toUpperCase();
   const isArmed = u.phase === "INDICACAO_IMEDIATA" && u.gatilho_entrada != null && u.stop_loss != null;
@@ -196,8 +194,8 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   let labelSup = "";
   let labelInf = "";
   let corSup = "#10b981";
-  let corInf = "#f59e0b";
-  let fillZona = "rgba(16, 185, 129, 0.09)";
+  let corInf = "#38bdf8";
+  let fillZona = "rgba(16, 185, 129, 0.11)";
   let tituloZona = "";
   let tooltipSup = "";
   let tooltipInf = "";
@@ -207,53 +205,53 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       linhaSup = Number(u.gatilho_entrada);
       linhaInf = Number(u.stop_loss);
       labelSup = `GATILHO CALL ATIVO (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
-      labelInf = `STOP LOSS / PISO DO RECUO: R$ ${linhaInf.toFixed(2)}`;
+      labelInf = `STOP LOSS / PISO DO RECUO (%K < 30%): R$ ${linhaInf.toFixed(2)}`;
     } else {
-      linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high), max14) + 0.01).toFixed(2));
-      linhaInf = Number(Math.min(min14, Number(lastC.low) - 0.01).toFixed(2));
+      linhaSup = Number((low14 + 0.30 * amp14).toFixed(2));
+      linhaInf = Number((low14 - 0.01).toFixed(2));
       if (linhaSup <= linhaInf) {
-        linhaSup = Number((linhaInf + 0.50).toFixed(2));
+        linhaSup = Number((linhaInf + 0.25).toFixed(2));
       }
-      labelSup = `GATILHO HIPOTÉTICO CALL (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
-      labelInf = `PISO DE RECUO / SUPORTE 14D (STOP CALL): R$ ${linhaInf.toFixed(2)}`;
+      labelSup = `GATILHO HIPOTÉTICO CALL (%K <= 30% + Virada | ${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+      labelInf = `PISO DE SOBREVENDA (%K = 0% / STOP CALL): R$ ${linhaInf.toFixed(2)}`;
     }
     corSup = "#10b981";
     corInf = "#38bdf8";
-    fillZona = "rgba(16, 185, 129, 0.09)";
-    tituloZona = `Zona Operacional CALL (${optCallSymbol})`;
-    tooltipSup = `Linha Paralela Superior (Buy Stop Tela 3): posicionada 1 centavo acima do topo recente (R$ ${linhaSup.toFixed(2)}). Na Maré de Alta, delimita o teto do canal operacional e referência de disparo para a CALL ${optCallSymbol} após o recuo.`;
-    tooltipInf = `Linha Paralela Inferior (Suporte de Recuo / Stop Loss): posicionada na mínima de suporte de 14 dias (R$ ${linhaInf.toFixed(2)}). Delimita o piso da área de barganha onde o Estocástico recua para armar o gatilho e onde fica o Stop de proteção.`;
+    fillZona = "rgba(16, 185, 129, 0.12)";
+    tituloZona = `Faixa de Gatilho CALL (%K ≤ 30% | ${optCallSymbol})`;
+    tooltipSup = `Linha Paralela Superior (Limiar de Gatilho CALL — %K = 30%): calculada pela fórmula do Estocástico Lento (Mín14 + 30% da amplitude = R$ ${linhaSup.toFixed(2)}). Para armar compra na CALL ${optCallSymbol}, o preço precisa recuar abaixo desta linha (%K < 30%) e confirmar virada (%K > %D ou Force Index EMA-2 < 0 subindo).`;
+    tooltipInf = `Linha Paralela Inferior (Piso de Sobrevenda %K = 0% / Stop Loss): posicionada 1 centavo abaixo da mínima de 14 pregões (R$ ${linhaInf.toFixed(2)}). Delimita a base da faixa de captura onde o gatilho é armado e protegido.`;
   } else if (trend === "BAIXA" || trend === "BEARISH") {
-    linhaSup = Number((Math.max(max14, Number(lastC.high)) + 0.01).toFixed(2));
-    linhaInf = Number((Math.min(Number(prevC.low), Number(lastC.low), min14) - 0.01).toFixed(2));
+    linhaSup = Number((high14 + 0.01).toFixed(2));
+    linhaInf = Number((low14 + 0.70 * amp14).toFixed(2));
     if (linhaSup <= linhaInf) {
-      linhaSup = Number((linhaInf + 0.50).toFixed(2));
+      linhaSup = Number((linhaInf + 0.25).toFixed(2));
     }
     const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
-    labelSup = `TETO DO REPIQUE / STOP TÉCNICO PUT: R$ ${linhaSup.toFixed(2)}`;
-    labelInf = `GATILHO HIPOTÉTICO PUT (${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    labelSup = `TETO DE SOBRECOMPRA (%K = 100% / STOP PUT): R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `GATILHO HIPOTÉTICO PUT (%K >= 70% + Virada | ${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
     corSup = "#f59e0b";
     corInf = "#f43f5e";
-    fillZona = "rgba(244, 63, 94, 0.09)";
-    tituloZona = `Zona Operacional PUT (${optPutSymbol})`;
-    tooltipSup = `Linha Paralela Superior (Resistência / Stop PUT): máxima de 14 dias + 1 tick (R$ ${linhaSup.toFixed(2)}). Em tendência semanal de baixa, repiques até esta faixa levam o Estocástico à sobrecompra (%K > 70%) para armar venda/PUT.`;
-    tooltipInf = `Linha Paralela Inferior (Gatilho Sell Stop PUT): posicionada 1 centavo abaixo da mínima de suporte recente (R$ ${linhaInf.toFixed(2)}). A perda deste nível confirma retomada vendedora para entrada na PUT ${optPutSymbol}.`;
+    fillZona = "rgba(244, 63, 94, 0.12)";
+    tituloZona = `Faixa de Gatilho PUT (%K ≥ 70% | ${optPutSymbol})`;
+    tooltipSup = `Linha Paralela Superior (Teto de Sobrecompra %K = 100% / Stop PUT): posicionada 1 centavo acima da máxima de 14 pregões (R$ ${linhaSup.toFixed(2)}). Delimita o topo da faixa de repique e o Stop Técnico da operação.`;
+    tooltipInf = `Linha Paralela Inferior (Limiar de Gatilho PUT — %K = 70%): calculada pela fórmula do Estocástico Lento (Mín14 + 70% da amplitude = R$ ${linhaInf.toFixed(2)}). Na Maré de Baixa, o preço precisa repicar acima desta linha (%K > 70%) e confirmar virada vendedora (%K < %D ou Force Index EMA-2 > 0 caindo) para acionar a PUT ${optPutSymbol}.`;
   } else {
-    linhaSup = Number((Math.max(max14, Number(lastC.high)) + 0.01).toFixed(2));
-    linhaInf = Number((Math.min(min14, Number(lastC.low)) - 0.01).toFixed(2));
+    linhaSup = Number((low14 + 0.70 * amp14).toFixed(2));
+    linhaInf = Number((low14 + 0.30 * amp14).toFixed(2));
     if (linhaSup <= linhaInf) {
       linhaSup = Number((spot * 1.02).toFixed(2));
       linhaInf = Number((spot * 0.98).toFixed(2));
     }
-    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
-    labelSup = `GATILHO HIPOTÉTICO CALL (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
-    labelInf = `GATILHO HIPOTÉTICO PUT (${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
-    corSup = "#10b981";
-    corInf = "#f43f5e";
-    fillZona = "rgba(56, 189, 248, 0.07)";
-    tituloZona = "Canal de Descongestionamento (CALL / PUT)";
-    tooltipSup = `Linha Paralela Superior (Gatilho Hipotético CALL): topo de 14 pregões + 1 tick (R$ ${linhaSup.toFixed(2)}). Com a Maré Semanal neutra, marca a resistência cujo rompimento alinhado à Tela 1 libera compra de CALL (${optCallSymbol}).`;
-    tooltipInf = `Linha Paralela Inferior (Gatilho Hipotético PUT): fundo de 14 pregões - 1 tick (R$ ${linhaInf.toFixed(2)}). Marca o suporte crítico cuja perda em alinhamento baixista aciona proteção via PUT (${optPutSymbol}).`;
+    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaSup)}`;
+    labelSup = `LIMIAR SOBRECOMPRA PUT (%K >= 70% | ${optPutSymbol}): R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `LIMIAR SOBREVENDA CALL (%K <= 30% | ${optCallSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    corSup = "#f43f5e";
+    corInf = "#10b981";
+    fillZona = "rgba(56, 189, 248, 0.08)";
+    tituloZona = "Banda de Equilíbrio (%K: 30% a 70%)";
+    tooltipSup = `Linha Paralela Superior (Limiar %K = 70% — R$ ${linhaSup.toFixed(2)}): fronteira de sobrecompra de 14 dias. Caso a Tela 1 vire para BAIXA, repiques acima desta linha com virada vendedora acionam PUT (${optPutSymbol}).`;
+    tooltipInf = `Linha Paralela Inferior (Limiar %K = 30% — R$ ${linhaInf.toFixed(2)}): fronteira de sobrevenda de 14 dias. Caso a Tela 1 vire para ALTA, recuos abaixo desta linha com virada compradora acionam CALL (${optCallSymbol}).`;
   }
 
   const allPrices = [];
