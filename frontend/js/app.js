@@ -180,7 +180,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const putSeries = metadata?.active_maturity?.put_series || "W";
   const prefix = u.ticker.substring(0, 4);
 
-  let optCallSymbol = `${prefix}${callSeries}${Math.round(spot)}`;
+  let optCallSymbol = `${prefix}${callSeries}${Math.round(spot * 10)}`;
   if (Array.isArray(filteredOptions) && filteredOptions.length > 0) {
     const sortedOpts = [...filteredOptions].sort((a, b) => Number(a.strike) - Number(b.strike));
     const recOpt = sortedOpts.find(o => Number(o.greeks?.delta) >= 0.25 && Number(o.greeks?.delta) <= 0.45)
@@ -206,20 +206,26 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       linhaInf = Number(u.stop_loss);
       labelSup = `GATILHO CALL ATIVO (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
       labelInf = `STOP LOSS / PISO DO RECUO (%K < 30%): R$ ${linhaInf.toFixed(2)}`;
+      tituloZona = `Gatilho Armado CALL (${optCallSymbol})`;
     } else {
       linhaSup = Number((low14 + 0.30 * amp14).toFixed(2));
       linhaInf = Number((low14 - 0.01).toFixed(2));
       if (linhaSup <= linhaInf) {
         linhaSup = Number((linhaInf + 0.25).toFixed(2));
       }
-      labelSup = `GATILHO HIPOTÉTICO CALL (%K <= 30% + Virada | ${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+      const strikeProjCall = Number((linhaSup * 1.025).toFixed(1));
+      const optProjCallSymbol = Math.abs(spot - linhaSup) / spot < 0.03
+        ? optCallSymbol
+        : `${prefix}${callSeries}${Math.round(strikeProjCall * 10)}`;
+      labelSup = `GATILHO HIPOTÉTICO CALL (%K <= 30% + Virada | Proj: ${optProjCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
       labelInf = `PISO DE SOBREVENDA (%K = 0% / STOP CALL): R$ ${linhaInf.toFixed(2)}`;
+      tituloZona = `Faixa CALL (%K ≤ 30%: ${optProjCallSymbol} | Ref Spot: ${optCallSymbol})`;
     }
     corSup = "#10b981";
     corInf = "#38bdf8";
     fillZona = "rgba(16, 185, 129, 0.12)";
-    tituloZona = `Faixa de Gatilho CALL (%K ≤ 30% | ${optCallSymbol})`;
-    tooltipSup = `Linha Paralela Superior (Limiar de Gatilho CALL — %K = 30%): calculada pela fórmula do Estocástico Lento (Mín14 + 30% da amplitude = R$ ${linhaSup.toFixed(2)}). Para armar compra na CALL ${optCallSymbol}, o preço precisa recuar abaixo desta linha (%K < 30%) e confirmar virada (%K > %D ou Force Index EMA-2 < 0 subindo).`;
+    const strikeProjTooltip = Number((linhaSup * 1.025).toFixed(2));
+    tooltipSup = `Linha Paralela Superior (Limiar de Gatilho CALL — %K = 30%): calculada pela fórmula do Estocástico Lento (Mín14 + 30% da amplitude = R$ ${linhaSup.toFixed(2)}). Ao recuar até R$ ${linhaSup.toFixed(2)} com virada compradora (%K > %D ou Force Index EMA-2 < 0 subindo), o Strike OTM ótimo projetado situa-se próximo a R$ ${strikeProjTooltip.toFixed(2)} (enquanto ao Spot atual de R$ ${spot.toFixed(2)} a referência da grade é ${optCallSymbol}).`;
     tooltipInf = `Linha Paralela Inferior (Piso de Sobrevenda %K = 0% / Stop Loss): posicionada 1 centavo abaixo da mínima de 14 pregões (R$ ${linhaInf.toFixed(2)}). Delimita a base da faixa de captura onde o gatilho é armado e protegido.`;
   } else if (trend === "BAIXA" || trend === "BEARISH") {
     linhaSup = Number((high14 + 0.01).toFixed(2));
@@ -227,15 +233,16 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
     if (linhaSup <= linhaInf) {
       linhaSup = Number((linhaInf + 0.25).toFixed(2));
     }
-    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
+    const strikeProjPut = Number((linhaInf * 0.975).toFixed(1));
+    const optPutSymbol = `${prefix}${putSeries}${Math.round(strikeProjPut * 10)}`;
     labelSup = `TETO DE SOBRECOMPRA (%K = 100% / STOP PUT): R$ ${linhaSup.toFixed(2)}`;
-    labelInf = `GATILHO HIPOTÉTICO PUT (%K >= 70% + Virada | ${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    labelInf = `GATILHO HIPOTÉTICO PUT (%K >= 70% + Virada | Proj: ${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
     corSup = "#f59e0b";
     corInf = "#f43f5e";
     fillZona = "rgba(244, 63, 94, 0.12)";
     tituloZona = `Faixa de Gatilho PUT (%K ≥ 70% | ${optPutSymbol})`;
     tooltipSup = `Linha Paralela Superior (Teto de Sobrecompra %K = 100% / Stop PUT): posicionada 1 centavo acima da máxima de 14 pregões (R$ ${linhaSup.toFixed(2)}). Delimita o topo da faixa de repique e o Stop Técnico da operação.`;
-    tooltipInf = `Linha Paralela Inferior (Limiar de Gatilho PUT — %K = 70%): calculada pela fórmula do Estocástico Lento (Mín14 + 70% da amplitude = R$ ${linhaInf.toFixed(2)}). Na Maré de Baixa, o preço precisa repicar acima desta linha (%K > 70%) e confirmar virada vendedora (%K < %D ou Force Index EMA-2 > 0 caindo) para acionar a PUT ${optPutSymbol}.`;
+    tooltipInf = `Linha Paralela Inferior (Limiar de Gatilho PUT — %K = 70%): calculada pela fórmula do Estocástico Lento (Mín14 + 70% da amplitude = R$ ${linhaInf.toFixed(2)}). Na Maré de Baixa, o preço precisa repicar acima desta linha (%K > 70%) e confirmar virada vendedora (%K < %D ou Force Index EMA-2 > 0 caindo) para acionar a PUT projetada ${optPutSymbol} (Strike ~R$ ${strikeProjPut.toFixed(2)}).`;
   } else {
     linhaSup = Number((low14 + 0.70 * amp14).toFixed(2));
     linhaInf = Number((low14 + 0.30 * amp14).toFixed(2));
@@ -243,15 +250,18 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       linhaSup = Number((spot * 1.02).toFixed(2));
       linhaInf = Number((spot * 0.98).toFixed(2));
     }
-    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaSup)}`;
-    labelSup = `LIMIAR SOBRECOMPRA PUT (%K >= 70% | ${optPutSymbol}): R$ ${linhaSup.toFixed(2)}`;
-    labelInf = `LIMIAR SOBREVENDA CALL (%K <= 30% | ${optCallSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    const strikeProjPut = Number((linhaSup * 0.975).toFixed(1));
+    const strikeProjCall = Number((linhaInf * 1.025).toFixed(1));
+    const optPutSymbol = `${prefix}${putSeries}${Math.round(strikeProjPut * 10)}`;
+    const optProjCallSymbol = `${prefix}${callSeries}${Math.round(strikeProjCall * 10)}`;
+    labelSup = `LIMIAR SOBRECOMPRA PUT (%K >= 70% | Proj: ${optPutSymbol}): R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `LIMIAR SOBREVENDA CALL (%K <= 30% | Proj: ${optProjCallSymbol}): R$ ${linhaInf.toFixed(2)}`;
     corSup = "#f43f5e";
     corInf = "#10b981";
     fillZona = "rgba(56, 189, 248, 0.08)";
     tituloZona = "Banda de Equilíbrio (%K: 30% a 70%)";
     tooltipSup = `Linha Paralela Superior (Limiar %K = 70% — R$ ${linhaSup.toFixed(2)}): fronteira de sobrecompra de 14 dias. Caso a Tela 1 vire para BAIXA, repiques acima desta linha com virada vendedora acionam PUT (${optPutSymbol}).`;
-    tooltipInf = `Linha Paralela Inferior (Limiar %K = 30% — R$ ${linhaInf.toFixed(2)}): fronteira de sobrevenda de 14 dias. Caso a Tela 1 vire para ALTA, recuos abaixo desta linha com virada compradora acionam CALL (${optCallSymbol}).`;
+    tooltipInf = `Linha Paralela Inferior (Limiar %K = 30% — R$ ${linhaInf.toFixed(2)}): fronteira de sobrevenda de 14 dias. Caso a Tela 1 vire para ALTA, recuos abaixo desta linha com virada compradora acionam CALL (${optProjCallSymbol}).`;
   }
 
   const allPrices = [];
@@ -269,7 +279,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
 
   const width = 640;
   const height = 295;
-  const pad = { top: 24, right: 64, bottom: 32, left: 54 };
+  const pad = { top: 24, right: 68, bottom: 32, left: 54 };
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
 
@@ -289,27 +299,47 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
 
   const ySup = getY(linhaSup);
   const yInf = getY(linhaInf);
+  const ySpot = getY(spot);
+  const lastEmaNum = lastC.ema13 != null && !isNaN(lastC.ema13) ? Number(lastC.ema13) : null;
+  const yEma = lastEmaNum != null ? getY(lastEmaNum) : null;
+
   const yTopZone = Math.min(ySup, yInf);
   const hZone = Math.max(2, Math.abs(yInf - ySup));
-  const supPillW = Math.max(180, labelSup.length * 5.4 + 12);
-  const infPillW = Math.max(180, labelInf.length * 5.4 + 12);
+  const supPillW = Math.max(180, labelSup.length * 5.2 + 12);
+  const infPillW = Math.max(180, labelInf.length * 5.2 + 12);
 
   const zonaFundoSvg = `
     <rect x="${pad.left}" y="${yTopZone.toFixed(1)}" width="${plotW}" height="${hZone.toFixed(1)}" fill="${fillZona}" />
     <line x1="${pad.left}" y1="${ySup.toFixed(1)}" x2="${width - pad.right}" y2="${ySup.toFixed(1)}" stroke="${corSup}" stroke-width="1.8" stroke-dasharray="6,4" />
     <line x1="${pad.left}" y1="${yInf.toFixed(1)}" x2="${width - pad.right}" y2="${yInf.toFixed(1)}" stroke="${corInf}" stroke-width="1.8" stroke-dasharray="6,4" />
+    <line x1="${pad.left}" y1="${ySpot.toFixed(1)}" x2="${width - pad.right}" y2="${ySpot.toFixed(1)}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="2,3" stroke-opacity="0.45" />
   `;
 
+  let extraRightBadges = "";
+  if (Math.abs(ySpot - ySup) > 15 && Math.abs(ySpot - yInf) > 15) {
+    extraRightBadges += `
+      <rect x="${width - pad.right + 2}" y="${(ySpot - 8).toFixed(1)}" width="62" height="15" rx="3" fill="#1e293b" stroke="#94a3b8" stroke-width="0.8" />
+      <text x="${width - pad.right + 33}" y="${(ySpot + 3).toFixed(1)}" fill="#f8fafc" font-size="8.5" font-family="monospace" font-weight="700" text-anchor="middle">${spot.toFixed(2)}</text>
+    `;
+  }
+  if (yEma != null && Math.abs(yEma - ySup) > 15 && Math.abs(yEma - yInf) > 15 && Math.abs(yEma - ySpot) > 15) {
+    extraRightBadges += `
+      <rect x="${width - pad.right + 2}" y="${(yEma - 8).toFixed(1)}" width="62" height="15" rx="3" fill="rgba(56,189,248,0.18)" stroke="#38bdf8" stroke-width="0.8" />
+      <text x="${width - pad.right + 33}" y="${(yEma + 3).toFixed(1)}" fill="#38bdf8" font-size="8.5" font-family="monospace" font-weight="700" text-anchor="middle">${lastEmaNum.toFixed(2)}</text>
+    `;
+  }
+
   const zonaLabelsSvg = `
-    <rect x="${width - pad.right + 2}" y="${(ySup - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corSup}" fill-opacity="0.22" stroke="${corSup}" stroke-width="0.8" />
-    <text x="${width - pad.right + 31}" y="${(ySup + 3.5).toFixed(1)}" fill="${corSup}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaSup.toFixed(2)}</text>
+    <rect x="${width - pad.right + 2}" y="${(ySup - 8).toFixed(1)}" width="62" height="16" rx="3" fill="${corSup}" fill-opacity="0.22" stroke="${corSup}" stroke-width="0.8" />
+    <text x="${width - pad.right + 33}" y="${(ySup + 3.5).toFixed(1)}" fill="${corSup}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaSup.toFixed(2)}</text>
     <rect x="${pad.left + 4}" y="${(ySup - 14).toFixed(1)}" width="${supPillW.toFixed(1)}" height="13" rx="3" fill="#090d16" fill-opacity="0.88" />
     <text x="${pad.left + 8}" y="${(ySup - 4.5).toFixed(1)}" fill="${corSup}" font-size="8.5" font-family="monospace" font-weight="700">${labelSup}</text>
 
-    <rect x="${width - pad.right + 2}" y="${(yInf - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corInf}" fill-opacity="0.22" stroke="${corInf}" stroke-width="0.8" />
-    <text x="${width - pad.right + 31}" y="${(yInf + 3.5).toFixed(1)}" fill="${corInf}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaInf.toFixed(2)}</text>
+    <rect x="${width - pad.right + 2}" y="${(yInf - 8).toFixed(1)}" width="62" height="16" rx="3" fill="${corInf}" fill-opacity="0.22" stroke="${corInf}" stroke-width="0.8" />
+    <text x="${width - pad.right + 33}" y="${(yInf + 3.5).toFixed(1)}" fill="${corInf}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaInf.toFixed(2)}</text>
     <rect x="${pad.left + 4}" y="${(yInf + 2).toFixed(1)}" width="${infPillW.toFixed(1)}" height="13" rx="3" fill="#090d16" fill-opacity="0.88" />
     <text x="${pad.left + 8}" y="${(yInf + 11.5).toFixed(1)}" fill="${corInf}" font-size="8.5" font-family="monospace" font-weight="700">${labelInf}</text>
+    ${extraRightBadges}
   `;
 
   let emaPts = [];
@@ -367,12 +397,23 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const lastDiffPct = lastPrevClose > 0 ? (((Number(lastC.close) - lastPrevClose) / lastPrevClose) * 100) : 0;
   const lastVarStr = (lastDiffPct >= 0 ? "+" : "") + lastDiffPct.toFixed(2) + "%";
   const lastColor = Number(lastC.close) >= Number(lastC.open) ? "#10b981" : "#f43f5e";
-  const lastEmaStr = lastC.ema13 != null && !isNaN(lastC.ema13) ? `R$ ${Number(lastC.ema13).toFixed(2)}` : "—";
+  const lastEmaStr = lastEmaNum != null ? `R$ ${lastEmaNum.toFixed(2)}` : "—";
+
+  const distEmaPct = lastEmaNum != null && spot > 0
+    ? (((lastEmaNum - spot) / spot) * 100)
+    : null;
+  const distEmaStr = distEmaPct != null
+    ? `${distEmaPct >= 0 ? "+" : ""}${distEmaPct.toFixed(1)}%`
+    : "—";
+
+  const alvoLinhaRef = (trend === "BAIXA" || trend === "BEARISH") ? linhaInf : linhaSup;
+  const distGatilhoPct = spot > 0 ? (((alvoLinhaRef - spot) / spot) * 100) : 0;
+  const distGatilhoStr = `${distGatilhoPct >= 0 ? "+" : ""}${distGatilhoPct.toFixed(1)}%`;
 
   return `
     <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px; margin-top:4px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
-        <div style="display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span style="font-size:0.82rem; font-weight:700; color:#f1f5f9;">📈 Candlesticks Diários — <span translate="no">${u.ticker}</span></span>
           <span style="font-size:0.68rem; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:1px 6px; border-radius:4px; font-family:monospace;">${tituloZona}</span>
         </div>
@@ -392,7 +433,8 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
         <span>EMA13: <strong style="color:#38bdf8;">${lastEmaStr}</strong></span>
       </div>
 
-      <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:295px; display:block;" xmlns="http://www.w3.org/2000/svg">
+      <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:295px; display:block;" xmlns="http://www.w3.org/2000/svg"
+        onmouseleave="atualizarInspecaoCandle('${lastC.date}', '${Number(lastC.open)}', '${Number(lastC.high)}', '${Number(lastC.low)}', '${Number(lastC.close)}', '${lastC.ema13}', '${lastVarStr}', '${lastColor}')">
         ${gridSvg}
         ${xLabelsSvg}
         ${zonaFundoSvg}
@@ -405,7 +447,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
         <div class="tooltip-wrap tooltip-left" onclick="event.stopPropagation()">
           <span style="display:inline-flex; align-items:center; gap:6px; cursor:help; text-decoration:underline dotted rgba(148,163,184,0.5); text-underline-offset:3px;">
             <span style="width:12px; height:3px; background:${corSup}; display:inline-block;"></span>
-            <strong style="color:${corSup}; font-family:monospace;">Linha Superior: R$ ${linhaSup.toFixed(2)}</strong>
+            <strong style="color:${corSup}; font-family:monospace;">Linha Sup: R$ ${linhaSup.toFixed(2)} (${distGatilhoStr})</strong>
           </span>
           <div class="tooltip-bubble" onclick="event.stopPropagation()">
             <div class="tooltip-title" style="color:${corSup};">📏 Linha Horizontal Superior (Triple Screen)</div>
@@ -416,7 +458,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
         <div class="tooltip-wrap tooltip-center" onclick="event.stopPropagation()">
           <span style="display:inline-flex; align-items:center; gap:6px; cursor:help; text-decoration:underline dotted rgba(148,163,184,0.5); text-underline-offset:3px;">
             <span style="width:12px; height:3px; background:${corInf}; display:inline-block;"></span>
-            <strong style="color:${corInf}; font-family:monospace;">Linha Inferior: R$ ${linhaInf.toFixed(2)}</strong>
+            <strong style="color:${corInf}; font-family:monospace;">Linha Inf: R$ ${linhaInf.toFixed(2)}</strong>
           </span>
           <div class="tooltip-bubble" onclick="event.stopPropagation()">
             <div class="tooltip-title" style="color:${corInf};">📐 Linha Horizontal Inferior (Triple Screen)</div>
@@ -426,7 +468,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
 
         <div style="display:inline-flex; align-items:center; gap:6px;">
           <span style="width:12px; height:2.5px; background:#38bdf8; display:inline-block;"></span>
-          <span style="color:#38bdf8; font-family:monospace;">EMA 13 Diária (Zona de Valor)</span>
+          <span style="color:#38bdf8; font-family:monospace;">EMA13: ${lastEmaStr} (${distEmaStr})</span>
         </div>
       </div>
     </div>

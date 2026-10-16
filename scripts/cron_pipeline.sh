@@ -23,10 +23,10 @@ if [ "$DOW" -gt 5 ]; then
   exit 0
 fi
 
-# 2. Verifica horário de pregão B3 (09:30 às 18:30 BRT)
+# 2. Verifica horário de pregão B3 (09:00 às 18:45 BRT)
 HM=$(date +%H%M)
-if [ "$HM" -lt 0930 ] || [ "$HM" -gt 1830 ]; then
-  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Fora do horário de monitoramento B3 (09:30 - 18:30). Hora atual: $HM."
+if [ "$((10#$HM))" -lt 900 ] || [ "$((10#$HM))" -gt 1845 ]; then
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] Fora do horário de monitoramento B3 (09:00 - 18:45). Hora atual: $HM."
   exit 0
 fi
 
@@ -34,7 +34,7 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] Iniciando atualização autônoma intradiá
 
 # 3. Sincroniza branch local antes da execução
 git checkout -- data/latest.json 2>/dev/null || true
-git pull --rebase origin main || true
+git pull --rebase --autostash origin main || true
 
 # 4. Executa pipeline e testes de validação atuarial
 "$REPO_DIR/.venv/bin/python" src/pipeline.py
@@ -46,7 +46,7 @@ if git diff --staged --quiet; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nenhuma alteração de dados detectada."
 else
   git commit -m "chore(data): atualizar latest.json intradiario (auto local)"
-  git pull --rebase -X theirs origin main
+  git pull --rebase --autostash -X theirs origin main
   git push origin main
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Dados atualizados e enviados com sucesso para o GitHub Pages!"
 fi
