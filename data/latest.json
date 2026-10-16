@@ -1,8 +1,8 @@
 {
   "metadata": {
     "schema_version": "2.0.0",
-    "generated_at_utc": "2026-10-16T18:10:03.180629+00:00",
-    "generated_at": "2026-10-16T15:10:03.180626-03:00",
+    "generated_at_utc": "2026-10-16T18:15:03.465394+00:00",
+    "generated_at": "2026-10-16T15:15:03.465390-03:00",
     "session_date": "2026-10-16",
     "business_date": "2026-10-16",
     "data_source": "yfinance",
@@ -12,10 +12,10 @@
       "auto_adjust": true
     },
     "is_synthetic_fallback": false,
-    "cdi_rate_annual": 0.105,
+    "cdi_rate_annual": 0.1365,
     "workdays_per_year": 252,
     "engine_version": "2.0.0",
-    "checksum": "abb53b555e2cdd47ac8a82a19d270547fb9c49f04cf8ed0eacad6346d9333ea1",
+    "checksum": "2503b39cce48d9efe0132a1f042e78d8d4b626a71195ec57c97f352561c0120f",
     "active_maturity": {
       "maturity_date": "2026-11-19",
       "days_to_maturity_du": 23,
@@ -27,16 +27,16 @@
   "underlyings": [
     {
       "ticker": "PETR4",
-      "spot_price": 59.05,
+      "spot_price": 59.03,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 47.89,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 97.43,
-      "stoch_d": 97.32,
-      "force_ema2": 29615936.26,
+      "stoch_k": 97.38,
+      "stoch_d": 97.3,
+      "force_ema2": 29609961.56,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -516,24 +516,24 @@
           "open": 57.66,
           "high": 59.09,
           "low": 57.53,
-          "close": 59.05,
+          "close": 59.03,
           "ema13": 54.91
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "VALE3",
-      "spot_price": 66.35,
+      "spot_price": 66.25,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 65.72,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 8.05,
-      "stoch_d": 8.0,
-      "force_ema2": -3822703.89,
+      "stoch_k": 7.66,
+      "stoch_d": 7.87,
+      "force_ema2": -5254359.49,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -1013,24 +1013,24 @@
           "open": 66.72,
           "high": 67.37,
           "low": 65.87,
-          "close": 66.35,
-          "ema13": 68.63
+          "close": 66.25,
+          "ema13": 68.62
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "ITUB4",
-      "spot_price": 47.78,
+      "spot_price": 47.82,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 41.49,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 73.5,
-      "stoch_d": 80.53,
-      "force_ema2": -10262368.69,
+      "stoch_k": 73.64,
+      "stoch_d": 80.57,
+      "force_ema2": -10005111.43,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -1510,24 +1510,24 @@
           "open": 48.61,
           "high": 48.8,
           "low": 47.73,
-          "close": 47.78,
+          "close": 47.82,
           "ema13": 47.54
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "BBDC4",
-      "spot_price": 20.25,
+      "spot_price": 20.26,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 17.18,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 63.2,
-      "stoch_d": 67.51,
-      "force_ema2": -10517705.04,
+      "stoch_k": 63.26,
+      "stoch_d": 67.53,
+      "force_ema2": -10429401.69,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -2007,24 +2007,24 @@
           "open": 20.82,
           "high": 20.83,
           "low": 20.23,
-          "close": 20.25,
-          "ema13": 20.23
+          "close": 20.26,
+          "ema13": 20.24
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "BBAS3",
-      "spot_price": 23.4,
+      "spot_price": 23.46,
       "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 21.18,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 43.39,
-      "stoch_d": 48.17,
-      "force_ema2": -9316339.5,
+      "stoch_k": 43.72,
+      "stoch_d": 48.28,
+      "force_ema2": -8838233.61,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -2504,24 +2504,24 @@
           "open": 23.87,
           "high": 23.95,
           "low": 23.29,
-          "close": 23.4,
-          "ema13": 23.76
+          "close": 23.46,
+          "ema13": 23.77
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "B3SA3",
-      "spot_price": 22.13,
+      "spot_price": 22.12,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 17.53,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 69.58,
-      "stoch_d": 73.51,
-      "force_ema2": -5417725.16,
+      "stoch_k": 69.53,
+      "stoch_d": 73.5,
+      "force_ema2": -5606373.78,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -3001,11 +3001,11 @@
           "open": 22.21,
           "high": 22.48,
           "low": 21.98,
-          "close": 22.13,
+          "close": 22.12,
           "ema13": 21.4
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "ITSA4",
@@ -3018,7 +3018,7 @@
       "alvo_2r": null,
       "stoch_k": 61.74,
       "stoch_d": 69.76,
-      "force_ema2": -5664301.13,
+      "force_ema2": -5676665.15,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -3502,20 +3502,20 @@
           "ema13": 15.45
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "BBSE3",
-      "spot_price": 41.75,
+      "spot_price": 41.83,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 38.24,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 81.98,
-      "stoch_d": 76.95,
-      "force_ema2": 497502.63,
+      "stoch_k": 82.62,
+      "stoch_d": 77.17,
+      "force_ema2": 627634.87,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -3995,24 +3995,24 @@
           "open": 41.58,
           "high": 42.3,
           "low": 41.5,
-          "close": 41.75,
-          "ema13": 40.78
+          "close": 41.83,
+          "ema13": 40.8
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "SANB11",
-      "spot_price": 28.11,
+      "spot_price": 28.1,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 27.34,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 37.6,
-      "stoch_d": 45.47,
-      "force_ema2": -785970.21,
+      "stoch_k": 37.47,
+      "stoch_d": 45.42,
+      "force_ema2": -806679.97,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -4492,24 +4492,24 @@
           "open": 28.5,
           "high": 28.84,
           "low": 28.04,
-          "close": 28.11,
+          "close": 28.1,
           "ema13": 28.81
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "BPAC11",
-      "spot_price": 76.07,
+      "spot_price": 75.99,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 61.72,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 67.25,
-      "stoch_d": 73.74,
-      "force_ema2": -11808435.13,
+      "stoch_k": 67.13,
+      "stoch_d": 73.7,
+      "force_ema2": -12361609.88,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -4989,11 +4989,11 @@
           "open": 77.67,
           "high": 77.67,
           "low": 75.53,
-          "close": 76.07,
-          "ema13": 74.38
+          "close": 75.99,
+          "ema13": 74.37
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "PETR3",
@@ -5006,7 +5006,7 @@
       "alvo_2r": null,
       "stoch_k": 95.49,
       "stoch_d": 95.3,
-      "force_ema2": 4389042.73,
+      "force_ema2": 4443642.73,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -5490,20 +5490,20 @@
           "ema13": 61.14
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "PRIO3",
-      "spot_price": 70.38,
+      "spot_price": 70.34,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 60.0,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 94.84,
-      "stoch_d": 93.58,
-      "force_ema2": 10012556.08,
+      "stoch_k": 94.71,
+      "stoch_d": 93.54,
+      "force_ema2": 9949330.47,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -5983,24 +5983,24 @@
           "open": 68.63,
           "high": 70.65,
           "low": 68.6,
-          "close": 70.38,
-          "ema13": 65.43
+          "close": 70.34,
+          "ema13": 65.42
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "GGBR4",
-      "spot_price": 25.48,
+      "spot_price": 25.45,
       "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 24.04,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 53.61,
-      "stoch_d": 57.28,
-      "force_ema2": -1270006.96,
+      "stoch_k": 53.29,
+      "stoch_d": 57.17,
+      "force_ema2": -1404715.02,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -6480,24 +6480,24 @@
           "open": 25.67,
           "high": 26.08,
           "low": 25.45,
-          "close": 25.48,
+          "close": 25.45,
           "ema13": 25.47
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "CSNA3",
-      "spot_price": 5.85,
+      "spot_price": 5.81,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 5.25,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 48.31,
-      "stoch_d": 61.18,
-      "force_ema2": -2810428.39,
+      "stoch_k": 47.47,
+      "stoch_d": 60.9,
+      "force_ema2": -3274105.3,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -6977,24 +6977,24 @@
           "open": 5.99,
           "high": 6.02,
           "low": 5.79,
-          "close": 5.85,
+          "close": 5.81,
           "ema13": 6.16
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "USIM5",
-      "spot_price": 6.74,
+      "spot_price": 6.71,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 6.62,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 10.33,
-      "stoch_d": 22.28,
-      "force_ema2": -622160.03,
+      "stoch_k": 9.51,
+      "stoch_d": 22.01,
+      "force_ema2": -751476.86,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -7474,24 +7474,24 @@
           "open": 6.78,
           "high": 6.84,
           "low": 6.67,
-          "close": 6.74,
+          "close": 6.71,
           "ema13": 7.03
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "SUZB3",
-      "spot_price": 42.96,
+      "spot_price": 42.95,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 40.6,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 39.82,
-      "stoch_d": 34.56,
-      "force_ema2": 609906.2,
+      "stoch_k": 39.75,
+      "stoch_d": 34.53,
+      "force_ema2": 596310.29,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -7971,24 +7971,24 @@
           "open": 42.69,
           "high": 43.52,
           "low": 42.3,
-          "close": 42.96,
+          "close": 42.95,
           "ema13": 43.32
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "ELET3",
-      "spot_price": 59.47,
+      "spot_price": 59.46,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 53.75,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 70.2,
-      "stoch_d": 69.47,
-      "force_ema2": 307299.86,
+      "stoch_k": 70.16,
+      "stoch_d": 69.46,
+      "force_ema2": 263595.87,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -8468,11 +8468,11 @@
           "open": 59.5,
           "high": 60.0,
           "low": 59.24,
-          "close": 59.47,
+          "close": 59.46,
           "ema13": 58.47
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "CMIG4",
@@ -8485,7 +8485,7 @@
       "alvo_2r": null,
       "stoch_k": 66.46,
       "stoch_d": 71.53,
-      "force_ema2": -806688.81,
+      "force_ema2": -807126.14,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -8969,7 +8969,7 @@
           "ema13": 11.69
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "ABEV3",
@@ -8982,7 +8982,7 @@
       "alvo_2r": null,
       "stoch_k": 86.67,
       "stoch_d": 78.08,
-      "force_ema2": 3385252.52,
+      "force_ema2": 3389612.34,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -9466,20 +9466,20 @@
           "ema13": 16.17
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "MGLU3",
-      "spot_price": 10.97,
+      "spot_price": 10.91,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 6.52,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 69.65,
-      "stoch_d": 75.15,
-      "force_ema2": 6730631.62,
+      "stoch_k": 69.33,
+      "stoch_d": 75.04,
+      "force_ema2": 5191576.82,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -9959,24 +9959,24 @@
           "open": 10.61,
           "high": 11.04,
           "low": 10.54,
-          "close": 10.97,
-          "ema13": 9.68
+          "close": 10.91,
+          "ema13": 9.67
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "LREN3",
-      "spot_price": 13.48,
+      "spot_price": 13.47,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 10.97,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 63.84,
-      "stoch_d": 69.71,
-      "force_ema2": -3158392.53,
+      "stoch_k": 63.76,
+      "stoch_d": 69.68,
+      "force_ema2": -3253715.28,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -10456,24 +10456,24 @@
           "open": 13.7,
           "high": 13.88,
           "low": 13.26,
-          "close": 13.48,
-          "ema13": 13.16
+          "close": 13.47,
+          "ema13": 13.15
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "NTCO3",
-      "spot_price": 7.07,
+      "spot_price": 7.06,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 6.42,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 32.61,
-      "stoch_d": 35.33,
-      "force_ema2": 225259.98,
+      "stoch_k": 32.43,
+      "stoch_d": 35.27,
+      "force_ema2": 186164.32,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -10953,24 +10953,24 @@
           "open": 7.0,
           "high": 7.14,
           "low": 6.98,
-          "close": 7.07,
-          "ema13": 7.27
+          "close": 7.06,
+          "ema13": 7.26
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "RAIZ4",
-      "spot_price": 0.36,
+      "spot_price": 0.37,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 0.28,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 76.26,
-      "stoch_d": 79.8,
-      "force_ema2": -9633.54,
+      "stoch_k": 79.29,
+      "stoch_d": 80.81,
+      "force_ema2": 60993.06,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -11450,24 +11450,24 @@
           "open": 0.36,
           "high": 0.38,
           "low": 0.36,
-          "close": 0.36,
+          "close": 0.37,
           "ema13": 0.34
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "RENT3",
-      "spot_price": 49.43,
+      "spot_price": 49.39,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 37.15,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 71.88,
-      "stoch_d": 77.3,
-      "force_ema2": -5466634.34,
+      "stoch_k": 71.8,
+      "stoch_d": 77.27,
+      "force_ema2": -5610894.53,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -11947,24 +11947,24 @@
           "open": 50.33,
           "high": 51.0,
           "low": 49.15,
-          "close": 49.43,
+          "close": 49.39,
           "ema13": 47.72
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "VAMO3",
-      "spot_price": 5.6,
+      "spot_price": 5.61,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 3.72,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 61.0,
-      "stoch_d": 68.74,
-      "force_ema2": -2170109.65,
+      "stoch_k": 61.1,
+      "stoch_d": 68.77,
+      "force_ema2": -2074520.8,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -12444,24 +12444,24 @@
           "open": 5.71,
           "high": 5.76,
           "low": 5.45,
-          "close": 5.6,
+          "close": 5.61,
           "ema13": 5.48
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "JBSS3",
-      "spot_price": 66.35,
+      "spot_price": 66.46,
       "trend_signal": "ALTA",
       "phase": "A_CAMINHO",
       "suporte_fibonacci": 55.44,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 90.44,
-      "stoch_d": 93.36,
-      "force_ema2": 764313.95,
+      "stoch_k": 90.75,
+      "stoch_d": 93.46,
+      "force_ema2": 883023.8,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -12941,11 +12941,11 @@
           "open": 65.0,
           "high": 67.02,
           "low": 65.0,
-          "close": 66.35,
-          "ema13": 63.43
+          "close": 66.46,
+          "ema13": 63.44
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "BOVA11",
@@ -12958,7 +12958,7 @@
       "alvo_2r": null,
       "stoch_k": 85.5,
       "stoch_d": 88.51,
-      "force_ema2": -4035914.01,
+      "force_ema2": -4068379.3,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -13442,20 +13442,20 @@
           "ema13": 197.35
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     },
     {
       "ticker": "WEGE3",
-      "spot_price": 47.74,
+      "spot_price": 47.81,
       "trend_signal": "BAIXA",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 47.69,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
-      "stoch_k": 12.23,
-      "stoch_d": 29.48,
-      "force_ema2": -9345338.15,
+      "stoch_k": 12.69,
+      "stoch_d": 29.63,
+      "force_ema2": -9138093.89,
       "wave_daily": "NEUTRO",
       "ohlc_history": [
         {
@@ -13935,11 +13935,11 @@
           "open": 49.32,
           "high": 49.32,
           "low": 47.69,
-          "close": 47.74,
-          "ema13": 50.23
+          "close": 47.81,
+          "ema13": 50.24
         }
       ],
-      "updated_at": "2026-10-16T15:10:03.180626-03:00"
+      "updated_at": "2026-10-16T15:15:03.465390-03:00"
     }
   ],
   "options": [
@@ -13951,16 +13951,16 @@
       "strike": 54.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 5.49,
-      "theoretical_price": 5.4905,
+      "spot_price": 59.03,
+      "market_price": 5.59,
+      "theoretical_price": 5.5938,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.8915,
-        "gamma": 0.0405,
-        "theta_du": -0.0373,
-        "vega": 3.3213,
-        "rho": 4.3037
+        "delta": 0.8968,
+        "gamma": 0.0391,
+        "theta_du": -0.042,
+        "vega": 3.2032,
+        "rho": 4.3209
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -13975,16 +13975,16 @@
       "strike": 56.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 3.57,
-      "theoretical_price": 3.5721,
+      "spot_price": 59.03,
+      "market_price": 3.66,
+      "theoretical_price": 3.6621,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.7512,
-        "gamma": 0.069,
-        "theta_du": -0.0481,
-        "vega": 5.6541,
-        "rho": 3.7227
+        "delta": 0.7602,
+        "gamma": 0.0677,
+        "theta_du": -0.0522,
+        "vega": 5.541,
+        "rho": 3.7616
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -13999,16 +13999,16 @@
       "strike": 59.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 2.13,
-      "theoretical_price": 2.1297,
+      "spot_price": 59.03,
+      "market_price": 2.2,
+      "theoretical_price": 2.1992,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.5663,
-        "gamma": 0.0857,
-        "theta_du": -0.0521,
-        "vega": 7.0184,
-        "rho": 2.8577
+        "delta": 0.5775,
+        "gamma": 0.0853,
+        "theta_du": -0.0557,
+        "vega": 6.9797,
+        "rho": 2.9109
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14023,16 +14023,16 @@
       "strike": 61.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 1.1,
-      "theoretical_price": 1.0984,
+      "spot_price": 59.03,
+      "market_price": 1.14,
+      "theoretical_price": 1.144,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.3647,
-        "gamma": 0.0818,
-        "theta_du": -0.0459,
-        "vega": 6.7038,
-        "rho": 1.8655
+        "delta": 0.3755,
+        "gamma": 0.0827,
+        "theta_du": -0.0488,
+        "vega": 6.7654,
+        "rho": 1.9189
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14047,16 +14047,16 @@
       "strike": 63.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 0.5,
-      "theoretical_price": 0.4966,
+      "spot_price": 59.03,
+      "market_price": 0.52,
+      "theoretical_price": 0.5221,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.2007,
-        "gamma": 0.0611,
-        "theta_du": -0.0324,
-        "vega": 5.0056,
-        "rho": 1.0366
+        "delta": 0.2089,
+        "gamma": 0.0626,
+        "theta_du": -0.0346,
+        "vega": 5.1232,
+        "rho": 1.0776
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14071,16 +14071,16 @@
       "strike": 66.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.05,
-      "market_price": 0.2,
-      "theoretical_price": 0.2049,
+      "spot_price": 59.03,
+      "market_price": 0.22,
+      "theoretical_price": 0.2175,
       "iv": 0.2574,
       "greeks": {
-        "delta": 0.0978,
-        "gamma": 0.0376,
-        "theta_du": -0.0192,
-        "vega": 3.0793,
-        "rho": 0.5082
+        "delta": 0.1028,
+        "gamma": 0.039,
+        "theta_du": -0.0205,
+        "vega": 3.1928,
+        "rho": 0.5339
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14095,16 +14095,16 @@
       "strike": 61.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 6.17,
-      "theoretical_price": 6.1703,
+      "spot_price": 66.25,
+      "market_price": 6.22,
+      "theoretical_price": 6.2172,
       "iv": 0.2547,
       "greeks": {
-        "delta": 0.8943,
-        "gamma": 0.0358,
-        "theta_du": -0.0414,
-        "vega": 3.6627,
-        "rho": 4.8524
+        "delta": 0.8968,
+        "gamma": 0.0352,
+        "theta_du": -0.047,
+        "vega": 3.5947,
+        "rho": 4.855
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14112,47 +14112,23 @@
       }
     },
     {
-      "symbol": "VALEK637",
+      "symbol": "VALEK636",
       "underlying_ticker": "VALE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 63.7,
+      "strike": 63.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 4.0,
-      "theoretical_price": 4.0034,
+      "spot_price": 66.25,
+      "market_price": 4.12,
+      "theoretical_price": 4.1189,
       "iv": 0.2547,
       "greeks": {
-        "delta": 0.7539,
-        "gamma": 0.0617,
-        "theta_du": -0.0535,
-        "vega": 6.317,
-        "rho": 4.1998
-      },
-      "actuarial_checks": {
-        "intrinsic_bound_ok": true,
-        "parity_violation_brl": 0.0
-      }
-    },
-    {
-      "symbol": "VALEK663",
-      "underlying_ticker": "VALE3",
-      "type": "CALL",
-      "style": "EUROPEAN",
-      "strike": 66.3,
-      "maturity_date": "2026-11-19",
-      "du": 23,
-      "spot_price": 66.35,
-      "market_price": 2.37,
-      "theoretical_price": 2.3683,
-      "iv": 0.2547,
-      "greeks": {
-        "delta": 0.5662,
-        "gamma": 0.0771,
+        "delta": 0.7645,
+        "gamma": 0.0604,
         "theta_du": -0.0581,
-        "vega": 7.8864,
-        "rho": 3.2126
+        "vega": 6.1578,
+        "rho": 4.2467
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14160,23 +14136,23 @@
       }
     },
     {
-      "symbol": "VALEK690",
+      "symbol": "VALEK662",
       "underlying_ticker": "VALE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 69.0,
+      "strike": 66.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 1.21,
-      "theoretical_price": 1.2106,
+      "spot_price": 66.25,
+      "market_price": 2.46,
+      "theoretical_price": 2.456,
       "iv": 0.2547,
       "greeks": {
-        "delta": 0.3624,
-        "gamma": 0.0735,
-        "theta_du": -0.0509,
-        "vega": 7.5161,
-        "rho": 2.0839
+        "delta": 0.5793,
+        "gamma": 0.0767,
+        "theta_du": -0.0621,
+        "vega": 7.8265,
+        "rho": 3.2786
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14184,23 +14160,23 @@
       }
     },
     {
-      "symbol": "VALEK717",
+      "symbol": "VALEK689",
       "underlying_ticker": "VALE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 71.7,
+      "strike": 68.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 0.54,
-      "theoretical_price": 0.5405,
+      "spot_price": 66.25,
+      "market_price": 1.27,
+      "theoretical_price": 1.2669,
       "iv": 0.2547,
       "greeks": {
-        "delta": 0.1974,
-        "gamma": 0.0544,
-        "theta_du": -0.0357,
-        "vega": 5.5672,
-        "rho": 1.1459
+        "delta": 0.3747,
+        "gamma": 0.0744,
+        "theta_du": -0.0542,
+        "vega": 7.5873,
+        "rho": 2.1498
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14208,23 +14184,47 @@
       }
     },
     {
-      "symbol": "VALEK743",
+      "symbol": "VALEK716",
       "underlying_ticker": "VALE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 74.3,
+      "strike": 71.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 0.22,
-      "theoretical_price": 0.2186,
+      "spot_price": 66.25,
+      "market_price": 0.57,
+      "theoretical_price": 0.5712,
       "iv": 0.2547,
       "greeks": {
-        "delta": 0.0944,
-        "gamma": 0.033,
-        "theta_du": -0.0208,
-        "vega": 3.3726,
-        "rho": 0.5518
+        "delta": 0.2064,
+        "gamma": 0.056,
+        "theta_du": -0.0381,
+        "vega": 5.7089,
+        "rho": 1.1956
+      },
+      "actuarial_checks": {
+        "intrinsic_bound_ok": true,
+        "parity_violation_brl": 0.0
+      }
+    },
+    {
+      "symbol": "VALEK742",
+      "underlying_ticker": "VALE3",
+      "type": "CALL",
+      "style": "EUROPEAN",
+      "strike": 74.2,
+      "maturity_date": "2026-11-19",
+      "du": 23,
+      "spot_price": 66.25,
+      "market_price": 0.23,
+      "theoretical_price": 0.2332,
+      "iv": 0.2547,
+      "greeks": {
+        "delta": 0.0998,
+        "gamma": 0.0344,
+        "theta_du": -0.0223,
+        "vega": 3.5071,
+        "rho": 0.5821
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14239,16 +14239,16 @@
       "strike": 44.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 4.34,
-      "theoretical_price": 4.3422,
+      "spot_price": 47.82,
+      "market_price": 4.48,
+      "theoretical_price": 4.4783,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.903,
-        "gamma": 0.0496,
-        "theta_du": -0.0283,
-        "vega": 2.4779,
-        "rho": 3.5414
+        "delta": 0.9108,
+        "gamma": 0.0465,
+        "theta_du": -0.032,
+        "vega": 2.3305,
+        "rho": 3.5665
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14263,16 +14263,16 @@
       "strike": 45.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 2.8,
-      "theoretical_price": 2.7962,
+      "spot_price": 47.82,
+      "market_price": 2.91,
+      "theoretical_price": 2.9141,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.7629,
-        "gamma": 0.0891,
-        "theta_du": -0.0368,
-        "vega": 4.4578,
-        "rho": 3.0716
+        "delta": 0.7771,
+        "gamma": 0.086,
+        "theta_du": -0.0401,
+        "vega": 4.3093,
+        "rho": 3.1259
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14287,16 +14287,16 @@
       "strike": 47.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 1.59,
-      "theoretical_price": 1.5924,
+      "spot_price": 47.82,
+      "market_price": 1.68,
+      "theoretical_price": 1.681,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.562,
-        "gamma": 0.1138,
-        "theta_du": -0.04,
-        "vega": 5.6888,
-        "rho": 2.3057
+        "delta": 0.5805,
+        "gamma": 0.1127,
+        "theta_du": -0.043,
+        "vega": 5.6458,
+        "rho": 2.3801
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14311,16 +14311,16 @@
       "strike": 49.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 0.79,
-      "theoretical_price": 0.789,
+      "spot_price": 47.82,
+      "market_price": 0.85,
+      "theoretical_price": 0.8453,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.3514,
-        "gamma": 0.1071,
-        "theta_du": -0.0345,
-        "vega": 5.3546,
-        "rho": 1.4606
+        "delta": 0.369,
+        "gamma": 0.1088,
+        "theta_du": -0.0371,
+        "vega": 5.4498,
+        "rho": 1.5333
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14335,16 +14335,16 @@
       "strike": 51.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 0.34,
-      "theoretical_price": 0.3372,
+      "spot_price": 47.82,
+      "market_price": 0.37,
+      "theoretical_price": 0.3672,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.1844,
-        "gamma": 0.0769,
-        "theta_du": -0.0233,
-        "vega": 3.8447,
-        "rho": 0.7732
+        "delta": 0.1971,
+        "gamma": 0.08,
+        "theta_du": -0.0254,
+        "vega": 4.009,
+        "rho": 0.8267
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14352,23 +14352,23 @@
       }
     },
     {
-      "symbol": "ITUBK535",
+      "symbol": "ITUBK536",
       "underlying_ticker": "ITUB4",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 53.5,
+      "strike": 53.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.78,
-      "market_price": 0.12,
-      "theoretical_price": 0.1241,
+      "spot_price": 47.82,
+      "market_price": 0.13,
+      "theoretical_price": 0.13,
       "iv": 0.24,
       "greeks": {
-        "delta": 0.0811,
-        "gamma": 0.0434,
-        "theta_du": -0.0126,
-        "vega": 2.1685,
-        "rho": 0.3424
+        "delta": 0.0843,
+        "gamma": 0.0446,
+        "theta_du": -0.0134,
+        "vega": 2.2345,
+        "rho": 0.3561
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14383,16 +14383,16 @@
       "strike": 18.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 1.94,
-      "theoretical_price": 1.94,
+      "spot_price": 20.26,
+      "market_price": 1.99,
+      "theoretical_price": 1.989,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.8687,
-        "gamma": 0.1203,
-        "theta_du": -0.0144,
-        "vega": 1.303,
-        "rho": 1.4285
+        "delta": 0.876,
+        "gamma": 0.1156,
+        "theta_du": -0.0159,
+        "vega": 1.2527,
+        "rho": 1.4384
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14407,16 +14407,16 @@
       "strike": 19.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 1.32,
-      "theoretical_price": 1.3192,
+      "spot_price": 20.26,
+      "market_price": 1.36,
+      "theoretical_price": 1.3618,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.7384,
-        "gamma": 0.1838,
-        "theta_du": -0.018,
-        "vega": 1.9905,
-        "rho": 1.2444
+        "delta": 0.7497,
+        "gamma": 0.1796,
+        "theta_du": -0.0194,
+        "vega": 1.9462,
+        "rho": 1.262
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14424,23 +14424,23 @@
       }
     },
     {
-      "symbol": "BBDCK202",
+      "symbol": "BBDCK203",
       "underlying_ticker": "BBDC4",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 20.2,
+      "strike": 20.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 0.82,
-      "theoretical_price": 0.8246,
+      "spot_price": 20.26,
+      "market_price": 0.8,
+      "theoretical_price": 0.805,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.5699,
-        "gamma": 0.2219,
-        "theta_du": -0.0195,
-        "vega": 2.403,
-        "rho": 0.9781
+        "delta": 0.5615,
+        "gamma": 0.2226,
+        "theta_du": -0.0207,
+        "vega": 2.4128,
+        "rho": 0.9648
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14455,16 +14455,16 @@
       "strike": 21.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 0.44,
-      "theoretical_price": 0.4356,
+      "spot_price": 20.26,
+      "market_price": 0.46,
+      "theoretical_price": 0.458,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.3736,
-        "gamma": 0.214,
-        "theta_du": -0.0175,
-        "vega": 2.317,
-        "rho": 0.6507
+        "delta": 0.3869,
+        "gamma": 0.2162,
+        "theta_du": -0.0186,
+        "vega": 2.343,
+        "rho": 0.6736
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14479,16 +14479,16 @@
       "strike": 21.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 0.22,
-      "theoretical_price": 0.2233,
+      "spot_price": 20.26,
+      "market_price": 0.24,
+      "theoretical_price": 0.2371,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.2272,
-        "gamma": 0.1704,
-        "theta_du": -0.0133,
-        "vega": 1.8448,
-        "rho": 0.3995
+        "delta": 0.2378,
+        "gamma": 0.1747,
+        "theta_du": -0.0142,
+        "vega": 1.8934,
+        "rho": 0.4182
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14503,16 +14503,16 @@
       "strike": 22.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 20.25,
-      "market_price": 0.1,
-      "theoretical_price": 0.1041,
+      "spot_price": 20.26,
+      "market_price": 0.11,
+      "theoretical_price": 0.1117,
       "iv": 0.2893,
       "greeks": {
-        "delta": 0.1233,
-        "gamma": 0.1152,
-        "theta_du": -0.0087,
-        "vega": 1.2474,
-        "rho": 0.2184
+        "delta": 0.1306,
+        "gamma": 0.1198,
+        "theta_du": -0.0094,
+        "vega": 1.2987,
+        "rho": 0.2312
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14520,23 +14520,23 @@
       }
     },
     {
-      "symbol": "BBASK215",
+      "symbol": "BBASK216",
       "underlying_ticker": "BBAS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 21.5,
+      "strike": 21.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 23.4,
-      "market_price": 2.25,
-      "theoretical_price": 2.2466,
-      "iv": 0.2962,
+      "spot_price": 23.46,
+      "market_price": 2.26,
+      "theoretical_price": 2.261,
+      "iv": 0.2961,
       "greeks": {
-        "delta": 0.8628,
-        "gamma": 0.1048,
-        "theta_du": -0.0171,
-        "vega": 1.5519,
-        "rho": 1.6377
+        "delta": 0.864,
+        "gamma": 0.104,
+        "theta_du": -0.0191,
+        "vega": 1.5463,
+        "rho": 1.6437
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14551,40 +14551,16 @@
       "strike": 22.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 23.4,
-      "market_price": 1.48,
-      "theoretical_price": 1.4834,
-      "iv": 0.2962,
+      "spot_price": 23.46,
+      "market_price": 1.57,
+      "theoretical_price": 1.567,
+      "iv": 0.2961,
       "greeks": {
-        "delta": 0.7207,
-        "gamma": 0.1606,
-        "theta_du": -0.0216,
-        "vega": 2.3768,
-        "rho": 1.4038
-      },
-      "actuarial_checks": {
-        "intrinsic_bound_ok": true,
-        "parity_violation_brl": 0.0
-      }
-    },
-    {
-      "symbol": "BBASK234",
-      "underlying_ticker": "BBAS3",
-      "type": "CALL",
-      "style": "EUROPEAN",
-      "strike": 23.4,
-      "maturity_date": "2026-11-19",
-      "du": 23,
-      "spot_price": 23.4,
-      "market_price": 0.94,
-      "theoretical_price": 0.9416,
-      "iv": 0.2962,
-      "greeks": {
-        "delta": 0.5583,
-        "gamma": 0.1885,
+        "delta": 0.7397,
+        "gamma": 0.1547,
         "theta_du": -0.023,
-        "vega": 2.7901,
-        "rho": 1.1064
+        "vega": 2.3004,
+        "rho": 1.4408
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14592,23 +14568,47 @@
       }
     },
     {
-      "symbol": "BBASK243",
+      "symbol": "BBASK235",
       "underlying_ticker": "BBAS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 24.3,
+      "strike": 23.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 23.4,
-      "market_price": 0.55,
-      "theoretical_price": 0.5503,
-      "iv": 0.2962,
+      "spot_price": 23.46,
+      "market_price": 0.95,
+      "theoretical_price": 0.9544,
+      "iv": 0.2961,
       "greeks": {
-        "delta": 0.3916,
-        "gamma": 0.1835,
-        "theta_du": -0.021,
-        "vega": 2.7155,
-        "rho": 0.7861
+        "delta": 0.5621,
+        "gamma": 0.1878,
+        "theta_du": -0.0244,
+        "vega": 2.7932,
+        "rho": 1.1164
+      },
+      "actuarial_checks": {
+        "intrinsic_bound_ok": true,
+        "parity_violation_brl": 0.0
+      }
+    },
+    {
+      "symbol": "BBASK244",
+      "underlying_ticker": "BBAS3",
+      "type": "CALL",
+      "style": "EUROPEAN",
+      "strike": 24.4,
+      "maturity_date": "2026-11-19",
+      "du": 23,
+      "spot_price": 23.46,
+      "market_price": 0.56,
+      "theoretical_price": 0.5604,
+      "iv": 0.2961,
+      "greeks": {
+        "delta": 0.3959,
+        "gamma": 0.1836,
+        "theta_du": -0.0221,
+        "vega": 2.7307,
+        "rho": 0.7966
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14623,16 +14623,16 @@
       "strike": 25.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 23.4,
-      "market_price": 0.27,
-      "theoretical_price": 0.2741,
-      "iv": 0.2962,
+      "spot_price": 23.46,
+      "market_price": 0.3,
+      "theoretical_price": 0.3024,
+      "iv": 0.2961,
       "greeks": {
-        "delta": 0.2339,
-        "gamma": 0.1464,
-        "theta_du": -0.016,
-        "vega": 2.167,
-        "rho": 0.4746
+        "delta": 0.2518,
+        "gamma": 0.152,
+        "theta_du": -0.0174,
+        "vega": 2.2609,
+        "rho": 0.5116
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14640,23 +14640,23 @@
       }
     },
     {
-      "symbol": "BBASK262",
+      "symbol": "BBASK263",
       "underlying_ticker": "BBAS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 26.2,
+      "strike": 26.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 23.4,
-      "market_price": 0.13,
-      "theoretical_price": 0.1338,
-      "iv": 0.2962,
+      "spot_price": 23.46,
+      "market_price": 0.14,
+      "theoretical_price": 0.138,
+      "iv": 0.2961,
       "greeks": {
-        "delta": 0.1321,
-        "gamma": 0.1022,
-        "theta_du": -0.0108,
-        "vega": 1.512,
-        "rho": 0.2699
+        "delta": 0.1352,
+        "gamma": 0.1036,
+        "theta_du": -0.0113,
+        "vega": 1.5404,
+        "rho": 0.2769
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14671,16 +14671,16 @@
       "strike": 20.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 2.2,
-      "theoretical_price": 2.1995,
+      "spot_price": 22.12,
+      "market_price": 2.23,
+      "theoretical_price": 2.2316,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.805,
-        "gamma": 0.1106,
-        "theta_du": -0.0212,
-        "vega": 1.8431,
-        "rho": 1.4253
+        "delta": 0.8102,
+        "gamma": 0.1088,
+        "theta_du": -0.0228,
+        "vega": 1.8125,
+        "rho": 1.4319
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14695,16 +14695,16 @@
       "strike": 21.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 1.63,
-      "theoretical_price": 1.6315,
+      "spot_price": 22.12,
+      "market_price": 1.66,
+      "theoretical_price": 1.6601,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.6979,
-        "gamma": 0.1399,
-        "theta_du": -0.0246,
-        "vega": 2.332,
-        "rho": 1.2607
+        "delta": 0.7044,
+        "gamma": 0.1386,
+        "theta_du": -0.026,
+        "vega": 2.308,
+        "rho": 1.2706
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14719,16 +14719,16 @@
       "strike": 22.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 1.11,
-      "theoretical_price": 1.1084,
+      "spot_price": 22.12,
+      "market_price": 1.13,
+      "theoretical_price": 1.1319,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.5593,
-        "gamma": 0.1582,
-        "theta_du": -0.0261,
-        "vega": 2.6377,
-        "rho": 1.0286
+        "delta": 0.5667,
+        "gamma": 0.1578,
+        "theta_du": -0.0273,
+        "vega": 2.6286,
+        "rho": 1.0408
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14743,16 +14743,16 @@
       "strike": 23.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 0.71,
-      "theoretical_price": 0.7125,
+      "spot_price": 22.12,
+      "market_price": 0.73,
+      "theoretical_price": 0.7304,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.4188,
-        "gamma": 0.1567,
-        "theta_du": -0.0248,
-        "vega": 2.6117,
-        "rho": 0.7808
+        "delta": 0.4261,
+        "gamma": 0.1573,
+        "theta_du": -0.0259,
+        "vega": 2.6201,
+        "rho": 0.7936
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14767,16 +14767,16 @@
       "strike": 23.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 0.43,
-      "theoretical_price": 0.4332,
+      "spot_price": 22.12,
+      "market_price": 0.45,
+      "theoretical_price": 0.4459,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.2926,
-        "gamma": 0.1379,
-        "theta_du": -0.0211,
-        "vega": 2.2982,
-        "rho": 0.5515
+        "delta": 0.2991,
+        "gamma": 0.1393,
+        "theta_du": -0.022,
+        "vega": 2.3204,
+        "rho": 0.5632
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14791,16 +14791,16 @@
       "strike": 24.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 22.13,
-      "market_price": 0.25,
-      "theoretical_price": 0.2493,
+      "spot_price": 22.12,
+      "market_price": 0.26,
+      "theoretical_price": 0.2577,
       "iv": 0.3729,
       "greeks": {
-        "delta": 0.1911,
-        "gamma": 0.1092,
-        "theta_du": -0.0163,
-        "vega": 1.8207,
-        "rho": 0.3632
+        "delta": 0.1962,
+        "gamma": 0.1111,
+        "theta_du": -0.017,
+        "vega": 1.8496,
+        "rho": 0.3727
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14816,15 +14816,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 15.34,
-      "market_price": 1.42,
-      "theoretical_price": 1.4196,
+      "market_price": 1.45,
+      "theoretical_price": 1.4516,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.905,
-        "gamma": 0.1503,
-        "theta_du": -0.0091,
-        "vega": 0.7835,
-        "rho": 1.1375
+        "delta": 0.9107,
+        "gamma": 0.1435,
+        "theta_du": -0.0103,
+        "vega": 0.748,
+        "rho": 1.1426
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14840,15 +14840,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 15.34,
-      "market_price": 0.93,
-      "theoretical_price": 0.9285,
+      "market_price": 0.96,
+      "theoretical_price": 0.9566,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.771,
-        "gamma": 0.2693,
-        "theta_du": -0.0118,
-        "vega": 1.4039,
-        "rho": 0.9947
+        "delta": 0.7814,
+        "gamma": 0.2622,
+        "theta_du": -0.0129,
+        "vega": 1.367,
+        "rho": 1.0068
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14864,15 +14864,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 15.34,
-      "market_price": 0.54,
-      "theoretical_price": 0.5411,
+      "market_price": 0.56,
+      "theoretical_price": 0.5627,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.5779,
-        "gamma": 0.3479,
-        "theta_du": -0.013,
-        "vega": 1.8135,
-        "rho": 0.7597
+        "delta": 0.5915,
+        "gamma": 0.3453,
+        "theta_du": -0.0139,
+        "vega": 1.7999,
+        "rho": 0.7768
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14888,15 +14888,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 15.34,
-      "market_price": 0.24,
-      "theoretical_price": 0.2442,
+      "market_price": 0.26,
+      "theoretical_price": 0.2572,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.3396,
-        "gamma": 0.3256,
-        "theta_du": -0.011,
-        "vega": 1.6973,
-        "rho": 0.4532
+        "delta": 0.3525,
+        "gamma": 0.3301,
+        "theta_du": -0.0117,
+        "vega": 1.721,
+        "rho": 0.4701
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14913,14 +14913,14 @@
       "du": 23,
       "spot_price": 15.34,
       "market_price": 0.11,
-      "theoretical_price": 0.1062,
+      "theoretical_price": 0.1132,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.18,
-        "gamma": 0.2332,
-        "theta_du": -0.0074,
-        "vega": 1.2159,
-        "rho": 0.2423
+        "delta": 0.1893,
+        "gamma": 0.2407,
+        "theta_du": -0.008,
+        "vega": 1.2547,
+        "rho": 0.2547
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14937,14 +14937,14 @@
       "du": 23,
       "spot_price": 15.34,
       "market_price": 0.04,
-      "theoretical_price": 0.0401,
+      "theoretical_price": 0.0433,
       "iv": 0.2427,
       "greeks": {
-        "delta": 0.0808,
-        "gamma": 0.1332,
-        "theta_du": -0.0041,
-        "vega": 0.6942,
-        "rho": 0.1095
+        "delta": 0.0862,
+        "gamma": 0.1398,
+        "theta_du": -0.0044,
+        "vega": 0.7286,
+        "rho": 0.1167
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14952,23 +14952,23 @@
       }
     },
     {
-      "symbol": "BBSEK384",
+      "symbol": "BBSEK385",
       "underlying_ticker": "BBSE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 38.4,
+      "strike": 38.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 3.76,
-      "theoretical_price": 3.7557,
+      "spot_price": 41.83,
+      "market_price": 3.83,
+      "theoretical_price": 3.8302,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.946,
-        "gamma": 0.0447,
-        "theta_du": -0.02,
-        "vega": 1.3824,
-        "rho": 3.2621
+        "delta": 0.9494,
+        "gamma": 0.0423,
+        "theta_du": -0.0238,
+        "vega": 1.3154,
+        "rho": 3.2751
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -14976,23 +14976,23 @@
       }
     },
     {
-      "symbol": "BBSEK401",
+      "symbol": "BBSEK402",
       "underlying_ticker": "BBSE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 40.1,
+      "strike": 40.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 2.28,
-      "theoretical_price": 2.2812,
+      "spot_price": 41.83,
+      "market_price": 2.35,
+      "theoretical_price": 2.3487,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.808,
-        "gamma": 0.1113,
-        "theta_du": -0.0272,
-        "vega": 3.4451,
-        "rho": 2.8706
+        "delta": 0.8171,
+        "gamma": 0.1078,
+        "theta_du": -0.0305,
+        "vega": 3.3499,
+        "rho": 2.905
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15007,16 +15007,16 @@
       "strike": 41.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 1.15,
-      "theoretical_price": 1.1484,
+      "spot_price": 41.83,
+      "market_price": 1.25,
+      "theoretical_price": 1.254,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.5652,
-        "gamma": 0.1604,
-        "theta_du": -0.0301,
-        "vega": 4.9646,
-        "rho": 2.0487
+        "delta": 0.5949,
+        "gamma": 0.1576,
+        "theta_du": -0.0329,
+        "vega": 4.8981,
+        "rho": 2.1569
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15024,23 +15024,23 @@
       }
     },
     {
-      "symbol": "BBSEK434",
+      "symbol": "BBSEK435",
       "underlying_ticker": "BBSE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 43.4,
+      "strike": 43.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 0.49,
-      "theoretical_price": 0.4892,
+      "spot_price": 41.83,
+      "market_price": 0.52,
+      "theoretical_price": 0.5186,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.3174,
-        "gamma": 0.1452,
-        "theta_du": -0.0241,
-        "vega": 4.4951,
-        "rho": 1.1648
+        "delta": 0.3307,
+        "gamma": 0.1474,
+        "theta_du": -0.0262,
+        "vega": 4.5806,
+        "rho": 1.2153
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15048,23 +15048,23 @@
       }
     },
     {
-      "symbol": "BBSEK451",
+      "symbol": "BBSEK452",
       "underlying_ticker": "BBSE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 45.1,
+      "strike": 45.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 0.16,
-      "theoretical_price": 0.1551,
+      "spot_price": 41.83,
+      "market_price": 0.17,
+      "theoretical_price": 0.1677,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.1295,
-        "gamma": 0.086,
-        "theta_du": -0.0132,
-        "vega": 2.6613,
-        "rho": 0.4794
+        "delta": 0.1378,
+        "gamma": 0.0896,
+        "theta_du": -0.0144,
+        "vega": 2.7832,
+        "rho": 0.511
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15079,16 +15079,16 @@
       "strike": 46.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 41.75,
-      "market_price": 0.04,
-      "theoretical_price": 0.0381,
+      "spot_price": 41.83,
+      "market_price": 0.05,
+      "theoretical_price": 0.046,
       "iv": 0.1946,
       "greeks": {
-        "delta": 0.0394,
-        "gamma": 0.0347,
-        "theta_du": -0.005,
-        "vega": 1.0727,
-        "rho": 0.1465
+        "delta": 0.0463,
+        "gamma": 0.0394,
+        "theta_du": -0.0059,
+        "vega": 1.2257,
+        "rho": 0.1726
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15103,16 +15103,16 @@
       "strike": 25.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 2.62,
-      "theoretical_price": 2.6214,
+      "spot_price": 28.1,
+      "market_price": 2.67,
+      "theoretical_price": 2.6684,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.8627,
-        "gamma": 0.0901,
-        "theta_du": -0.0202,
-        "vega": 1.8651,
-        "rho": 1.9741
+        "delta": 0.8682,
+        "gamma": 0.0876,
+        "theta_du": -0.0224,
+        "vega": 1.8127,
+        "rho": 1.9832
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15127,16 +15127,16 @@
       "strike": 27.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 1.78,
-      "theoretical_price": 1.7761,
+      "spot_price": 28.1,
+      "market_price": 1.82,
+      "theoretical_price": 1.8171,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.7301,
-        "gamma": 0.1356,
-        "theta_du": -0.0251,
-        "vega": 2.8076,
-        "rho": 1.7109
+        "delta": 0.7384,
+        "gamma": 0.1335,
+        "theta_du": -0.027,
+        "vega": 2.7622,
+        "rho": 1.728
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15151,16 +15151,16 @@
       "strike": 28.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 1.11,
-      "theoretical_price": 1.1059,
+      "spot_price": 28.1,
+      "market_price": 1.14,
+      "theoretical_price": 1.1381,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.5606,
-        "gamma": 0.1618,
-        "theta_du": -0.0269,
-        "vega": 3.3487,
-        "rho": 1.3374
+        "delta": 0.5706,
+        "gamma": 0.1611,
+        "theta_du": -0.0286,
+        "vega": 3.3335,
+        "rho": 1.3596
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15175,16 +15175,16 @@
       "strike": 29.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 0.63,
-      "theoretical_price": 0.6283,
+      "spot_price": 28.1,
+      "market_price": 0.65,
+      "theoretical_price": 0.651,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.3858,
-        "gamma": 0.1569,
-        "theta_du": -0.0245,
-        "vega": 3.2482,
-        "rho": 0.9325
+        "delta": 0.3956,
+        "gamma": 0.1581,
+        "theta_du": -0.0259,
+        "vega": 3.2701,
+        "rho": 0.9552
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15192,23 +15192,23 @@
       }
     },
     {
-      "symbol": "SANBK304",
+      "symbol": "SANBK303",
       "underlying_ticker": "SANB11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 30.4,
+      "strike": 30.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 0.3,
-      "theoretical_price": 0.3043,
+      "spot_price": 28.1,
+      "market_price": 0.34,
+      "theoretical_price": 0.3388,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.2252,
-        "gamma": 0.1231,
-        "theta_du": -0.0183,
-        "vega": 2.5485,
-        "rho": 0.5501
+        "delta": 0.2447,
+        "gamma": 0.1289,
+        "theta_du": -0.02,
+        "vega": 2.6672,
+        "rho": 0.5968
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15223,16 +15223,16 @@
       "strike": 31.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 28.11,
-      "market_price": 0.14,
-      "theoretical_price": 0.1417,
+      "spot_price": 28.1,
+      "market_price": 0.15,
+      "theoretical_price": 0.1491,
       "iv": 0.2871,
       "greeks": {
-        "delta": 0.1221,
-        "gamma": 0.0831,
-        "theta_du": -0.0119,
-        "vega": 1.7198,
-        "rho": 0.3004
+        "delta": 0.1274,
+        "gamma": 0.0856,
+        "theta_du": -0.0127,
+        "vega": 1.7705,
+        "rho": 0.313
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15240,23 +15240,23 @@
       }
     },
     {
-      "symbol": "BPACK700",
+      "symbol": "BPACK699",
       "underlying_ticker": "BPAC11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 70.0,
+      "strike": 69.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 7.5,
-      "theoretical_price": 7.5017,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 7.66,
+      "theoretical_price": 7.6567,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.824,
-        "gamma": 0.0324,
-        "theta_du": -0.0671,
-        "vega": 5.9448,
-        "rho": 5.0365
+        "delta": 0.8312,
+        "gamma": 0.0316,
+        "theta_du": -0.0722,
+        "vega": 5.7838,
+        "rho": 5.0658
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15271,16 +15271,16 @@
       "strike": 73.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 5.32,
-      "theoretical_price": 5.324,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 5.39,
+      "theoretical_price": 5.3915,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.7024,
-        "gamma": 0.0433,
-        "theta_du": -0.0799,
-        "vega": 7.961,
-        "rho": 4.391
+        "delta": 0.7074,
+        "gamma": 0.0431,
+        "theta_du": -0.0849,
+        "vega": 7.8913,
+        "rho": 4.4141
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15288,23 +15288,23 @@
       }
     },
     {
-      "symbol": "BPACK761",
+      "symbol": "BPACK760",
       "underlying_ticker": "BPAC11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 76.1,
+      "strike": 76.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 3.51,
-      "theoretical_price": 3.514,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 3.62,
+      "theoretical_price": 3.6206,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.5539,
-        "gamma": 0.0495,
-        "theta_du": -0.0848,
-        "vega": 9.0845,
-        "rho": 3.5249
+        "delta": 0.5645,
+        "gamma": 0.0493,
+        "theta_du": -0.0891,
+        "vega": 9.0386,
+        "rho": 3.5848
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15312,23 +15312,23 @@
       }
     },
     {
-      "symbol": "BPACK791",
+      "symbol": "BPACK790",
       "underlying_ticker": "BPAC11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 79.1,
+      "strike": 79.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 2.21,
-      "theoretical_price": 2.2093,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 2.29,
+      "theoretical_price": 2.2882,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.4081,
-        "gamma": 0.0486,
-        "theta_du": -0.0795,
-        "vega": 8.9237,
-        "rho": 2.6315
+        "delta": 0.4184,
+        "gamma": 0.0489,
+        "theta_du": -0.0834,
+        "vega": 8.9662,
+        "rho": 2.6928
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15336,23 +15336,23 @@
       }
     },
     {
-      "symbol": "BPACK822",
+      "symbol": "BPACK821",
       "underlying_ticker": "BPAC11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 82.2,
+      "strike": 82.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 1.28,
-      "theoretical_price": 1.2818,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 1.33,
+      "theoretical_price": 1.335,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.2748,
-        "gamma": 0.0417,
-        "theta_du": -0.0659,
-        "vega": 7.6651,
-        "rho": 1.7907
+        "delta": 0.2835,
+        "gamma": 0.0424,
+        "theta_du": -0.0692,
+        "vega": 7.7747,
+        "rho": 1.8446
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15360,23 +15360,23 @@
       }
     },
     {
-      "symbol": "BPACK852",
+      "symbol": "BPACK851",
       "underlying_ticker": "BPAC11",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 85.2,
+      "strike": 85.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 76.07,
-      "market_price": 0.71,
-      "theoretical_price": 0.7113,
-      "iv": 0.3477,
+      "spot_price": 75.99,
+      "market_price": 0.74,
+      "theoretical_price": 0.7449,
+      "iv": 0.3478,
       "greeks": {
-        "delta": 0.1737,
-        "gamma": 0.0321,
-        "theta_du": -0.0494,
-        "vega": 5.896,
-        "rho": 1.141
+        "delta": 0.1804,
+        "gamma": 0.0329,
+        "theta_du": -0.052,
+        "vega": 6.0315,
+        "rho": 1.1829
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15392,15 +15392,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 6.22,
-      "theoretical_price": 6.2211,
+      "market_price": 6.35,
+      "theoretical_price": 6.3521,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.8663,
-        "gamma": 0.0377,
-        "theta_du": -0.0471,
-        "vega": 4.2985,
-        "rho": 4.6483
+        "delta": 0.8726,
+        "gamma": 0.0365,
+        "theta_du": -0.052,
+        "vega": 4.1579,
+        "rho": 4.6741
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15416,15 +15416,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 4.21,
-      "theoretical_price": 4.2123,
+      "market_price": 4.33,
+      "theoretical_price": 4.3263,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.7341,
-        "gamma": 0.0574,
-        "theta_du": -0.0587,
-        "vega": 6.5396,
-        "rho": 4.0354
+        "delta": 0.7437,
+        "gamma": 0.0563,
+        "theta_du": -0.0631,
+        "vega": 6.4169,
+        "rho": 4.0829
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15440,15 +15440,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 2.57,
-      "theoretical_price": 2.5662,
+      "market_price": 2.65,
+      "theoretical_price": 2.6547,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.5569,
-        "gamma": 0.0691,
-        "theta_du": -0.0632,
-        "vega": 7.8698,
-        "rho": 3.1192
+        "delta": 0.5686,
+        "gamma": 0.0687,
+        "theta_du": -0.0671,
+        "vega": 7.8331,
+        "rho": 3.1813
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15464,15 +15464,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 1.45,
-      "theoretical_price": 1.4482,
+      "market_price": 1.51,
+      "theoretical_price": 1.5099,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.3811,
-        "gamma": 0.0667,
-        "theta_du": -0.0571,
-        "vega": 7.5952,
-        "rho": 2.1625
+        "delta": 0.3924,
+        "gamma": 0.0672,
+        "theta_du": -0.0605,
+        "vega": 7.6602,
+        "rho": 2.2251
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15488,15 +15488,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 0.74,
-      "theoretical_price": 0.7421,
+      "market_price": 0.78,
+      "theoretical_price": 0.7802,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.2322,
-        "gamma": 0.0534,
-        "theta_du": -0.0437,
-        "vega": 6.0833,
-        "rho": 1.3301
+        "delta": 0.2413,
+        "gamma": 0.0545,
+        "theta_du": -0.0464,
+        "vega": 6.2138,
+        "rho": 1.3816
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15512,15 +15512,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 65.97,
-      "market_price": 0.33,
-      "theoretical_price": 0.3346,
+      "market_price": 0.36,
+      "theoretical_price": 0.355,
       "iv": 0.2869,
       "greeks": {
-        "delta": 0.1228,
-        "gamma": 0.0356,
-        "theta_du": -0.0281,
-        "vega": 4.0515,
-        "rho": 0.7087
+        "delta": 0.1289,
+        "gamma": 0.0368,
+        "theta_du": -0.03,
+        "vega": 4.1914,
+        "rho": 0.7437
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15535,16 +15535,16 @@
       "strike": 64.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 6.99,
-      "theoretical_price": 6.9882,
+      "spot_price": 70.34,
+      "market_price": 7.09,
+      "theoretical_price": 7.0865,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.8268,
-        "gamma": 0.0347,
-        "theta_du": -0.0616,
-        "vega": 5.4452,
-        "rho": 4.6731
+        "delta": 0.8316,
+        "gamma": 0.0341,
+        "theta_du": -0.0667,
+        "vega": 5.3442,
+        "rho": 4.6922
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15552,23 +15552,23 @@
       }
     },
     {
-      "symbol": "PRIOK676",
+      "symbol": "PRIOK675",
       "underlying_ticker": "PRIO3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 67.6,
+      "strike": 67.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 4.88,
-      "theoretical_price": 4.8821,
+      "spot_price": 70.34,
+      "market_price": 5.03,
+      "theoretical_price": 5.0344,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.6997,
-        "gamma": 0.0471,
-        "theta_du": -0.074,
-        "vega": 7.3961,
-        "rho": 4.049
+        "delta": 0.7111,
+        "gamma": 0.0463,
+        "theta_du": -0.0782,
+        "vega": 7.2606,
+        "rho": 4.106
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15576,23 +15576,23 @@
       }
     },
     {
-      "symbol": "PRIOK704",
+      "symbol": "PRIOK703",
       "underlying_ticker": "PRIO3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 70.4,
+      "strike": 70.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 3.25,
-      "theoretical_price": 3.2505,
+      "spot_price": 70.34,
+      "market_price": 3.37,
+      "theoretical_price": 3.372,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.5543,
-        "gamma": 0.0535,
-        "theta_du": -0.0783,
-        "vega": 8.4037,
-        "rho": 3.2641
+        "delta": 0.5672,
+        "gamma": 0.0533,
+        "theta_du": -0.0823,
+        "vega": 8.3572,
+        "rho": 3.3335
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15607,16 +15607,16 @@
       "strike": 73.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 2.03,
-      "theoretical_price": 2.0336,
+      "spot_price": 70.34,
+      "market_price": 2.09,
+      "theoretical_price": 2.0858,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.407,
-        "gamma": 0.0526,
-        "theta_du": -0.0734,
-        "vega": 8.2511,
-        "rho": 2.4289
+        "delta": 0.4144,
+        "gamma": 0.0528,
+        "theta_du": -0.0768,
+        "vega": 8.2818,
+        "rho": 2.4702
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15631,16 +15631,16 @@
       "strike": 76.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 1.19,
-      "theoretical_price": 1.1944,
+      "spot_price": 70.34,
+      "market_price": 1.23,
+      "theoretical_price": 1.2305,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.2766,
-        "gamma": 0.0453,
-        "theta_du": -0.0611,
-        "vega": 7.1145,
-        "rho": 1.6675
+        "delta": 0.283,
+        "gamma": 0.0459,
+        "theta_du": -0.0639,
+        "vega": 7.1897,
+        "rho": 1.7042
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15655,16 +15655,16 @@
       "strike": 78.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 70.38,
-      "market_price": 0.66,
-      "theoretical_price": 0.6592,
+      "spot_price": 70.34,
+      "market_price": 0.68,
+      "theoretical_price": 0.6821,
       "iv": 0.3472,
       "greeks": {
-        "delta": 0.1741,
-        "gamma": 0.0348,
-        "theta_du": -0.0457,
-        "vega": 5.4634,
-        "rho": 1.0583
+        "delta": 0.179,
+        "gamma": 0.0354,
+        "theta_du": -0.0478,
+        "vega": 5.5574,
+        "rho": 1.0872
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15679,16 +15679,16 @@
       "strike": 23.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
-      "market_price": 2.46,
-      "theoretical_price": 2.4564,
+      "spot_price": 25.45,
+      "market_price": 2.48,
+      "theoretical_price": 2.4807,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.8636,
-        "gamma": 0.0957,
-        "theta_du": -0.0186,
-        "vega": 1.6831,
-        "rho": 1.7842
+        "delta": 0.867,
+        "gamma": 0.0942,
+        "theta_du": -0.0206,
+        "vega": 1.6527,
+        "rho": 1.7874
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15696,23 +15696,23 @@
       }
     },
     {
-      "symbol": "GGBRK245",
+      "symbol": "GGBRK244",
       "underlying_ticker": "GGBR4",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 24.5,
+      "strike": 24.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
-      "market_price": 1.62,
-      "theoretical_price": 1.6165,
+      "spot_price": 25.45,
+      "market_price": 1.71,
+      "theoretical_price": 1.7074,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.7204,
-        "gamma": 0.1473,
-        "theta_du": -0.0235,
-        "vega": 2.5893,
-        "rho": 1.5279
+        "delta": 0.7406,
+        "gamma": 0.142,
+        "theta_du": -0.0249,
+        "vega": 2.491,
+        "rho": 1.5645
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15720,23 +15720,23 @@
       }
     },
     {
-      "symbol": "GGBRK255",
+      "symbol": "GGBRK254",
       "underlying_ticker": "GGBR4",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 25.5,
+      "strike": 25.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
-      "market_price": 1.02,
-      "theoretical_price": 1.0165,
+      "spot_price": 25.45,
+      "market_price": 1.09,
+      "theoretical_price": 1.0864,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.5548,
-        "gamma": 0.1731,
-        "theta_du": -0.025,
-        "vega": 3.042,
-        "rho": 1.1974
+        "delta": 0.5781,
+        "gamma": 0.1715,
+        "theta_du": -0.0265,
+        "vega": 3.0084,
+        "rho": 1.2437
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15751,16 +15751,16 @@
       "strike": 26.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
-      "market_price": 0.59,
-      "theoretical_price": 0.5866,
+      "spot_price": 25.45,
+      "market_price": 0.6,
+      "theoretical_price": 0.5988,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.3853,
-        "gamma": 0.1674,
-        "theta_du": -0.0228,
-        "vega": 2.9432,
-        "rho": 0.8426
+        "delta": 0.3913,
+        "gamma": 0.1684,
+        "theta_du": -0.0239,
+        "vega": 2.9527,
+        "rho": 0.8542
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15775,16 +15775,16 @@
       "strike": 27.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
-      "market_price": 0.31,
-      "theoretical_price": 0.3098,
+      "spot_price": 25.45,
+      "market_price": 0.32,
+      "theoretical_price": 0.3176,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.2405,
-        "gamma": 0.1363,
-        "theta_du": -0.0178,
-        "vega": 2.3956,
-        "rho": 0.531
+        "delta": 0.2453,
+        "gamma": 0.1379,
+        "theta_du": -0.0186,
+        "vega": 2.4188,
+        "rho": 0.5409
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15799,16 +15799,16 @@
       "strike": 28.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 25.48,
+      "spot_price": 25.45,
       "market_price": 0.15,
-      "theoretical_price": 0.1498,
+      "theoretical_price": 0.1542,
       "iv": 0.2967,
       "greeks": {
-        "delta": 0.1349,
-        "gamma": 0.0951,
-        "theta_du": -0.012,
-        "vega": 1.6708,
-        "rho": 0.3001
+        "delta": 0.1383,
+        "gamma": 0.0968,
+        "theta_du": -0.0125,
+        "vega": 1.6975,
+        "rho": 0.3073
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15816,23 +15816,23 @@
       }
     },
     {
-      "symbol": "CSNAK54",
+      "symbol": "CSNAK53",
       "underlying_ticker": "CSNA3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 5.4,
+      "strike": 5.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.66,
-      "theoretical_price": 0.6611,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.71,
+      "theoretical_price": 0.7098,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.7377,
-        "gamma": 0.3474,
+        "delta": 0.766,
+        "gamma": 0.329,
         "theta_du": -0.0082,
-        "vega": 0.5759,
-        "rho": 0.3335
+        "vega": 0.5381,
+        "rho": 0.3414
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15847,16 +15847,16 @@
       "strike": 5.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.53,
-      "theoretical_price": 0.5341,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.52,
+      "theoretical_price": 0.5165,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.6589,
-        "gamma": 0.3911,
-        "theta_du": -0.0089,
-        "vega": 0.6484,
-        "rho": 0.303
+        "delta": 0.649,
+        "gamma": 0.3979,
+        "theta_du": -0.0092,
+        "vega": 0.6508,
+        "rho": 0.297
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15871,16 +15871,16 @@
       "strike": 5.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.42,
-      "theoretical_price": 0.4241,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.41,
+      "theoretical_price": 0.4088,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.5756,
-        "gamma": 0.4177,
-        "theta_du": -0.0092,
-        "vega": 0.6924,
-        "rho": 0.2686
+        "delta": 0.565,
+        "gamma": 0.4224,
+        "theta_du": -0.0095,
+        "vega": 0.6909,
+        "rho": 0.2623
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15888,23 +15888,23 @@
       }
     },
     {
-      "symbol": "CSNAK61",
+      "symbol": "CSNAK60",
       "underlying_ticker": "CSNA3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 6.1,
+      "strike": 6.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.29,
-      "theoretical_price": 0.2906,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.32,
+      "theoretical_price": 0.3181,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.4507,
-        "gamma": 0.422,
-        "theta_du": -0.0091,
-        "vega": 0.6997,
-        "rho": 0.2141
+        "delta": 0.481,
+        "gamma": 0.4276,
+        "theta_du": -0.0094,
+        "vega": 0.6995,
+        "rho": 0.226
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15919,16 +15919,16 @@
       "strike": 6.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.22,
-      "theoretical_price": 0.2212,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.21,
+      "theoretical_price": 0.2115,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.3725,
-        "gamma": 0.4034,
+        "delta": 0.3625,
+        "gamma": 0.4024,
         "theta_du": -0.0086,
-        "vega": 0.6688,
-        "rho": 0.1787
+        "vega": 0.6582,
+        "rho": 0.1729
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15936,23 +15936,23 @@
       }
     },
     {
-      "symbol": "CSNAK66",
+      "symbol": "CSNAK65",
       "underlying_ticker": "CSNA3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 6.6,
+      "strike": 6.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.85,
-      "market_price": 0.14,
-      "theoretical_price": 0.1425,
-      "iv": 0.5307,
+      "spot_price": 5.81,
+      "market_price": 0.16,
+      "theoretical_price": 0.1579,
+      "iv": 0.5309,
       "greeks": {
-        "delta": 0.2692,
-        "gamma": 0.352,
-        "theta_du": -0.0073,
-        "vega": 0.5835,
-        "rho": 0.1307
+        "delta": 0.2923,
+        "gamma": 0.3687,
+        "theta_du": -0.0078,
+        "vega": 0.6031,
+        "rho": 0.1406
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15967,16 +15967,16 @@
       "strike": 6.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
-      "market_price": 0.71,
-      "theoretical_price": 0.7144,
+      "spot_price": 6.71,
+      "market_price": 0.7,
+      "theoretical_price": 0.7026,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.7807,
-        "gamma": 0.3357,
-        "theta_du": -0.0075,
-        "vega": 0.6019,
-        "rho": 0.415
+        "delta": 0.7763,
+        "gamma": 0.341,
+        "theta_du": -0.008,
+        "vega": 0.6059,
+        "rho": 0.4113
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -15984,23 +15984,23 @@
       }
     },
     {
-      "symbol": "USIMK65",
+      "symbol": "USIMK64",
       "underlying_ticker": "USIM5",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 6.5,
+      "strike": 6.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
-      "market_price": 0.51,
-      "theoretical_price": 0.5131,
+      "spot_price": 6.71,
+      "market_price": 0.57,
+      "theoretical_price": 0.5655,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.6601,
-        "gamma": 0.4162,
-        "theta_du": -0.0086,
-        "vega": 0.746,
-        "rho": 0.3592
+        "delta": 0.6974,
+        "gamma": 0.3983,
+        "theta_du": -0.0088,
+        "vega": 0.7076,
+        "rho": 0.3755
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16015,16 +16015,16 @@
       "strike": 6.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
-      "market_price": 0.4,
-      "theoretical_price": 0.4011,
+      "spot_price": 6.71,
+      "market_price": 0.39,
+      "theoretical_price": 0.3928,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.5717,
-        "gamma": 0.4458,
-        "theta_du": -0.009,
-        "vega": 0.7992,
-        "rho": 0.3151
+        "delta": 0.566,
+        "gamma": 0.4489,
+        "theta_du": -0.0093,
+        "vega": 0.7976,
+        "rho": 0.3108
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16039,16 +16039,16 @@
       "strike": 7.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
-      "market_price": 0.27,
-      "theoretical_price": 0.2664,
+      "spot_price": 6.71,
+      "market_price": 0.26,
+      "theoretical_price": 0.2602,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.4385,
-        "gamma": 0.4478,
-        "theta_du": -0.0087,
-        "vega": 0.8027,
-        "rho": 0.2455
+        "delta": 0.4328,
+        "gamma": 0.4487,
+        "theta_du": -0.0089,
+        "vega": 0.7972,
+        "rho": 0.2413
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16056,23 +16056,23 @@
       }
     },
     {
-      "symbol": "USIMK73",
+      "symbol": "USIMK72",
       "underlying_ticker": "USIM5",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 7.3,
+      "strike": 7.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
-      "market_price": 0.17,
-      "theoretical_price": 0.1689,
+      "spot_price": 6.71,
+      "market_price": 0.19,
+      "theoretical_price": 0.1926,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.3171,
-        "gamma": 0.4046,
-        "theta_du": -0.0076,
-        "vega": 0.7253,
-        "rho": 0.1796
+        "delta": 0.3502,
+        "gamma": 0.4227,
+        "theta_du": -0.0082,
+        "vega": 0.751,
+        "rho": 0.1969
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16087,16 +16087,16 @@
       "strike": 7.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 6.74,
+      "spot_price": 6.71,
       "market_price": 0.12,
-      "theoretical_price": 0.1215,
+      "theoretical_price": 0.1181,
       "iv": 0.4324,
       "greeks": {
-        "delta": 0.2473,
-        "gamma": 0.3589,
+        "delta": 0.2428,
+        "gamma": 0.3569,
         "theta_du": -0.0067,
-        "vega": 0.6434,
-        "rho": 0.1411
+        "vega": 0.6341,
+        "rho": 0.1379
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16111,16 +16111,16 @@
       "strike": 39.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 3.98,
-      "theoretical_price": 3.9823,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 4.06,
+      "theoretical_price": 4.0621,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.8974,
-        "gamma": 0.055,
-        "theta_du": -0.0263,
-        "vega": 2.3201,
-        "rho": 3.1553
+        "delta": 0.9028,
+        "gamma": 0.0528,
+        "theta_du": -0.0298,
+        "vega": 2.2296,
+        "rho": 3.1684
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16135,16 +16135,16 @@
       "strike": 41.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 2.61,
-      "theoretical_price": 2.6079,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 2.68,
+      "theoretical_price": 2.6779,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.7613,
-        "gamma": 0.0953,
-        "theta_du": -0.034,
-        "vega": 4.0224,
-        "rho": 2.7472
+        "delta": 0.7708,
+        "gamma": 0.0932,
+        "theta_du": -0.0371,
+        "vega": 3.9325,
+        "rho": 2.7771
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16159,16 +16159,16 @@
       "strike": 43.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 1.47,
-      "theoretical_price": 1.4748,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 1.53,
+      "theoretical_price": 1.5274,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.558,
-        "gamma": 0.1213,
-        "theta_du": -0.0371,
-        "vega": 5.1229,
-        "rho": 2.0533
+        "delta": 0.5701,
+        "gamma": 0.1208,
+        "theta_du": -0.0397,
+        "vega": 5.0963,
+        "rho": 2.0956
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16183,16 +16183,16 @@
       "strike": 44.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 0.76,
-      "theoretical_price": 0.7564,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 0.79,
+      "theoretical_price": 0.7908,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.3571,
-        "gamma": 0.1147,
-        "theta_du": -0.0323,
-        "vega": 4.8421,
-        "rho": 1.3313
+        "delta": 0.3687,
+        "gamma": 0.116,
+        "theta_du": -0.0345,
+        "vega": 4.8935,
+        "rho": 1.3731
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16207,16 +16207,16 @@
       "strike": 46.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 0.34,
-      "theoretical_price": 0.3398,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 0.36,
+      "theoretical_price": 0.3588,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.1952,
-        "gamma": 0.0848,
-        "theta_du": -0.0226,
-        "vega": 3.5801,
-        "rho": 0.7342
+        "delta": 0.2038,
+        "gamma": 0.087,
+        "theta_du": -0.0242,
+        "vega": 3.6734,
+        "rho": 0.766
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16231,16 +16231,16 @@
       "strike": 48.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 42.96,
-      "market_price": 0.13,
-      "theoretical_price": 0.1335,
-      "iv": 0.2507,
+      "spot_price": 42.95,
+      "market_price": 0.14,
+      "theoretical_price": 0.1425,
+      "iv": 0.2506,
       "greeks": {
-        "delta": 0.0911,
-        "gamma": 0.0504,
-        "theta_du": -0.0129,
-        "vega": 2.1261,
-        "rho": 0.3449
+        "delta": 0.0962,
+        "gamma": 0.0525,
+        "theta_du": -0.0139,
+        "vega": 2.2136,
+        "rho": 0.3641
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16255,16 +16255,16 @@
       "strike": 54.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 5.8,
-      "theoretical_price": 5.7963,
+      "spot_price": 59.46,
+      "market_price": 5.9,
+      "theoretical_price": 5.9011,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.8375,
-        "gamma": 0.0417,
-        "theta_du": -0.0491,
-        "vega": 4.4154,
-        "rho": 4.0169
+        "delta": 0.8434,
+        "gamma": 0.0407,
+        "theta_du": -0.0534,
+        "vega": 4.3096,
+        "rho": 4.0384
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16279,16 +16279,16 @@
       "strike": 57.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 4.02,
-      "theoretical_price": 4.0221,
+      "spot_price": 59.46,
+      "market_price": 4.11,
+      "theoretical_price": 4.1134,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.7093,
-        "gamma": 0.0581,
-        "theta_du": -0.0595,
-        "vega": 6.1566,
-        "rho": 3.4831
+        "delta": 0.7176,
+        "gamma": 0.0573,
+        "theta_du": -0.0634,
+        "vega": 6.0723,
+        "rho": 3.5187
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16303,16 +16303,16 @@
       "strike": 59.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 2.61,
-      "theoretical_price": 2.606,
+      "spot_price": 59.46,
+      "market_price": 2.68,
+      "theoretical_price": 2.6789,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.5542,
-        "gamma": 0.067,
-        "theta_du": -0.0633,
-        "vega": 7.1012,
-        "rho": 2.7705
+        "delta": 0.5638,
+        "gamma": 0.0668,
+        "theta_du": -0.0667,
+        "vega": 7.0746,
+        "rho": 2.8151
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16327,16 +16327,16 @@
       "strike": 61.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 1.61,
-      "theoretical_price": 1.6062,
+      "spot_price": 59.46,
+      "market_price": 1.66,
+      "theoretical_price": 1.6601,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.4029,
-        "gamma": 0.0656,
-        "theta_du": -0.0589,
-        "vega": 6.954,
-        "rho": 2.04
+        "delta": 0.4122,
+        "gamma": 0.066,
+        "theta_du": -0.0619,
+        "vega": 6.9922,
+        "rho": 2.0856
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16351,16 +16351,16 @@
       "strike": 64.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 0.9,
-      "theoretical_price": 0.9016,
+      "spot_price": 59.46,
+      "market_price": 0.94,
+      "theoretical_price": 0.9374,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.2643,
-        "gamma": 0.0555,
-        "theta_du": -0.0479,
-        "vega": 5.8772,
-        "rho": 1.3524
+        "delta": 0.2723,
+        "gamma": 0.0563,
+        "theta_du": -0.0504,
+        "vega": 5.9646,
+        "rho": 1.3921
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16375,16 +16375,16 @@
       "strike": 66.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 59.47,
-      "market_price": 0.47,
-      "theoretical_price": 0.4702,
+      "spot_price": 59.46,
+      "market_price": 0.49,
+      "theoretical_price": 0.492,
       "iv": 0.3283,
       "greeks": {
-        "delta": 0.1586,
-        "gamma": 0.041,
-        "theta_du": -0.0344,
-        "vega": 4.3471,
-        "rho": 0.8182
+        "delta": 0.1646,
+        "gamma": 0.042,
+        "theta_du": -0.0363,
+        "vega": 4.4514,
+        "rho": 0.8481
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16400,15 +16400,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 11.72,
-      "market_price": 1.06,
-      "theoretical_price": 1.0561,
+      "market_price": 1.08,
+      "theoretical_price": 1.0806,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.9053,
-        "gamma": 0.2022,
-        "theta_du": -0.0068,
-        "vega": 0.5971,
-        "rho": 0.872
+        "delta": 0.9112,
+        "gamma": 0.1927,
+        "theta_du": -0.0078,
+        "vega": 0.5691,
+        "rho": 0.8761
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16424,15 +16424,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 11.72,
-      "market_price": 0.65,
-      "theoretical_price": 0.6511,
+      "market_price": 0.67,
+      "theoretical_price": 0.6721,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.7506,
-        "gamma": 0.3805,
-        "theta_du": -0.009,
-        "vega": 1.1237,
-        "rho": 0.7435
+        "delta": 0.7619,
+        "gamma": 0.3711,
+        "theta_du": -0.0099,
+        "vega": 1.0959,
+        "rho": 0.7537
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16448,15 +16448,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 11.72,
-      "market_price": 0.4,
-      "theoretical_price": 0.3978,
+      "market_price": 0.41,
+      "theoretical_price": 0.4142,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.5744,
-        "gamma": 0.47,
-        "theta_du": -0.0097,
-        "vega": 1.3879,
-        "rho": 0.5781
+        "delta": 0.5885,
+        "gamma": 0.4665,
+        "theta_du": -0.0104,
+        "vega": 1.3776,
+        "rho": 0.5917
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16472,15 +16472,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 11.72,
-      "market_price": 0.18,
-      "theoretical_price": 0.1849,
+      "market_price": 0.19,
+      "theoretical_price": 0.1949,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.3444,
-        "gamma": 0.4415,
-        "theta_du": -0.0082,
-        "vega": 1.3037,
-        "rho": 0.3516
+        "delta": 0.3578,
+        "gamma": 0.4476,
+        "theta_du": -0.0088,
+        "vega": 1.3218,
+        "rho": 0.3649
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16496,15 +16496,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 11.72,
-      "market_price": 0.07,
-      "theoretical_price": 0.0719,
+      "market_price": 0.08,
+      "theoretical_price": 0.0769,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.1673,
-        "gamma": 0.3003,
-        "theta_du": -0.0053,
-        "vega": 0.8869,
-        "rho": 0.1724
+        "delta": 0.1765,
+        "gamma": 0.3107,
+        "theta_du": -0.0057,
+        "vega": 0.9177,
+        "rho": 0.1818
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16521,14 +16521,14 @@
       "du": 23,
       "spot_price": 11.72,
       "market_price": 0.03,
-      "theoretical_price": 0.0297,
+      "theoretical_price": 0.0321,
       "iv": 0.2356,
       "greeks": {
-        "delta": 0.0807,
-        "gamma": 0.1794,
-        "theta_du": -0.003,
-        "vega": 0.5298,
-        "rho": 0.0836
+        "delta": 0.0862,
+        "gamma": 0.1886,
+        "theta_du": -0.0033,
+        "vega": 0.5568,
+        "rho": 0.0893
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16544,15 +16544,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 16.72,
-      "market_price": 1.52,
-      "theoretical_price": 1.518,
+      "market_price": 1.55,
+      "theoretical_price": 1.5529,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.9016,
-        "gamma": 0.1424,
-        "theta_du": -0.01,
-        "vega": 0.8762,
-        "rho": 1.2373
+        "delta": 0.9076,
+        "gamma": 0.136,
+        "theta_du": -0.0113,
+        "vega": 0.8367,
+        "rho": 1.2432
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16568,15 +16568,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 16.72,
-      "market_price": 0.95,
-      "theoretical_price": 0.9527,
+      "market_price": 0.98,
+      "theoretical_price": 0.9827,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.7519,
-        "gamma": 0.2599,
-        "theta_du": -0.0131,
-        "vega": 1.5988,
-        "rho": 1.0604
+        "delta": 0.7629,
+        "gamma": 0.2536,
+        "theta_du": -0.0142,
+        "vega": 1.56,
+        "rho": 1.0745
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16592,15 +16592,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 16.72,
-      "market_price": 0.57,
-      "theoretical_price": 0.5738,
+      "market_price": 0.6,
+      "theoretical_price": 0.5971,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.5706,
-        "gamma": 0.3224,
-        "theta_du": -0.0141,
-        "vega": 1.9835,
-        "rho": 0.8184
+        "delta": 0.5844,
+        "gamma": 0.3202,
+        "theta_du": -0.0151,
+        "vega": 1.9699,
+        "rho": 0.8373
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16616,15 +16616,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 16.72,
-      "market_price": 0.28,
-      "theoretical_price": 0.2755,
+      "market_price": 0.29,
+      "theoretical_price": 0.2901,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.3498,
-        "gamma": 0.3041,
-        "theta_du": -0.0121,
-        "vega": 1.8706,
-        "rho": 0.5087
+        "delta": 0.363,
+        "gamma": 0.3081,
+        "theta_du": -0.0129,
+        "vega": 1.8951,
+        "rho": 0.5274
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16640,15 +16640,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 16.72,
-      "market_price": 0.11,
-      "theoretical_price": 0.1125,
+      "market_price": 0.12,
+      "theoretical_price": 0.12,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.1769,
-        "gamma": 0.2131,
-        "theta_du": -0.008,
-        "vega": 1.3109,
-        "rho": 0.2597
+        "delta": 0.1862,
+        "gamma": 0.22,
+        "theta_du": -0.0086,
+        "vega": 1.3536,
+        "rho": 0.2732
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16665,14 +16665,14 @@
       "du": 23,
       "spot_price": 16.72,
       "market_price": 0.05,
-      "theoretical_price": 0.0458,
+      "theoretical_price": 0.0494,
       "iv": 0.2411,
       "greeks": {
-        "delta": 0.0846,
-        "gamma": 0.1273,
-        "theta_du": -0.0046,
-        "vega": 0.7829,
-        "rho": 0.1249
+        "delta": 0.0901,
+        "gamma": 0.1335,
+        "theta_du": -0.005,
+        "vega": 0.8213,
+        "rho": 0.1331
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16680,23 +16680,23 @@
       }
     },
     {
-      "symbol": "MGLUK101",
+      "symbol": "MGLUK100",
       "underlying_ticker": "MGLU3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 10.1,
+      "strike": 10.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 1.41,
-      "theoretical_price": 1.4129,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 1.45,
+      "theoretical_price": 1.4498,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.7101,
-        "gamma": 0.1538,
-        "theta_du": -0.0192,
-        "vega": 1.1342,
-        "rho": 0.5821
+        "delta": 0.7219,
+        "gamma": 0.1517,
+        "theta_du": -0.0196,
+        "vega": 1.1058,
+        "rho": 0.5865
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16711,16 +16711,16 @@
       "strike": 10.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 1.17,
-      "theoretical_price": 1.1749,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 1.15,
+      "theoretical_price": 1.1513,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.6414,
-        "gamma": 0.1679,
-        "theta_du": -0.0206,
-        "vega": 1.2382,
-        "rho": 0.535
+        "delta": 0.636,
+        "gamma": 0.1698,
+        "theta_du": -0.0212,
+        "vega": 1.2377,
+        "rho": 0.5283
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16728,23 +16728,23 @@
       }
     },
     {
-      "symbol": "MGLUK110",
+      "symbol": "MGLUK109",
       "underlying_ticker": "MGLU3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 11.0,
+      "strike": 10.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 0.92,
-      "theoretical_price": 0.9185,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 0.95,
+      "theoretical_price": 0.9454,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.5529,
-        "gamma": 0.1777,
-        "theta_du": -0.0214,
-        "vega": 1.3105,
-        "rho": 0.4697
+        "delta": 0.5649,
+        "gamma": 0.178,
+        "theta_du": -0.0218,
+        "vega": 1.2975,
+        "rho": 0.4763
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16752,23 +16752,23 @@
       }
     },
     {
-      "symbol": "MGLUK114",
+      "symbol": "MGLUK113",
       "underlying_ticker": "MGLU3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 11.4,
+      "strike": 11.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 0.75,
-      "theoretical_price": 0.7453,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 0.77,
+      "theoretical_price": 0.7679,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.4828,
-        "gamma": 0.1792,
-        "theta_du": -0.0213,
-        "vega": 1.3209,
-        "rho": 0.4153
+        "delta": 0.4943,
+        "gamma": 0.1803,
+        "theta_du": -0.0217,
+        "vega": 1.3148,
+        "rho": 0.4221
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16783,16 +16783,16 @@
       "strike": 11.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 0.6,
-      "theoretical_price": 0.5985,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 0.58,
+      "theoretical_price": 0.5836,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.4155,
-        "gamma": 0.1753,
-        "theta_du": -0.0206,
-        "vega": 1.2924,
-        "rho": 0.3614
+        "delta": 0.4099,
+        "gamma": 0.1757,
+        "theta_du": -0.0208,
+        "vega": 1.2812,
+        "rho": 0.3549
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16800,23 +16800,23 @@
       }
     },
     {
-      "symbol": "MGLUK123",
+      "symbol": "MGLUK122",
       "underlying_ticker": "MGLU3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 12.3,
+      "strike": 12.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 10.97,
-      "market_price": 0.45,
-      "theoretical_price": 0.4488,
-      "iv": 0.6713,
+      "spot_price": 10.91,
+      "market_price": 0.46,
+      "theoretical_price": 0.4633,
+      "iv": 0.6711,
       "greeks": {
-        "delta": 0.338,
-        "gamma": 0.1643,
-        "theta_du": -0.0191,
-        "vega": 1.2116,
-        "rho": 0.2975
+        "delta": 0.3474,
+        "gamma": 0.167,
+        "theta_du": -0.0196,
+        "vega": 1.2176,
+        "rho": 0.3037
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16831,16 +16831,16 @@
       "strike": 12.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
-      "market_price": 1.43,
-      "theoretical_price": 1.4328,
+      "spot_price": 13.47,
+      "market_price": 1.45,
+      "theoretical_price": 1.4483,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.7792,
-        "gamma": 0.1672,
-        "theta_du": -0.0151,
-        "vega": 1.2085,
-        "rho": 0.8278
+        "delta": 0.7832,
+        "gamma": 0.1655,
+        "theta_du": -0.016,
+        "vega": 1.1947,
+        "rho": 0.8307
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16855,16 +16855,16 @@
       "strike": 12.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
-      "market_price": 1.09,
-      "theoretical_price": 1.0929,
+      "spot_price": 13.47,
+      "market_price": 1.11,
+      "theoretical_price": 1.1069,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.6805,
-        "gamma": 0.2014,
-        "theta_du": -0.0171,
-        "vega": 1.4554,
-        "rho": 0.7375
+        "delta": 0.6854,
+        "gamma": 0.2002,
+        "theta_du": -0.018,
+        "vega": 1.4448,
+        "rho": 0.7416
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16879,16 +16879,16 @@
       "strike": 13.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
-      "market_price": 0.76,
-      "theoretical_price": 0.7572,
+      "spot_price": 13.47,
+      "market_price": 0.77,
+      "theoretical_price": 0.7688,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.5493,
-        "gamma": 0.2231,
-        "theta_du": -0.0181,
-        "vega": 1.6123,
-        "rho": 0.6066
+        "delta": 0.5547,
+        "gamma": 0.2228,
+        "theta_du": -0.0188,
+        "vega": 1.6082,
+        "rho": 0.6118
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16903,16 +16903,16 @@
       "strike": 14.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
-      "market_price": 0.54,
-      "theoretical_price": 0.5383,
+      "spot_price": 13.47,
+      "market_price": 0.55,
+      "theoretical_price": 0.5478,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.4394,
-        "gamma": 0.2222,
-        "theta_du": -0.0175,
-        "vega": 1.6059,
-        "rho": 0.4915
+        "delta": 0.4449,
+        "gamma": 0.2228,
+        "theta_du": -0.0181,
+        "vega": 1.6079,
+        "rho": 0.4969
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16920,23 +16920,23 @@
       }
     },
     {
-      "symbol": "LRENK146",
+      "symbol": "LRENK145",
       "underlying_ticker": "LREN3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 14.6,
+      "strike": 14.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
-      "market_price": 0.34,
-      "theoretical_price": 0.3427,
+      "spot_price": 13.47,
+      "market_price": 0.38,
+      "theoretical_price": 0.3781,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.3188,
-        "gamma": 0.2012,
-        "theta_du": -0.0154,
-        "vega": 1.454,
-        "rho": 0.3609
+        "delta": 0.3427,
+        "gamma": 0.2072,
+        "theta_du": -0.0164,
+        "vega": 1.4955,
+        "rho": 0.3868
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16951,16 +16951,16 @@
       "strike": 15.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 13.48,
+      "spot_price": 13.47,
       "market_price": 0.23,
-      "theoretical_price": 0.2273,
+      "theoretical_price": 0.2326,
       "iv": 0.4358,
       "greeks": {
-        "delta": 0.2336,
-        "gamma": 0.1726,
-        "theta_du": -0.013,
-        "vega": 1.2474,
-        "rho": 0.2667
+        "delta": 0.2379,
+        "gamma": 0.1745,
+        "theta_du": -0.0135,
+        "vega": 1.259,
+        "rho": 0.2712
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16975,16 +16975,16 @@
       "strike": 6.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
-      "market_price": 0.97,
-      "theoretical_price": 0.9744,
+      "spot_price": 7.06,
+      "market_price": 0.98,
+      "theoretical_price": 0.9776,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.7,
-        "gamma": 0.217,
-        "theta_du": -0.0138,
-        "vega": 0.7426,
-        "rho": 0.3628
+        "delta": 0.7018,
+        "gamma": 0.2168,
+        "theta_du": -0.0142,
+        "vega": 0.7396,
+        "rho": 0.363
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -16999,16 +16999,16 @@
       "strike": 6.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
-      "market_price": 0.8,
-      "theoretical_price": 0.8025,
+      "spot_price": 7.06,
+      "market_price": 0.81,
+      "theoretical_price": 0.8055,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.6275,
-        "gamma": 0.2362,
-        "theta_du": -0.0148,
-        "vega": 0.8082,
-        "rho": 0.3317
+        "delta": 0.6295,
+        "gamma": 0.2361,
+        "theta_du": -0.0151,
+        "vega": 0.8057,
+        "rho": 0.3321
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17023,16 +17023,16 @@
       "strike": 7.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
-      "market_price": 0.65,
-      "theoretical_price": 0.6535,
+      "spot_price": 7.06,
+      "market_price": 0.66,
+      "theoretical_price": 0.6563,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.5536,
-        "gamma": 0.2468,
-        "theta_du": -0.0152,
-        "vega": 0.8444,
-        "rho": 0.2976
+        "delta": 0.5556,
+        "gamma": 0.247,
+        "theta_du": -0.0156,
+        "vega": 0.8426,
+        "rho": 0.2981
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17040,23 +17040,23 @@
       }
     },
     {
-      "symbol": "NTCOK74",
+      "symbol": "NTCOK73",
       "underlying_ticker": "NTCO3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 7.4,
+      "strike": 7.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
-      "market_price": 0.53,
-      "theoretical_price": 0.5265,
+      "spot_price": 7.06,
+      "market_price": 0.57,
+      "theoretical_price": 0.5691,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.4809,
-        "gamma": 0.2488,
-        "theta_du": -0.0152,
-        "vega": 0.8511,
-        "rho": 0.2623
+        "delta": 0.5069,
+        "gamma": 0.2494,
+        "theta_du": -0.0156,
+        "vega": 0.8508,
+        "rho": 0.2747
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17071,16 +17071,16 @@
       "strike": 7.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
-      "market_price": 0.45,
-      "theoretical_price": 0.4533,
+      "spot_price": 7.06,
+      "market_price": 0.46,
+      "theoretical_price": 0.4557,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.4343,
-        "gamma": 0.2456,
-        "theta_du": -0.0149,
-        "vega": 0.8405,
-        "rho": 0.2388
+        "delta": 0.4363,
+        "gamma": 0.2462,
+        "theta_du": -0.0152,
+        "vega": 0.84,
+        "rho": 0.2395
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17095,16 +17095,16 @@
       "strike": 7.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 7.07,
+      "spot_price": 7.06,
       "market_price": 0.36,
-      "theoretical_price": 0.3592,
+      "theoretical_price": 0.3613,
       "iv": 0.75,
       "greeks": {
-        "delta": 0.3683,
-        "gamma": 0.2353,
-        "theta_du": -0.0141,
-        "vega": 0.8052,
-        "rho": 0.2049
+        "delta": 0.3702,
+        "gamma": 0.2361,
+        "theta_du": -0.0144,
+        "vega": 0.8055,
+        "rho": 0.2056
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17119,16 +17119,16 @@
       "strike": 0.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 0.36,
-      "market_price": 0.07,
-      "theoretical_price": 0.068,
-      "iv": 0.6356,
+      "spot_price": 0.37,
+      "market_price": 0.08,
+      "theoretical_price": 0.0774,
+      "iv": 0.636,
       "greeks": {
-        "delta": 0.8628,
-        "gamma": 3.1759,
+        "delta": 0.8941,
+        "gamma": 2.5745,
         "theta_du": -0.0004,
-        "vega": 0.0239,
-        "rho": 0.0221
+        "vega": 0.0205,
+        "rho": 0.0231
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17143,16 +17143,16 @@
       "strike": 0.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 0.36,
-      "market_price": 0.01,
-      "theoretical_price": 0.0143,
-      "iv": 0.6356,
+      "spot_price": 0.37,
+      "market_price": 0.02,
+      "theoretical_price": 0.0183,
+      "iv": 0.636,
       "greeks": {
-        "delta": 0.3427,
-        "gamma": 5.3163,
-        "theta_du": -0.0006,
-        "vega": 0.04,
-        "rho": 0.01
+        "delta": 0.4017,
+        "gamma": 5.4406,
+        "theta_du": -0.0007,
+        "vega": 0.0432,
+        "rho": 0.0119
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17160,23 +17160,23 @@
       }
     },
     {
-      "symbol": "RENTK455",
+      "symbol": "RENTK454",
       "underlying_ticker": "RENT3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 45.5,
+      "strike": 45.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 5.16,
-      "theoretical_price": 5.164,
+      "spot_price": 49.39,
+      "market_price": 5.29,
+      "theoretical_price": 5.2934,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.7845,
-        "gamma": 0.0466,
-        "theta_du": -0.0535,
-        "vega": 4.3689,
-        "rho": 3.0681
+        "delta": 0.7935,
+        "gamma": 0.0455,
+        "theta_du": -0.0564,
+        "vega": 4.2575,
+        "rho": 3.094
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17184,23 +17184,23 @@
       }
     },
     {
-      "symbol": "RENTK475",
+      "symbol": "RENTK474",
       "underlying_ticker": "RENT3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 47.5,
+      "strike": 47.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 3.8,
-      "theoretical_price": 3.8023,
+      "spot_price": 49.39,
+      "market_price": 3.91,
+      "theoretical_price": 3.9138,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.6732,
-        "gamma": 0.0575,
-        "theta_du": -0.0614,
-        "vega": 5.3866,
-        "rho": 2.6902
+        "delta": 0.6841,
+        "gamma": 0.0567,
+        "theta_du": -0.0642,
+        "vega": 5.3068,
+        "rho": 2.7267
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17215,16 +17215,16 @@
       "strike": 49.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 2.74,
-      "theoretical_price": 2.7369,
+      "spot_price": 49.39,
+      "market_price": 2.78,
+      "theoretical_price": 2.7784,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.5557,
+        "delta": 0.5611,
         "gamma": 0.0629,
-        "theta_du": -0.0643,
-        "vega": 5.8994,
-        "rho": 2.2572
+        "theta_du": -0.067,
+        "vega": 5.8826,
+        "rho": 2.2759
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17239,16 +17239,16 @@
       "strike": 51.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 1.86,
-      "theoretical_price": 1.8592,
+      "spot_price": 49.39,
+      "market_price": 1.89,
+      "theoretical_price": 1.8921,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.4315,
-        "gamma": 0.0626,
-        "theta_du": -0.0619,
-        "vega": 5.8696,
-        "rho": 1.7772
+        "delta": 0.437,
+        "gamma": 0.0628,
+        "theta_du": -0.0642,
+        "vega": 5.8782,
+        "rho": 1.7971
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17256,23 +17256,23 @@
       }
     },
     {
-      "symbol": "RENTK534",
+      "symbol": "RENTK533",
       "underlying_ticker": "RENT3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 53.4,
+      "strike": 53.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 1.21,
-      "theoretical_price": 1.2117,
+      "spot_price": 49.39,
+      "market_price": 1.26,
+      "theoretical_price": 1.2642,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.3181,
-        "gamma": 0.0568,
-        "theta_du": -0.0547,
-        "vega": 5.3269,
-        "rho": 1.3245
+        "delta": 0.3284,
+        "gamma": 0.0576,
+        "theta_du": -0.0572,
+        "vega": 5.3929,
+        "rho": 1.3648
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17280,23 +17280,23 @@
       }
     },
     {
-      "symbol": "RENTK554",
+      "symbol": "RENTK553",
       "underlying_ticker": "RENT3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 55.4,
+      "strike": 55.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 49.43,
-      "market_price": 0.76,
-      "theoretical_price": 0.7584,
+      "spot_price": 49.39,
+      "market_price": 0.8,
+      "theoretical_price": 0.7951,
       "iv": 0.4204,
       "greeks": {
-        "delta": 0.2229,
-        "gamma": 0.0475,
-        "theta_du": -0.0448,
-        "vega": 4.4544,
-        "rho": 0.9362
+        "delta": 0.2313,
+        "gamma": 0.0486,
+        "theta_du": -0.047,
+        "vega": 4.5453,
+        "rho": 0.9702
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17311,16 +17311,16 @@
       "strike": 5.2,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.67,
-      "theoretical_price": 0.6658,
+      "spot_price": 5.61,
+      "market_price": 0.68,
+      "theoretical_price": 0.6813,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.704,
-        "gamma": 0.3275,
-        "theta_du": -0.0093,
-        "vega": 0.5847,
-        "rho": 0.299
+        "delta": 0.7119,
+        "gamma": 0.3228,
+        "theta_du": -0.0096,
+        "vega": 0.5784,
+        "rho": 0.3023
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17335,16 +17335,16 @@
       "strike": 5.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.55,
-      "theoretical_price": 0.5474,
+      "spot_price": 5.61,
+      "market_price": 0.56,
+      "theoretical_price": 0.5615,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.6314,
-        "gamma": 0.3573,
-        "theta_du": -0.0099,
-        "vega": 0.638,
-        "rho": 0.2728
+        "delta": 0.6401,
+        "gamma": 0.3538,
+        "theta_du": -0.0102,
+        "vega": 0.634,
+        "rho": 0.2765
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17359,16 +17359,16 @@
       "strike": 5.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.44,
-      "theoretical_price": 0.4444,
+      "spot_price": 5.61,
+      "market_price": 0.46,
+      "theoretical_price": 0.4569,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.5567,
-        "gamma": 0.3742,
-        "theta_du": -0.0102,
-        "vega": 0.6681,
-        "rho": 0.244
+        "delta": 0.5658,
+        "gamma": 0.3722,
+        "theta_du": -0.0105,
+        "vega": 0.6669,
+        "rho": 0.248
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17383,16 +17383,16 @@
       "strike": 5.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.36,
-      "theoretical_price": 0.3563,
+      "spot_price": 5.61,
+      "market_price": 0.37,
+      "theoretical_price": 0.3672,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.4826,
-        "gamma": 0.3777,
-        "theta_du": -0.0102,
-        "vega": 0.6743,
-        "rho": 0.2141
+        "delta": 0.4918,
+        "gamma": 0.3773,
+        "theta_du": -0.0105,
+        "vega": 0.676,
+        "rho": 0.2183
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17400,23 +17400,23 @@
       }
     },
     {
-      "symbol": "VAMOK60",
+      "symbol": "VAMOK61",
       "underlying_ticker": "VAMO3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 6.0,
+      "strike": 6.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.28,
-      "theoretical_price": 0.2822,
+      "spot_price": 5.61,
+      "market_price": 0.26,
+      "theoretical_price": 0.2587,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.4116,
-        "gamma": 0.3687,
+        "delta": 0.3866,
+        "gamma": 0.362,
         "theta_du": -0.0098,
-        "vega": 0.6583,
-        "rho": 0.1846
+        "vega": 0.6486,
+        "rho": 0.1743
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17431,16 +17431,16 @@
       "strike": 6.3,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 5.6,
-      "market_price": 0.19,
-      "theoretical_price": 0.1947,
+      "spot_price": 5.61,
+      "market_price": 0.2,
+      "theoretical_price": 0.202,
       "iv": 0.6238,
       "greeks": {
-        "delta": 0.3148,
-        "gamma": 0.3365,
-        "theta_du": -0.0088,
-        "vega": 0.6008,
-        "rho": 0.1431
+        "delta": 0.323,
+        "gamma": 0.3396,
+        "theta_du": -0.0091,
+        "vega": 0.6084,
+        "rho": 0.1469
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17448,23 +17448,23 @@
       }
     },
     {
-      "symbol": "JBSSK610",
+      "symbol": "JBSSK611",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 61.0,
+      "strike": 61.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 8.17,
-      "theoretical_price": 8.1738,
+      "spot_price": 66.46,
+      "market_price": 8.29,
+      "theoretical_price": 8.2912,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.7254,
-        "gamma": 0.0274,
-        "theta_du": -0.105,
-        "vega": 6.6831,
-        "rho": 3.6471
+        "delta": 0.7301,
+        "gamma": 0.0271,
+        "theta_du": -0.109,
+        "vega": 6.6375,
+        "rho": 3.6719
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17472,23 +17472,23 @@
       }
     },
     {
-      "symbol": "JBSSK637",
+      "symbol": "JBSSK638",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 63.7,
+      "strike": 63.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 6.52,
-      "theoretical_price": 6.5247,
+      "spot_price": 66.46,
+      "market_price": 6.63,
+      "theoretical_price": 6.6319,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.6418,
-        "gamma": 0.0306,
-        "theta_du": -0.1143,
-        "vega": 7.486,
-        "rho": 3.2912
+        "delta": 0.6472,
+        "gamma": 0.0304,
+        "theta_du": -0.1182,
+        "vega": 7.4584,
+        "rho": 3.3205
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17496,23 +17496,23 @@
       }
     },
     {
-      "symbol": "JBSSK663",
+      "symbol": "JBSSK665",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 66.3,
+      "strike": 66.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 5.16,
-      "theoretical_price": 5.1648,
+      "spot_price": 66.46,
+      "market_price": 5.21,
+      "theoretical_price": 5.2122,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.5579,
-        "gamma": 0.0324,
-        "theta_du": -0.1184,
-        "vega": 7.9125,
-        "rho": 2.9069
+        "delta": 0.5605,
+        "gamma": 0.0323,
+        "theta_du": -0.1221,
+        "vega": 7.9178,
+        "rho": 2.924
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17520,23 +17520,23 @@
       }
     },
     {
-      "symbol": "JBSSK690",
+      "symbol": "JBSSK691",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 69.0,
+      "strike": 69.1,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 3.98,
-      "theoretical_price": 3.9836,
+      "spot_price": 66.46,
+      "market_price": 4.07,
+      "theoretical_price": 4.0667,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.4714,
+        "delta": 0.4774,
         "gamma": 0.0326,
-        "theta_du": -0.1174,
-        "vega": 7.9762,
-        "rho": 2.4912
+        "theta_du": -0.1209,
+        "vega": 7.9972,
+        "rho": 2.5248
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17544,23 +17544,23 @@
       }
     },
     {
-      "symbol": "JBSSK717",
+      "symbol": "JBSSK718",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 71.7,
+      "strike": 71.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 3.02,
-      "theoretical_price": 3.0219,
+      "spot_price": 66.46,
+      "market_price": 3.09,
+      "theoretical_price": 3.0922,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.3895,
+        "delta": 0.3954,
         "gamma": 0.0315,
-        "theta_du": -0.1116,
-        "vega": 7.6879,
-        "rho": 2.0828
+        "theta_du": -0.1149,
+        "vega": 7.7332,
+        "rho": 2.1163
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17568,23 +17568,23 @@
       }
     },
     {
-      "symbol": "JBSSK743",
+      "symbol": "JBSSK744",
       "underlying_ticker": "JBSS3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 74.3,
+      "strike": 74.4,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 66.35,
-      "market_price": 2.28,
-      "theoretical_price": 2.2814,
+      "spot_price": 66.46,
+      "market_price": 2.34,
+      "theoretical_price": 2.34,
       "iv": 0.6081,
       "greeks": {
-        "delta": 0.3176,
-        "gamma": 0.0292,
-        "theta_du": -0.1025,
-        "vega": 7.1452,
-        "rho": 1.7148
+        "delta": 0.3232,
+        "gamma": 0.0294,
+        "theta_du": -0.1056,
+        "vega": 7.2096,
+        "rho": 1.7467
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17600,15 +17600,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 18.01,
-      "theoretical_price": 18.0057,
+      "market_price": 18.45,
+      "theoretical_price": 18.4548,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.9574,
-        "gamma": 0.0082,
-        "theta_du": -0.0908,
-        "vega": 5.5148,
-        "rho": 15.9586
+        "delta": 0.9615,
+        "gamma": 0.0076,
+        "theta_du": -0.1088,
+        "vega": 5.0809,
+        "rho": 15.9927
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17624,15 +17624,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 10.84,
-      "theoretical_price": 10.8401,
+      "market_price": 11.24,
+      "theoretical_price": 11.2417,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.826,
-        "gamma": 0.0233,
-        "theta_du": -0.1235,
-        "vega": 15.6271,
-        "rho": 14.197
+        "delta": 0.8378,
+        "gamma": 0.0223,
+        "theta_du": -0.1392,
+        "vega": 14.9369,
+        "rho": 14.3771
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17648,15 +17648,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 5.36,
-      "theoretical_price": 5.3611,
+      "market_price": 5.65,
+      "theoretical_price": 5.6504,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.578,
-        "gamma": 0.0356,
-        "theta_du": -0.1387,
-        "vega": 23.8114,
-        "rho": 10.1373
+        "delta": 0.5963,
+        "gamma": 0.0352,
+        "theta_du": -0.1518,
+        "vega": 23.5664,
+        "rho": 10.447
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17672,15 +17672,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 2.04,
-      "theoretical_price": 2.0352,
+      "market_price": 2.19,
+      "theoretical_price": 2.1889,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.2999,
-        "gamma": 0.0316,
-        "theta_du": -0.1065,
-        "vega": 21.1537,
-        "rho": 5.3269
+        "delta": 0.3164,
+        "gamma": 0.0323,
+        "theta_du": -0.1165,
+        "vega": 21.6575,
+        "rho": 5.6165
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17696,15 +17696,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 0.59,
-      "theoretical_price": 0.5903,
+      "market_price": 0.65,
+      "theoretical_price": 0.6495,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.113,
-        "gamma": 0.0174,
-        "theta_du": -0.0539,
-        "vega": 11.6656,
-        "rho": 2.0237
+        "delta": 0.1223,
+        "gamma": 0.0184,
+        "theta_du": -0.0598,
+        "vega": 12.3343,
+        "rho": 2.1885
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17720,15 +17720,15 @@
       "maturity_date": "2026-11-19",
       "du": 23,
       "spot_price": 201.43,
-      "market_price": 0.13,
-      "theoretical_price": 0.1258,
+      "market_price": 0.14,
+      "theoretical_price": 0.1418,
       "iv": 0.1809,
       "greeks": {
-        "delta": 0.0301,
-        "gamma": 0.0062,
-        "theta_du": -0.0179,
-        "vega": 4.1476,
-        "rho": 0.5412
+        "delta": 0.0334,
+        "gamma": 0.0068,
+        "theta_du": -0.0203,
+        "vega": 4.5253,
+        "rho": 0.6012
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17736,23 +17736,23 @@
       }
     },
     {
-      "symbol": "WEGEK439",
+      "symbol": "WEGEK440",
       "underlying_ticker": "WEGE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 43.9,
+      "strike": 44.0,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 4.57,
-      "theoretical_price": 4.5704,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 4.64,
+      "theoretical_price": 4.6409,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.8569,
-        "gamma": 0.052,
-        "theta_du": -0.0358,
-        "vega": 3.2589,
-        "rho": 3.3164
+        "delta": 0.8612,
+        "gamma": 0.0508,
+        "theta_du": -0.0396,
+        "vega": 3.1959,
+        "rho": 3.3344
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17760,23 +17760,23 @@
       }
     },
     {
-      "symbol": "WEGEK458",
+      "symbol": "WEGEK459",
       "underlying_ticker": "WEGE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 45.8,
+      "strike": 45.9,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 3.12,
-      "theoretical_price": 3.1232,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 3.19,
+      "theoretical_price": 3.1862,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.7261,
-        "gamma": 0.0766,
-        "theta_du": -0.0443,
-        "vega": 4.8029,
-        "rho": 2.8788
+        "delta": 0.7329,
+        "gamma": 0.0755,
+        "theta_du": -0.0476,
+        "vega": 4.7502,
+        "rho": 2.9071
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17784,23 +17784,23 @@
       }
     },
     {
-      "symbol": "WEGEK477",
+      "symbol": "WEGEK478",
       "underlying_ticker": "WEGE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 47.7,
+      "strike": 47.8,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 1.97,
-      "theoretical_price": 1.9721,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 2.02,
+      "theoretical_price": 2.0231,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.5615,
-        "gamma": 0.0907,
-        "theta_du": -0.0475,
-        "vega": 5.6853,
-        "rho": 2.2666
+        "delta": 0.5699,
+        "gamma": 0.0902,
+        "theta_du": -0.0504,
+        "vega": 5.6736,
+        "rho": 2.3021
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17808,23 +17808,23 @@
       }
     },
     {
-      "symbol": "WEGEK496",
+      "symbol": "WEGEK497",
       "underlying_ticker": "WEGE3",
       "type": "CALL",
       "style": "EUROPEAN",
-      "strike": 49.6,
+      "strike": 49.7,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 1.14,
-      "theoretical_price": 1.1437,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 1.18,
+      "theoretical_price": 1.1808,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.392,
-        "gamma": 0.0884,
-        "theta_du": -0.0436,
-        "vega": 5.5418,
-        "rho": 1.6037
+        "delta": 0.4005,
+        "gamma": 0.0888,
+        "theta_du": -0.046,
+        "vega": 5.5822,
+        "rho": 1.64
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17839,16 +17839,16 @@
       "strike": 51.6,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 0.59,
-      "theoretical_price": 0.5862,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 0.63,
+      "theoretical_price": 0.6318,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.2394,
-        "gamma": 0.0714,
-        "theta_du": -0.0337,
-        "vega": 4.478,
-        "rho": 0.9898
+        "delta": 0.2533,
+        "gamma": 0.0735,
+        "theta_du": -0.0361,
+        "vega": 4.6223,
+        "rho": 1.0478
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
@@ -17863,16 +17863,16 @@
       "strike": 53.5,
       "maturity_date": "2026-11-19",
       "du": 23,
-      "spot_price": 47.74,
-      "market_price": 0.28,
-      "theoretical_price": 0.284,
-      "iv": 0.3015,
+      "spot_price": 47.81,
+      "market_price": 0.31,
+      "theoretical_price": 0.3099,
+      "iv": 0.3014,
       "greeks": {
-        "delta": 0.1346,
-        "gamma": 0.0498,
-        "theta_du": -0.0227,
-        "vega": 3.1244,
-        "rho": 0.5604
+        "delta": 0.1443,
+        "gamma": 0.0522,
+        "theta_du": -0.0246,
+        "vega": 3.2817,
+        "rho": 0.6015
       },
       "actuarial_checks": {
         "intrinsic_bound_ok": true,
