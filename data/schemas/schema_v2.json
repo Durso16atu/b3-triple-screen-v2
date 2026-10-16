@@ -72,6 +72,21 @@
           "stoch_d": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
           "force_ema2": { "type": ["number", "null"] },
           "wave_daily": { "type": "string" },
+          "ohlc_history": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["date", "open", "high", "low", "close"],
+              "properties": {
+                "date": { "type": "string" },
+                "open": { "type": "number" },
+                "high": { "type": "number" },
+                "low": { "type": "number" },
+                "close": { "type": "number" },
+                "ema13": { "type": ["number", "null"] }
+              }
+            }
+          },
           "updated_at": { "type": "string" }
         }
       }

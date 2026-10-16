@@ -4,7 +4,13 @@ window.appState = {
   underlyings: [],
   options: [],
   tickerSelecionado: null,
-  faseSelecionada: "TODAS"
+  faseSelecionada: "TODAS",
+  janelaCandles: 35
+};
+
+window.selecionarJanelaCandles = function(dias) {
+  window.appState.janelaCandles = Number(dias) || 35;
+  renderizarTudo();
 };
 
 window.selecionarFase = function(fase) {
@@ -38,7 +44,7 @@ function renderizarTudo() {
   const filteredOptions = options.filter(o => o.underlying_ticker === tickerSelecionado);
 
   renderizarMetadadosKPIs(metadata, filteredOptions);
-  renderizarSemaforoMacro(underlyings, tickerSelecionado);
+  renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions, metadata);
   renderizarRadarOportunidades(underlyings, tickerSelecionado);
   renderizarGradeOpcoesB3(filteredOptions);
   renderizarConeVolatilidade(filteredOptions, "vol-cone-container");
@@ -119,8 +125,306 @@ function renderizarMetadadosKPIs(meta, options) {
   }
 }
 
-/* 2. RENDERIZADOR DO SEMÁFORO MACRO (TELA 1: TENDÊNCIA E MACD) */
-function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
+/* 2. RENDERIZADOR DO SEMÁFORO MACRO (TELA 1: TENDÊNCIA, MACD E GRÁFICO CANDLESTICK) */
+window.atualizarInspecaoCandle = function(dt, o, h, l, c, ema, varPct, corVar) {
+  const bar = document.getElementById("candle-inspector-bar");
+  if (!bar) return;
+  const emaStr = ema && ema !== "null" ? `R$ ${Number(ema).toFixed(2)}` : "—";
+  bar.innerHTML = `
+    <span style="color:#e2e8f0; font-weight:700;">📅 ${dt}</span>
+    <span>Abert: <strong style="color:#f1f5f9;">R$ ${Number(o).toFixed(2)}</strong></span>
+    <span>Máx: <strong style="color:#10b981;">R$ ${Number(h).toFixed(2)}</strong></span>
+    <span>Mín: <strong style="color:#f43f5e;">R$ ${Number(l).toFixed(2)}</strong></span>
+    <span>Fech: <strong style="color:${corVar};">R$ ${Number(c).toFixed(2)} (${varPct})</strong></span>
+    <span>EMA13: <strong style="color:#38bdf8;">${emaStr}</strong></span>
+  `;
+};
+
+function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
+  const spot = Number(u.spot_price);
+  const rawHistory = Array.isArray(u.ohlc_history) && u.ohlc_history.length >= 5
+    ? u.ohlc_history
+    : null;
+
+  let history = [];
+  if (rawHistory) {
+    history = rawHistory;
+  } else {
+    // Fallback determinístico caso algum cache antigo ainda não possua ohlc_history
+    const sup = u.suporte_fibonacci && u.suporte_fibonacci > 0 ? Number(u.suporte_fibonacci) : spot * 0.96;
+    for (let i = 34; i >= 0; i--) {
+      const wave = Math.sin(i * 0.45) * (spot - sup) * 0.35;
+      const baseC = spot - (i * (spot - sup) * 0.012) + wave;
+      const o = Number((baseC - 0.12 * (i % 2 === 0 ? 1 : -1)).toFixed(2));
+      const c = i === 0 ? spot : Number(baseC.toFixed(2));
+      const h = Number((Math.max(o, c) + 0.22).toFixed(2));
+      const l = Number((Math.min(o, c) - 0.20).toFixed(2));
+      history.push({ date: `D-${i}`, open: o, high: h, low: l, close: c, ema13: Number(((o + c) / 2).toFixed(2)) });
+    }
+  }
+
+  const janela = Number(window.appState.janelaCandles) || 35;
+  const candles = history.slice(-janela);
+  if (candles.length === 0) return "";
+
+  const lastC = candles[candles.length - 1];
+  const prevC = candles.length >= 2 ? candles[candles.length - 2] : lastC;
+  const recent14 = candles.slice(-14);
+  const min14 = u.suporte_fibonacci && u.suporte_fibonacci > 0
+    ? Number(u.suporte_fibonacci)
+    : Math.min(...recent14.map(c => Number(c.low)));
+  const max14 = Math.max(...recent14.map(c => Number(c.high)));
+
+  const trend = String(u.trend_signal || "NEUTRO").toUpperCase();
+  const isArmed = u.phase === "INDICACAO_IMEDIATA" && u.gatilho_entrada != null && u.stop_loss != null;
+
+  const callSeries = metadata?.active_maturity?.call_series || "K";
+  const putSeries = metadata?.active_maturity?.put_series || "W";
+  const prefix = u.ticker.substring(0, 4);
+
+  let optCallSymbol = `${prefix}${callSeries}${Math.round(spot)}`;
+  if (Array.isArray(filteredOptions) && filteredOptions.length > 0) {
+    const sortedOpts = [...filteredOptions].sort((a, b) => Number(a.strike) - Number(b.strike));
+    const recOpt = sortedOpts.find(o => Number(o.greeks?.delta) >= 0.25 && Number(o.greeks?.delta) <= 0.45)
+      || sortedOpts.find(o => Number(o.strike) >= spot)
+      || sortedOpts[0];
+    if (recOpt && recOpt.symbol) optCallSymbol = recOpt.symbol;
+  }
+
+  let linhaSup = 0;
+  let linhaInf = 0;
+  let labelSup = "";
+  let labelInf = "";
+  let corSup = "#10b981";
+  let corInf = "#f59e0b";
+  let fillZona = "rgba(16, 185, 129, 0.09)";
+  let tituloZona = "";
+  let tooltipSup = "";
+  let tooltipInf = "";
+
+  if (trend === "ALTA" || trend === "BULLISH") {
+    if (isArmed) {
+      linhaSup = Number(u.gatilho_entrada);
+      linhaInf = Number(u.stop_loss);
+      labelSup = `GATILHO CALL ATIVO (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+      labelInf = `STOP LOSS / PISO DO RECUO: R$ ${linhaInf.toFixed(2)}`;
+    } else {
+      linhaSup = Number((Number(prevC.high) + 0.01).toFixed(2));
+      linhaInf = Number(Math.min(min14, Number(lastC.low) - 0.01).toFixed(2));
+      if (linhaSup <= linhaInf) {
+        linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high)) + 0.15).toFixed(2));
+      }
+      labelSup = `GATILHO HIPOTÉTICO CALL (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+      labelInf = `PISO DE RECUO / SUPORTE 14D (STOP CALL): R$ ${linhaInf.toFixed(2)}`;
+    }
+    corSup = "#10b981";
+    corInf = "#38bdf8";
+    fillZona = "rgba(16, 185, 129, 0.09)";
+    tituloZona = `Zona Operacional CALL (${optCallSymbol})`;
+    tooltipSup = `Linha Paralela Superior (Buy Stop Tela 3): posicionada 1 centavo acima da máxima de D-1 (R$ ${linhaSup.toFixed(2)}). Na Maré de Alta, o rompimento desta linha após o recuo em sobrevenda (%K < 30%) aciona a compra da CALL ${optCallSymbol}.`;
+    tooltipInf = `Linha Paralela Inferior (Suporte de Recuo / Stop Loss): posicionada na mínima de suporte de 14 dias (R$ ${linhaInf.toFixed(2)}). Delimita o piso da área de barganha onde o Estocástico recua para armar o gatilho e onde fica o Stop de proteção.`;
+  } else if (trend === "BAIXA" || trend === "BEARISH") {
+    linhaSup = Number((max14 + 0.01).toFixed(2));
+    linhaInf = Number((Number(prevC.low) - 0.01).toFixed(2));
+    if (linhaSup <= linhaInf) {
+      linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high)) + 0.15).toFixed(2));
+    }
+    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
+    labelSup = `TETO DO REPIQUE / STOP TÉCNICO PUT: R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `GATILHO HIPOTÉTICO PUT (${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    corSup = "#f59e0b";
+    corInf = "#f43f5e";
+    fillZona = "rgba(244, 63, 94, 0.09)";
+    tituloZona = `Zona Operacional PUT (${optPutSymbol})`;
+    tooltipSup = `Linha Paralela Superior (Resistência / Stop PUT): máxima de 14 dias + 1 tick (R$ ${linhaSup.toFixed(2)}). Em tendência semanal de baixa, repiques até esta faixa levam o Estocástico à sobrecompra (%K > 70%) para armar venda/PUT.`;
+    tooltipInf = `Linha Paralela Inferior (Gatilho Sell Stop PUT): posicionada 1 centavo abaixo da mínima de D-1 (R$ ${linhaInf.toFixed(2)}). A perda deste nível confirma retomada vendedora para entrada na PUT ${optPutSymbol}.`;
+  } else {
+    linhaSup = Number((max14 + 0.01).toFixed(2));
+    linhaInf = Number((min14 - 0.01).toFixed(2));
+    if (linhaSup <= linhaInf) {
+      linhaSup = Number((spot * 1.02).toFixed(2));
+      linhaInf = Number((spot * 0.98).toFixed(2));
+    }
+    const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
+    labelSup = `GATILHO HIPOTÉTICO CALL (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `GATILHO HIPOTÉTICO PUT (${optPutSymbol}): R$ ${linhaInf.toFixed(2)}`;
+    corSup = "#10b981";
+    corInf = "#f43f5e";
+    fillZona = "rgba(56, 189, 248, 0.07)";
+    tituloZona = "Canal de Descongestionamento (CALL / PUT)";
+    tooltipSup = `Linha Paralela Superior (Gatilho Hipotético CALL): topo de 14 pregões + 1 tick (R$ ${linhaSup.toFixed(2)}). Com a Maré Semanal neutra, marca a resistência cujo rompimento alinhado à Tela 1 libera compra de CALL (${optCallSymbol}).`;
+    tooltipInf = `Linha Paralela Inferior (Gatilho Hipotético PUT): fundo de 14 pregões - 1 tick (R$ ${linhaInf.toFixed(2)}). Marca o suporte crítico cuja perda em alinhamento baixista aciona proteção via PUT (${optPutSymbol}).`;
+  }
+
+  const allPrices = [];
+  candles.forEach(c => {
+    allPrices.push(Number(c.high), Number(c.low));
+    if (c.ema13 != null && !isNaN(c.ema13)) allPrices.push(Number(c.ema13));
+  });
+  allPrices.push(linhaSup, linhaInf, spot);
+
+  const rawMin = Math.min(...allPrices);
+  const rawMax = Math.max(...allPrices);
+  const span = Math.max(0.4, rawMax - rawMin);
+  const minP = rawMin - span * 0.10;
+  const maxP = rawMax + span * 0.12;
+
+  const width = 640;
+  const height = 295;
+  const pad = { top: 22, right: 64, bottom: 32, left: 54 };
+  const plotW = width - pad.left - pad.right;
+  const plotH = height - pad.top - pad.bottom;
+
+  const getY = (val) => pad.top + plotH - ((Number(val) - minP) / (maxP - minP)) * plotH;
+  const stepX = plotW / candles.length;
+  const candleW = Math.max(3.5, Math.min(13, stepX * 0.66));
+
+  let gridSvg = "";
+  for (let i = 0; i <= 4; i++) {
+    const pVal = minP + (i / 4) * (maxP - minP);
+    const y = getY(pVal);
+    gridSvg += `
+      <line x1="${pad.left}" y1="${y.toFixed(1)}" x2="${width - pad.right}" y2="${y.toFixed(1)}" stroke="#1e293b" stroke-dasharray="3,3" />
+      <text x="${pad.left - 6}" y="${(y + 3.5).toFixed(1)}" fill="#64748b" font-size="9.5" font-family="monospace" text-anchor="end">R$ ${pVal.toFixed(2)}</text>
+    `;
+  }
+
+  const ySup = getY(linhaSup);
+  const yInf = getY(linhaInf);
+  const yTopZone = Math.min(ySup, yInf);
+  const hZone = Math.max(2, Math.abs(yInf - ySup));
+
+  const zonaParalelaSvg = `
+    <rect x="${pad.left}" y="${yTopZone.toFixed(1)}" width="${plotW}" height="${hZone.toFixed(1)}" fill="${fillZona}" />
+    <line x1="${pad.left}" y1="${ySup.toFixed(1)}" x2="${width - pad.right}" y2="${ySup.toFixed(1)}" stroke="${corSup}" stroke-width="1.8" stroke-dasharray="6,4" />
+    <rect x="${width - pad.right + 2}" y="${(ySup - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corSup}" fill-opacity="0.22" stroke="${corSup}" stroke-width="0.8" />
+    <text x="${width - pad.right + 31}" y="${(ySup + 3.5).toFixed(1)}" fill="${corSup}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaSup.toFixed(2)}</text>
+    <text x="${pad.left + 6}" y="${(ySup - 4).toFixed(1)}" fill="${corSup}" font-size="8.5" font-family="monospace" font-weight="700">${labelSup}</text>
+
+    <line x1="${pad.left}" y1="${yInf.toFixed(1)}" x2="${width - pad.right}" y2="${yInf.toFixed(1)}" stroke="${corInf}" stroke-width="1.8" stroke-dasharray="6,4" />
+    <rect x="${width - pad.right + 2}" y="${(yInf - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corInf}" fill-opacity="0.22" stroke="${corInf}" stroke-width="0.8" />
+    <text x="${width - pad.right + 31}" y="${(yInf + 3.5).toFixed(1)}" fill="${corInf}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaInf.toFixed(2)}</text>
+    <text x="${pad.left + 6}" y="${(yInf + 11).toFixed(1)}" fill="${corInf}" font-size="8.5" font-family="monospace" font-weight="700">${labelInf}</text>
+  `;
+
+  let emaPts = [];
+  let candlesSvg = "";
+  let xLabelsSvg = "";
+  const labelInterval = Math.max(1, Math.floor(candles.length / 6));
+
+  candles.forEach((c, idx) => {
+    const cx = pad.left + (idx + 0.5) * stepX;
+    const o = Number(c.open);
+    const h = Number(c.high);
+    const l = Number(c.low);
+    const cl = Number(c.close);
+    const isBull = cl >= o;
+    const color = isBull ? "#10b981" : "#f43f5e";
+
+    const yHigh = getY(h);
+    const yLow = getY(l);
+    const yOpen = getY(o);
+    const yClose = getY(cl);
+    const bodyTop = Math.min(yOpen, yClose);
+    const bodyH = Math.max(2.0, Math.abs(yClose - yOpen));
+
+    if (c.ema13 != null && !isNaN(c.ema13)) {
+      emaPts.push(`${cx.toFixed(1)},${getY(c.ema13).toFixed(1)}`);
+    }
+
+    const prevClose = idx > 0 ? Number(candles[idx - 1].close) : o;
+    const diffPct = prevClose > 0 ? (((cl - prevClose) / prevClose) * 100) : 0;
+    const varPctStr = (diffPct >= 0 ? "+" : "") + diffPct.toFixed(2) + "%";
+    const dtShort = String(c.date).length >= 10 ? String(c.date).substring(8, 10) + "/" + String(c.date).substring(5, 7) : String(c.date);
+
+    if (idx % labelInterval === 0 || idx === candles.length - 1) {
+      xLabelsSvg += `<text x="${cx.toFixed(1)}" y="${height - 10}" fill="#94a3b8" font-size="9" font-family="monospace" text-anchor="middle">${dtShort}</text>`;
+    }
+
+    candlesSvg += `
+      <g class="candle-group">
+        <line x1="${cx.toFixed(1)}" y1="${yHigh.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${yLow.toFixed(1)}" stroke="${color}" stroke-width="1.3" />
+        <rect x="${(cx - candleW / 2).toFixed(1)}" y="${bodyTop.toFixed(1)}" width="${candleW.toFixed(1)}" height="${bodyH.toFixed(1)}" fill="${color}" rx="1" />
+        <rect x="${(cx - stepX / 2).toFixed(1)}" y="${pad.top}" width="${stepX.toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;"
+          onmouseenter="atualizarInspecaoCandle('${c.date}', '${o}', '${h}', '${l}', '${cl}', '${c.ema13}', '${varPctStr}', '${color}')" />
+      </g>
+    `;
+  });
+
+  const emaSvg = emaPts.length > 1
+    ? `<polyline points="${emaPts.join(" ")}" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.9" />`
+    : "";
+
+  const lastPrevClose = candles.length >= 2 ? Number(candles[candles.length - 2].close) : Number(lastC.open);
+  const lastDiffPct = lastPrevClose > 0 ? (((Number(lastC.close) - lastPrevClose) / lastPrevClose) * 100) : 0;
+  const lastVarStr = (lastDiffPct >= 0 ? "+" : "") + lastDiffPct.toFixed(2) + "%";
+  const lastColor = Number(lastC.close) >= Number(lastC.open) ? "#10b981" : "#f43f5e";
+  const lastEmaStr = lastC.ema13 != null && !isNaN(lastC.ema13) ? `R$ ${Number(lastC.ema13).toFixed(2)}` : "—";
+
+  return `
+    <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px; margin-top:4px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:0.82rem; font-weight:700; color:#f1f5f9;">📈 Candlesticks Diários — <span translate="no">${u.ticker}</span></span>
+          <span style="font-size:0.68rem; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:1px 6px; border-radius:4px; font-family:monospace;">${tituloZona}</span>
+        </div>
+        <div style="display:flex; gap:4px;">
+          ${[20, 35, 60].map(d => `
+            <button onclick="selecionarJanelaCandles(${d})" style="background:${janela === d ? '#2563eb' : '#1e293b'}; color:${janela === d ? '#fff' : '#94a3b8'}; border:1px solid ${janela === d ? '#3b82f6' : '#334155'}; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-family:monospace; font-weight:700; cursor:pointer;">${d} DU</button>
+          `).join("")}
+        </div>
+      </div>
+
+      <div id="candle-inspector-bar" style="display:flex; flex-wrap:wrap; gap:12px; font-size:0.72rem; font-family:monospace; color:#94a3b8; background:#090d16; padding:6px 10px; border-radius:6px; border:1px solid #1e293b; margin-bottom:8px;">
+        <span style="color:#e2e8f0; font-weight:700;">📅 ${lastC.date}</span>
+        <span>Abert: <strong style="color:#f1f5f9;">R$ ${Number(lastC.open).toFixed(2)}</strong></span>
+        <span>Máx: <strong style="color:#10b981;">R$ ${Number(lastC.high).toFixed(2)}</strong></span>
+        <span>Mín: <strong style="color:#f43f5e;">R$ ${Number(lastC.low).toFixed(2)}</strong></span>
+        <span>Fech: <strong style="color:${lastColor};">R$ ${Number(lastC.close).toFixed(2)} (${lastVarStr})</strong></span>
+        <span>EMA13: <strong style="color:#38bdf8;">${lastEmaStr}</strong></span>
+      </div>
+
+      <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:295px; display:block;" xmlns="http://www.w3.org/2000/svg">
+        ${gridSvg}
+        ${xLabelsSvg}
+        ${zonaParalelaSvg}
+        ${emaSvg}
+        ${candlesSvg}
+      </svg>
+
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; margin-top:10px; padding-top:8px; border-top:1px solid #1e293b; font-size:0.72rem; color:#94a3b8;">
+        <div class="tooltip-wrap tooltip-left" onclick="event.stopPropagation()">
+          <span style="display:inline-flex; align-items:center; gap:6px; cursor:help; text-decoration:underline dotted rgba(148,163,184,0.5); text-underline-offset:3px;">
+            <span style="width:12px; height:3px; background:${corSup}; display:inline-block;"></span>
+            <strong style="color:${corSup}; font-family:monospace;">Linha Superior: R$ ${linhaSup.toFixed(2)}</strong>
+          </span>
+          <div class="tooltip-bubble" onclick="event.stopPropagation()">
+            <div class="tooltip-title" style="color:${corSup};">📏 Linha Horizontal Superior (Triple Screen)</div>
+            <div class="tooltip-text">${tooltipSup}</div>
+          </div>
+        </div>
+
+        <div class="tooltip-wrap tooltip-center" onclick="event.stopPropagation()">
+          <span style="display:inline-flex; align-items:center; gap:6px; cursor:help; text-decoration:underline dotted rgba(148,163,184,0.5); text-underline-offset:3px;">
+            <span style="width:12px; height:3px; background:${corInf}; display:inline-block;"></span>
+            <strong style="color:${corInf}; font-family:monospace;">Linha Inferior: R$ ${linhaInf.toFixed(2)}</strong>
+          </span>
+          <div class="tooltip-bubble" onclick="event.stopPropagation()">
+            <div class="tooltip-title" style="color:${corInf};">📐 Linha Horizontal Inferior (Triple Screen)</div>
+            <div class="tooltip-text">${tooltipInf}</div>
+          </div>
+        </div>
+
+        <div style="display:inline-flex; align-items:center; gap:6px;">
+          <span style="width:12px; height:2.5px; background:#38bdf8; display:inline-block;"></span>
+          <span style="color:#38bdf8; font-family:monospace;">EMA 13 Diária (Zona de Valor)</span>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions = [], metadata = null) {
   const container = document.getElementById("semaforo-macro-container") || document.getElementById("screen-1-container");
   if (!container) return;
 
@@ -195,7 +499,7 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
       </div>
     </div>
 
-    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom: 24px;">
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:10px; margin-bottom: 16px;">
       <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
         <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Preço Spot</div>
         <div style="font-family:monospace; font-size:1rem; font-weight:700; color:#38bdf8;">R$ ${Number(u.spot_price).toFixed(2)}</div>
@@ -214,6 +518,8 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado) {
       </div>
     </div>
   `;
+
+  html += gerarHtmlGraficoCandlestick(u, filteredOptions, metadata || window.appState.metadata);
 
   container.innerHTML = html;
 }

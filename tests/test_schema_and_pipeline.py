@@ -116,6 +116,15 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
                 self.assertLessEqual(ativo["stoch_d"], 100.0)
             self.assertIn(ativo["wave_daily"], ["SOBREVENDA", "SOBRECOMPRA", "NEUTRO"])
 
+            # Série histórica diária OHLC para o gráfico de candlesticks na Tela 1
+            self.assertIn("ohlc_history", ativo)
+            self.assertIsInstance(ativo["ohlc_history"], list)
+            self.assertGreaterEqual(len(ativo["ohlc_history"]), 20)
+            last_candle = ativo["ohlc_history"][-1]
+            for k in ["date", "open", "high", "low", "close", "ema13"]:
+                self.assertIn(k, last_candle)
+            self.assertGreaterEqual(last_candle["high"], last_candle["low"])
+
     def test_options_grade_b3_e_gregas(self):
         """Valida a grade de opções B3, precificação Black-Scholes e gregas atuariais."""
         options = self.data.get("options", [])

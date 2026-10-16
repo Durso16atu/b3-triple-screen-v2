@@ -212,6 +212,23 @@ def process_pipeline(
             recent_low_14 = float(df["Low"].rolling(min(14, len(df))).min().iloc[-1])
             suporte_fibo = round(recent_low_14, 2)
 
+            ema13_series = df["Close"].ewm(span=13, adjust=False).mean()
+            df_tail = df.iloc[-60:]
+            ema_tail = ema13_series.iloc[-60:]
+            ohlc_history = []
+            for (idx, row), ema_val in zip(df_tail.iterrows(), ema_tail, strict=False):
+                dt_str = idx.strftime("%Y-%m-%d") if hasattr(idx, "strftime") else str(idx)[:10]
+                ohlc_history.append(
+                    {
+                        "date": dt_str,
+                        "open": round(float(row["Open"]), 2),
+                        "high": round(float(row["High"]), 2),
+                        "low": round(float(row["Low"]), 2),
+                        "close": round(float(row["Close"]), 2),
+                        "ema13": round(float(ema_val), 2) if not np.isnan(ema_val) else None,
+                    }
+                )
+
             underlyings_raw.append(
                 {
                     "ticker": str(ticker),
@@ -226,6 +243,7 @@ def process_pipeline(
                     "stoch_d": stoch_d,
                     "force_ema2": force_ema2,
                     "wave_daily": wave_daily,
+                    "ohlc_history": ohlc_history,
                     "updated_at": generated_at_sp,
                 }
             )
