@@ -209,10 +209,10 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       labelSup = `GATILHO CALL ATIVO (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
       labelInf = `STOP LOSS / PISO DO RECUO: R$ ${linhaInf.toFixed(2)}`;
     } else {
-      linhaSup = Number((Number(prevC.high) + 0.01).toFixed(2));
+      linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high), max14) + 0.01).toFixed(2));
       linhaInf = Number(Math.min(min14, Number(lastC.low) - 0.01).toFixed(2));
       if (linhaSup <= linhaInf) {
-        linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high)) + 0.15).toFixed(2));
+        linhaSup = Number((linhaInf + 0.50).toFixed(2));
       }
       labelSup = `GATILHO HIPOTÉTICO CALL (${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
       labelInf = `PISO DE RECUO / SUPORTE 14D (STOP CALL): R$ ${linhaInf.toFixed(2)}`;
@@ -221,13 +221,13 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
     corInf = "#38bdf8";
     fillZona = "rgba(16, 185, 129, 0.09)";
     tituloZona = `Zona Operacional CALL (${optCallSymbol})`;
-    tooltipSup = `Linha Paralela Superior (Buy Stop Tela 3): posicionada 1 centavo acima da máxima de D-1 (R$ ${linhaSup.toFixed(2)}). Na Maré de Alta, o rompimento desta linha após o recuo em sobrevenda (%K < 30%) aciona a compra da CALL ${optCallSymbol}.`;
+    tooltipSup = `Linha Paralela Superior (Buy Stop Tela 3): posicionada 1 centavo acima do topo recente (R$ ${linhaSup.toFixed(2)}). Na Maré de Alta, delimita o teto do canal operacional e referência de disparo para a CALL ${optCallSymbol} após o recuo.`;
     tooltipInf = `Linha Paralela Inferior (Suporte de Recuo / Stop Loss): posicionada na mínima de suporte de 14 dias (R$ ${linhaInf.toFixed(2)}). Delimita o piso da área de barganha onde o Estocástico recua para armar o gatilho e onde fica o Stop de proteção.`;
   } else if (trend === "BAIXA" || trend === "BEARISH") {
-    linhaSup = Number((max14 + 0.01).toFixed(2));
-    linhaInf = Number((Number(prevC.low) - 0.01).toFixed(2));
+    linhaSup = Number((Math.max(max14, Number(lastC.high)) + 0.01).toFixed(2));
+    linhaInf = Number((Math.min(Number(prevC.low), Number(lastC.low), min14) - 0.01).toFixed(2));
     if (linhaSup <= linhaInf) {
-      linhaSup = Number((Math.max(Number(prevC.high), Number(lastC.high)) + 0.15).toFixed(2));
+      linhaSup = Number((linhaInf + 0.50).toFixed(2));
     }
     const optPutSymbol = `${prefix}${putSeries}${Math.round(linhaInf)}`;
     labelSup = `TETO DO REPIQUE / STOP TÉCNICO PUT: R$ ${linhaSup.toFixed(2)}`;
@@ -237,10 +237,10 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
     fillZona = "rgba(244, 63, 94, 0.09)";
     tituloZona = `Zona Operacional PUT (${optPutSymbol})`;
     tooltipSup = `Linha Paralela Superior (Resistência / Stop PUT): máxima de 14 dias + 1 tick (R$ ${linhaSup.toFixed(2)}). Em tendência semanal de baixa, repiques até esta faixa levam o Estocástico à sobrecompra (%K > 70%) para armar venda/PUT.`;
-    tooltipInf = `Linha Paralela Inferior (Gatilho Sell Stop PUT): posicionada 1 centavo abaixo da mínima de D-1 (R$ ${linhaInf.toFixed(2)}). A perda deste nível confirma retomada vendedora para entrada na PUT ${optPutSymbol}.`;
+    tooltipInf = `Linha Paralela Inferior (Gatilho Sell Stop PUT): posicionada 1 centavo abaixo da mínima de suporte recente (R$ ${linhaInf.toFixed(2)}). A perda deste nível confirma retomada vendedora para entrada na PUT ${optPutSymbol}.`;
   } else {
-    linhaSup = Number((max14 + 0.01).toFixed(2));
-    linhaInf = Number((min14 - 0.01).toFixed(2));
+    linhaSup = Number((Math.max(max14, Number(lastC.high)) + 0.01).toFixed(2));
+    linhaInf = Number((Math.min(min14, Number(lastC.low)) - 0.01).toFixed(2));
     if (linhaSup <= linhaInf) {
       linhaSup = Number((spot * 1.02).toFixed(2));
       linhaInf = Number((spot * 0.98).toFixed(2));
@@ -266,12 +266,12 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const rawMin = Math.min(...allPrices);
   const rawMax = Math.max(...allPrices);
   const span = Math.max(0.4, rawMax - rawMin);
-  const minP = rawMin - span * 0.10;
-  const maxP = rawMax + span * 0.12;
+  const minP = rawMin - span * 0.12;
+  const maxP = rawMax + span * 0.14;
 
   const width = 640;
   const height = 295;
-  const pad = { top: 22, right: 64, bottom: 32, left: 54 };
+  const pad = { top: 24, right: 64, bottom: 32, left: 54 };
   const plotW = width - pad.left - pad.right;
   const plotH = height - pad.top - pad.bottom;
 
@@ -293,24 +293,31 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const yInf = getY(linhaInf);
   const yTopZone = Math.min(ySup, yInf);
   const hZone = Math.max(2, Math.abs(yInf - ySup));
+  const supPillW = Math.max(180, labelSup.length * 5.4 + 12);
+  const infPillW = Math.max(180, labelInf.length * 5.4 + 12);
 
-  const zonaParalelaSvg = `
+  const zonaFundoSvg = `
     <rect x="${pad.left}" y="${yTopZone.toFixed(1)}" width="${plotW}" height="${hZone.toFixed(1)}" fill="${fillZona}" />
     <line x1="${pad.left}" y1="${ySup.toFixed(1)}" x2="${width - pad.right}" y2="${ySup.toFixed(1)}" stroke="${corSup}" stroke-width="1.8" stroke-dasharray="6,4" />
+    <line x1="${pad.left}" y1="${yInf.toFixed(1)}" x2="${width - pad.right}" y2="${yInf.toFixed(1)}" stroke="${corInf}" stroke-width="1.8" stroke-dasharray="6,4" />
+  `;
+
+  const zonaLabelsSvg = `
     <rect x="${width - pad.right + 2}" y="${(ySup - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corSup}" fill-opacity="0.22" stroke="${corSup}" stroke-width="0.8" />
     <text x="${width - pad.right + 31}" y="${(ySup + 3.5).toFixed(1)}" fill="${corSup}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaSup.toFixed(2)}</text>
-    <text x="${pad.left + 6}" y="${(ySup - 4).toFixed(1)}" fill="${corSup}" font-size="8.5" font-family="monospace" font-weight="700">${labelSup}</text>
+    <rect x="${pad.left + 4}" y="${(ySup - 14).toFixed(1)}" width="${supPillW.toFixed(1)}" height="13" rx="3" fill="#090d16" fill-opacity="0.88" />
+    <text x="${pad.left + 8}" y="${(ySup - 4.5).toFixed(1)}" fill="${corSup}" font-size="8.5" font-family="monospace" font-weight="700">${labelSup}</text>
 
-    <line x1="${pad.left}" y1="${yInf.toFixed(1)}" x2="${width - pad.right}" y2="${yInf.toFixed(1)}" stroke="${corInf}" stroke-width="1.8" stroke-dasharray="6,4" />
     <rect x="${width - pad.right + 2}" y="${(yInf - 8).toFixed(1)}" width="58" height="16" rx="3" fill="${corInf}" fill-opacity="0.22" stroke="${corInf}" stroke-width="0.8" />
     <text x="${width - pad.right + 31}" y="${(yInf + 3.5).toFixed(1)}" fill="${corInf}" font-size="9" font-family="monospace" font-weight="700" text-anchor="middle">${linhaInf.toFixed(2)}</text>
-    <text x="${pad.left + 6}" y="${(yInf + 11).toFixed(1)}" fill="${corInf}" font-size="8.5" font-family="monospace" font-weight="700">${labelInf}</text>
+    <rect x="${pad.left + 4}" y="${(yInf + 2).toFixed(1)}" width="${infPillW.toFixed(1)}" height="13" rx="3" fill="#090d16" fill-opacity="0.88" />
+    <text x="${pad.left + 8}" y="${(yInf + 11.5).toFixed(1)}" fill="${corInf}" font-size="8.5" font-family="monospace" font-weight="700">${labelInf}</text>
   `;
 
   let emaPts = [];
   let candlesSvg = "";
   let xLabelsSvg = "";
-  const labelInterval = Math.max(1, Math.floor(candles.length / 6));
+  const labelInterval = Math.max(2, Math.floor(candles.length / 6));
 
   candles.forEach((c, idx) => {
     const cx = pad.left + (idx + 0.5) * stepX;
@@ -337,7 +344,10 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
     const varPctStr = (diffPct >= 0 ? "+" : "") + diffPct.toFixed(2) + "%";
     const dtShort = String(c.date).length >= 10 ? String(c.date).substring(8, 10) + "/" + String(c.date).substring(5, 7) : String(c.date);
 
-    if (idx % labelInterval === 0 || idx === candles.length - 1) {
+    const isLast = idx === candles.length - 1;
+    const distToLast = (candles.length - 1) - idx;
+    const isPeriodic = (idx % labelInterval === 0) && (distToLast >= Math.max(2, Math.ceil(labelInterval * 0.65)));
+    if (isPeriodic || isLast) {
       xLabelsSvg += `<text x="${cx.toFixed(1)}" y="${height - 10}" fill="#94a3b8" font-size="9" font-family="monospace" text-anchor="middle">${dtShort}</text>`;
     }
 
@@ -387,9 +397,10 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       <svg viewBox="0 0 ${width} ${height}" style="width:100%; height:295px; display:block;" xmlns="http://www.w3.org/2000/svg">
         ${gridSvg}
         ${xLabelsSvg}
-        ${zonaParalelaSvg}
+        ${zonaFundoSvg}
         ${emaSvg}
         ${candlesSvg}
+        ${zonaLabelsSvg}
       </svg>
 
       <div style="display:flex; flex-wrap:wrap; justify-content:space-between; gap:10px; margin-top:10px; padding-top:8px; border-top:1px solid #1e293b; font-size:0.72rem; color:#94a3b8;">
