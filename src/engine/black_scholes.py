@@ -164,7 +164,7 @@ class BlackScholesEngine:
         maturity_date: date | str,
         call_series: str,
         put_series: str,
-        strike_range_pct: tuple[float, float] = (-0.08, 0.12),
+        strike_range_pct: tuple[float, float] = (-0.08, 0.24),
         strike_step_pct: float = 0.04,
     ) -> list[dict[str, Any]]:
         """Gera grade completa de opções com verificação estática de não-arbitragem e gregas."""
@@ -232,6 +232,139 @@ class BlackScholesEngine:
                         "parity_violation_brl": float(parity_violation),
                     },
                 }
+            )
+
+        return options
+
+    @classmethod
+    def build_hybrid_option_chain(
+        cls,
+        ticker: str,
+        spot: float,
+        du: int,
+        cdi_rate: float,
+        fallback_vol: float,
+        maturity_date: date | str,
+        call_series: str,
+        put_series: str,
+        real_quotes: list[Any] | None = None,
+    ) -> list[dict[str, Any]]:
+        """Constrói grade híbrida B3 (Opções.Net) com IV calibrada marcada ao Spot atual."""
+        if not real_quotes or len(real_quotes) < 3 or du <= 0:
+            return cls.build_option_chain(
+                ticker=ticker,
+                spot=spot,
+                du=du,
+                cdi_rate=cdi_rate,
+                vol=fallback_vol,
+                maturity_date=maturity_date,
+                call_series=call_series,
+                put_series=put_series,
+            )
+
+        from scipy.optimize import brentq
+
+        mat_str = (
+            maturity_date.isoformat() if isinstance(maturity_date, date) else str(maturity_date)
+        )
+        t_years = du / 252.0
+        r_c = math.log(1.0 + cdi_rate)
+
+        def _solve_iv(mkt_p: float, s_ref: float, k_val: float, du_ref: int) -> float | None:
+            if du_ref <= 0 or s_ref <= 0 or k_val <= 0:
+                return None
+            intrin = max(0.0, s_ref - k_val)
+            if mkt_p <= intrin + 1e-3:
+                return None
+            try:
+                return float(
+                    brentq(
+                        lambda v: black_scholes_analytical(
+                            s_ref, k_val, du_ref, cdi_rate, v, is_call=True
+                        ).price
+                        - mkt_p,
+                        0.05,
+                        3.50,
+                    )
+                )
+            except (ValueError, RuntimeError):
+                return None
+
+        sorted_quotes = sorted(real_quotes, key=lambda q: float(q.strike))
+        calibrated_ivs: list[float | None] = []
+        for q in sorted_quotes:
+            iv_q = _solve_iv(
+                mkt_p=float(q.last_price),
+                s_ref=float(q.ref_spot_price or spot),
+                k_val=float(q.strike),
+                du_ref=int(q.ref_du or du),
+            )
+            calibrated_ivs.append(iv_q)
+
+        valid_ivs = sorted(v for v in calibrated_ivs if v is not None and 0.10 <= v <= 2.0)
+        median_iv = valid_ivs[len(valid_ivs) // 2] if valid_ivs else fallback_vol
+
+        options: list[dict[str, Any]] = []
+        for q, iv_raw in zip(sorted_quotes, calibrated_ivs, strict=False):
+            strike = round(float(q.strike), 2)
+            iv_used = max(0.12, min(1.80, float(iv_raw if iv_raw is not None else median_iv)))
+
+            call_res = cls.price(spot, strike, du, cdi_rate, iv_used, is_call=True)
+            put_res = cls.price(spot, strike, du, cdi_rate, iv_used, is_call=False)
+
+            theo_price = round(float(call_res.price), 4)
+            mkt_price = round(float(q.last_price), 2)
+            lower_bound = discounted_intrinsic_call(spot, strike, r_c, t_years)
+            intrinsic_ok = check_intrinsic_bound(theo_price, spot, strike, is_call=True)
+
+            if theo_price < lower_bound - 1e-4 or not intrinsic_ok or theo_price <= 0:
+                continue
+
+            parity_theoretical = spot - strike * math.exp(-r_c * t_years)
+            parity_actual = call_res.price - put_res.price
+            parity_violation = round(abs(parity_actual - parity_theoretical), 4)
+
+            options.append(
+                {
+                    "symbol": str(q.symbol),
+                    "underlying_ticker": str(ticker),
+                    "type": "CALL",
+                    "style": str(q.style) if q.style in ("AMERICAN", "EUROPEAN") else "EUROPEAN",
+                    "strike": strike,
+                    "maturity_date": str(q.maturity_date or mat_str),
+                    "du": int(du),
+                    "spot_price": float(spot),
+                    "market_price": mkt_price,
+                    "theoretical_price": theo_price,
+                    "iv": round(iv_used, 4),
+                    "num_trades": int(getattr(q, "num_trades", 0)),
+                    "financial_volume": float(getattr(q, "financial_volume", 0.0)),
+                    "has_market_maker": bool(getattr(q, "has_market_maker", False)),
+                    "is_real_b3_ticker": True,
+                    "greeks": {
+                        "delta": round(float(call_res.delta), 4),
+                        "gamma": round(float(call_res.gamma), 4),
+                        "theta_du": round(float(call_res.theta_du), 4),
+                        "vega": round(float(call_res.vega), 4),
+                        "rho": round(float(call_res.rho), 4),
+                    },
+                    "actuarial_checks": {
+                        "intrinsic_bound_ok": bool(intrinsic_ok),
+                        "parity_violation_brl": float(parity_violation),
+                    },
+                }
+            )
+
+        if len(options) < 3:
+            return cls.build_option_chain(
+                ticker=ticker,
+                spot=spot,
+                du=du,
+                cdi_rate=cdi_rate,
+                vol=fallback_vol,
+                maturity_date=maturity_date,
+                call_series=call_series,
+                put_series=put_series,
             )
 
         return options

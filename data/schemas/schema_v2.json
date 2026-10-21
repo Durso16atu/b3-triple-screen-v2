@@ -83,8 +83,41 @@
                 "high": { "type": "number" },
                 "low": { "type": "number" },
                 "close": { "type": "number" },
-                "ema13": { "type": ["number", "null"] }
+                "ema13": { "type": ["number", "null"] },
+                "mima17": { "type": ["number", "null"] },
+                "mima72": { "type": ["number", "null"] },
+                "mima144": { "type": ["number", "null"] },
+                "mima305": { "type": ["number", "null"] },
+                "pv_support": { "type": ["number", "null"] },
+                "pc_resist": { "type": ["number", "null"] },
+                "smart_upper": { "type": ["number", "null"] },
+                "smart_lower": { "type": ["number", "null"] }
               }
+            }
+          },
+          "phicube": {
+            "type": ["object", "null"],
+            "properties": {
+              "mima_alignment_score": { "type": "integer", "minimum": 0, "maximum": 5 },
+              "mima_fan_state": { "type": "string", "enum": ["LEQUE_ALTA", "LEQUE_BAIXA", "CONSOLIDACAO"] },
+              "grande_tacada_aligned": { "type": "boolean" },
+              "santo_17_state": { "type": "string", "enum": ["ALTA", "BAIXA", "NEUTRO"] },
+              "santo_72_state": { "type": "string", "enum": ["ALTA", "BAIXA", "NEUTRO"] },
+              "santo_305_state": { "type": "string", "enum": ["ALTA", "BAIXA", "NEUTRO"] },
+              "pv_pc_rule": { "type": "string", "enum": ["PV_PROIBIDO_VENDER", "PC_PROIBIDO_COMPRAR", "NEUTRO"] },
+              "caiu_comprou_72": { "type": ["number", "null"] },
+              "levantou_cortou_72": { "type": ["number", "null"] },
+              "smart_ma_upper": { "type": ["number", "null"] },
+              "smart_ma_lower": { "type": ["number", "null"] },
+              "psbanda_state": { "type": "string", "enum": ["COMPRA", "VENDA", "NEUTRO"] },
+              "difusor_state": { "type": "string", "enum": ["ALTA", "BAIXA"] },
+              "phibo_direction": { "type": "string", "enum": ["ALTA", "BAIXA"] },
+              "phibo_swing_low": { "type": "number" },
+              "phibo_swing_high": { "type": "number" },
+              "phibo_618": { "type": "number" },
+              "phibo_100": { "type": "number" },
+              "phibo_1618": { "type": "number" },
+              "confluence_verdict": { "type": "string", "enum": ["FORTE_COMPRA", "COMPRA_PULLBACK", "NEUTRO", "VENDA"] }
             }
           },
           "updated_at": { "type": "string" }
@@ -122,6 +155,10 @@
           "market_price": { "type": "number", "minimum": 0 },
           "theoretical_price": { "type": "number", "minimum": 0 },
           "iv": { "type": "number", "minimum": 0 },
+          "num_trades": { "type": "integer", "minimum": 0 },
+          "financial_volume": { "type": "number", "minimum": 0 },
+          "has_market_maker": { "type": "boolean" },
+          "is_real_b3_ticker": { "type": "boolean" },
           "greeks": {
             "type": "object",
             "required": ["delta", "gamma", "theta_du", "vega", "rho"],

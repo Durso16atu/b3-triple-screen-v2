@@ -93,3 +93,97 @@ def test_build_option_chain():
         assert opt["actuarial_checks"]["intrinsic_bound_ok"] is True
         assert opt["actuarial_checks"]["parity_violation_brl"] < 1e-3
         assert 0.0 <= opt["greeks"]["delta"] <= 1.0
+
+
+def test_build_hybrid_option_chain_with_real_b3_quotes():
+    """Valida calibragem de IV real por strike e marcação a mercado da grade híbrida B3."""
+    from src.collectors.opcoes_net import ListedOptionQuote
+
+    real_quotes = [
+        ListedOptionQuote(
+            symbol="ITUBK483",
+            underlying_ticker="ITUB4",
+            opt_type="CALL",
+            style="AMERICAN",
+            has_market_maker=True,
+            strike=48.01,
+            dist_strike_pct=-0.0017,
+            ref_spot_price=48.09,
+            last_price=3.08,
+            num_trades=107,
+            financial_volume=1483434.0,
+            quote_date="2026-10-16",
+            maturity_date="2026-11-19",
+            ref_du=22,
+        ),
+        ListedOptionQuote(
+            symbol="ITUBK51",
+            underlying_ticker="ITUB4",
+            opt_type="CALL",
+            style="EUROPEAN",
+            has_market_maker=False,
+            strike=50.76,
+            dist_strike_pct=0.0555,
+            ref_spot_price=48.09,
+            last_price=1.72,
+            num_trades=55,
+            financial_volume=186380.0,
+            quote_date="2026-10-16",
+            maturity_date="2026-11-19",
+            ref_du=22,
+        ),
+        ListedOptionQuote(
+            symbol="ITUBK516",
+            underlying_ticker="ITUB4",
+            opt_type="CALL",
+            style="AMERICAN",
+            has_market_maker=False,
+            strike=51.26,
+            dist_strike_pct=0.0659,
+            ref_spot_price=48.09,
+            last_price=1.54,
+            num_trades=127,
+            financial_volume=507114.0,
+            quote_date="2026-10-16",
+            maturity_date="2026-11-19",
+            ref_du=22,
+        ),
+        ListedOptionQuote(
+            symbol="ITUBK521",
+            underlying_ticker="ITUB4",
+            opt_type="CALL",
+            style="EUROPEAN",
+            has_market_maker=False,
+            strike=51.76,
+            dist_strike_pct=0.0763,
+            ref_spot_price=48.09,
+            last_price=1.35,
+            num_trades=53,
+            financial_volume=229091.0,
+            quote_date="2026-10-16",
+            maturity_date="2026-11-19",
+            ref_du=22,
+        ),
+    ]
+
+    chain = BlackScholesEngine.build_hybrid_option_chain(
+        ticker="ITUB4",
+        spot=48.09,
+        du=22,
+        cdi_rate=0.1490,
+        fallback_vol=0.28,
+        maturity_date="2026-11-19",
+        call_series="K",
+        put_series="W",
+        real_quotes=real_quotes,
+    )
+
+    assert len(chain) == 4
+    by_sym = {opt["symbol"]: opt for opt in chain}
+    assert math.isclose(by_sym["ITUBK51"]["theoretical_price"], 1.72, abs_tol=0.02)
+    assert math.isclose(by_sym["ITUBK516"]["theoretical_price"], 1.54, abs_tol=0.02)
+    assert math.isclose(by_sym["ITUBK521"]["theoretical_price"], 1.35, abs_tol=0.02)
+    assert by_sym["ITUBK516"]["style"] == "AMERICAN"
+    assert by_sym["ITUBK521"]["style"] == "EUROPEAN"
+    assert by_sym["ITUBK516"]["iv"] > 0.40
+    assert by_sym["ITUBK516"]["is_real_b3_ticker"] is True

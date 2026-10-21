@@ -2,8 +2,11 @@
 
 import math
 
+import numpy as np
+import pandas as pd
+
 from src.engine.black_scholes import black_scholes_analytical
-from src.engine.implied_vol import get_implied_volatility
+from src.engine.implied_vol import estimate_reactive_volatility, get_implied_volatility
 
 
 def test_iv_recovery():
@@ -41,3 +44,22 @@ def test_iv_intrinsic_violation():
 
     iv = get_implied_volatility(market_price, S, K, du, cdi, is_call=True)
     assert iv is None
+
+
+def test_estimate_reactive_volatility_captures_recent_shock():
+    """Valida que estimate_reactive_volatility reage a choques de curto prazo (10d/21d)."""
+    calm = np.linspace(40.0, 42.0, 230)
+    shock = np.array([42.2, 44.5, 43.8, 46.9, 45.5, 48.2, 47.0, 49.8, 48.5, 50.4])
+    close = np.concatenate([calm, shock])
+    df = pd.DataFrame(
+        {
+            "Open": close * 0.995,
+            "High": close * 1.018,
+            "Low": close * 0.982,
+            "Close": close,
+        }
+    )
+    long_vol = float(np.log(df["Close"] / df["Close"].shift(1)).dropna().std() * math.sqrt(252))
+    reactive_vol = estimate_reactive_volatility(df)
+    assert reactive_vol > long_vol
+    assert 0.25 <= reactive_vol <= 0.85

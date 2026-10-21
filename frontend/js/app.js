@@ -5,11 +5,17 @@ window.appState = {
   options: [],
   tickerSelecionado: null,
   faseSelecionada: "TODAS",
-  janelaCandles: 35
+  janelaCandles: 35,
+  overlayGrafico: "ELDER" // "ELDER", "PHICUBE_MIMA", "GOES_PRICESHOOTER"
 };
 
 window.selecionarJanelaCandles = function(dias) {
   window.appState.janelaCandles = Number(dias) || 35;
+  renderizarTudo();
+};
+
+window.selecionarOverlayGrafico = function(modo) {
+  window.appState.overlayGrafico = modo || "ELDER";
   renderizarTudo();
 };
 
@@ -46,6 +52,7 @@ function renderizarTudo() {
   renderizarMetadadosKPIs(metadata, filteredOptions);
   renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions, metadata);
   renderizarRadarOportunidades(underlyings, tickerSelecionado);
+  renderizarBussolaPhiCube(underlyings, filteredOptions, tickerSelecionado);
   renderizarGradeOpcoesB3(filteredOptions);
   renderizarConeVolatilidade(filteredOptions, "vol-cone-container");
   renderizarTravaAlta(underlyings, filteredOptions, tickerSelecionado);
@@ -126,7 +133,7 @@ function renderizarMetadadosKPIs(meta, options) {
 }
 
 /* 2. RENDERIZADOR DO SEMÁFORO MACRO (TELA 1: TENDÊNCIA, MACD E GRÁFICO CANDLESTICK) */
-window.atualizarInspecaoCandle = function(dt, o, h, l, c, ema, varPct, corVar) {
+window.atualizarInspecaoCandle = function(dt, o, h, l, c, ema, varPct, corVar, extraInfo = "") {
   const bar = document.getElementById("candle-inspector-bar");
   if (!bar) return;
   const emaStr = ema && ema !== "null" ? `R$ ${Number(ema).toFixed(2)}` : "—";
@@ -137,6 +144,7 @@ window.atualizarInspecaoCandle = function(dt, o, h, l, c, ema, varPct, corVar) {
     <span>Mín: <strong style="color:#f43f5e;">R$ ${Number(l).toFixed(2)}</strong></span>
     <span>Fech: <strong style="color:${corVar};">R$ ${Number(c).toFixed(2)} (${varPct})</strong></span>
     <span>EMA13: <strong style="color:#38bdf8;">${emaStr}</strong></span>
+    ${extraInfo ? `<span style="color:#fbbf24; font-weight:600;">${extraInfo}</span>` : ""}
   `;
 };
 
@@ -164,6 +172,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   }
 
   const janela = Number(window.appState.janelaCandles) || 35;
+  const overlayMode = window.appState.overlayGrafico || "ELDER";
   const candles = history.slice(-janela);
   if (candles.length === 0) return "";
 
@@ -175,6 +184,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
 
   const trend = String(u.trend_signal || "NEUTRO").toUpperCase();
   const isArmed = u.phase === "INDICACAO_IMEDIATA" && u.gatilho_entrada != null && u.stop_loss != null;
+  const phi = u.phicube || null;
 
   const callSeries = metadata?.active_maturity?.call_series || "K";
   const putSeries = metadata?.active_maturity?.put_series || "W";
@@ -200,7 +210,19 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   let tooltipSup = "";
   let tooltipInf = "";
 
-  if (trend === "ALTA" || trend === "BULLISH") {
+  if (overlayMode === "GOES_PRICESHOOTER" && phi && phi.caiu_comprou_72 != null && phi.levantou_cortou_72 != null) {
+    linhaSup = Number(phi.caiu_comprou_72);
+    linhaInf = Number(phi.levantou_cortou_72);
+    if (linhaSup <= linhaInf) linhaSup = Number((linhaInf + 0.30).toFixed(2));
+    labelSup = `CAIU COMPROU 72 (78.6% Suporte / PV | ${optCallSymbol}): R$ ${linhaSup.toFixed(2)}`;
+    labelInf = `LEVANTOU CORTOU 72 (21.4% Resist / PC): R$ ${linhaInf.toFixed(2)}`;
+    corSup = "#10b981";
+    corInf = "#f43f5e";
+    fillZona = "rgba(16, 185, 129, 0.08)";
+    tituloZona = `Setup Fernando Góes (Caiu Comprou R$ ${linhaSup.toFixed(2)} | Alvo Phibo 100%: R$ ${(phi.phibo_100 || spot).toFixed(2)})`;
+    tooltipSup = `Linha Caiu Comprou 72 (Fernando Góes - PriceShooter): retração fractal de 78,6% do canal de 72 pregões (R$ ${linhaSup.toFixed(2)}). Enquanto o preço trabalhar acima ou testar este piso com Smart MA virando, é zona de compra a favor da tendência.`;
+    tooltipInf = `Linha Levantou Cortou 72 (Fernando Góes - PriceShooter): retração inferior de 21,4% do canal de 72 pregões (R$ ${linhaInf.toFixed(2)}). Abaixo deste nível ativa-se Proibido Comprar (PC).`;
+  } else if (trend === "ALTA" || trend === "BULLISH") {
     if (isArmed) {
       linhaSup = Number(u.gatilho_entrada);
       linhaInf = Number(u.stop_loss);
@@ -268,6 +290,15 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   candles.forEach(c => {
     allPrices.push(Number(c.high), Number(c.low));
     if (c.ema13 != null && !isNaN(c.ema13)) allPrices.push(Number(c.ema13));
+    if (overlayMode === "PHICUBE_MIMA") {
+      ["mima17", "mima72", "mima144"].forEach(k => {
+        if (c[k] != null && !isNaN(c[k])) allPrices.push(Number(c[k]));
+      });
+    } else if (overlayMode === "GOES_PRICESHOOTER") {
+      ["pv_support", "pc_resist", "smart_upper", "smart_lower"].forEach(k => {
+        if (c[k] != null && !isNaN(c[k])) allPrices.push(Number(c[k]));
+      });
+    }
   });
   allPrices.push(linhaSup, linhaInf, spot);
 
@@ -343,6 +374,8 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   `;
 
   let emaPts = [];
+  let m17Pts = [], m72Pts = [], m144Pts = [];
+  let pvPts = [], pcPts = [], smUpPts = [], smLoPts = [];
   let candlesSvg = "";
   let xLabelsSvg = "";
   const labelInterval = Math.max(2, Math.floor(candles.length / 6));
@@ -366,6 +399,13 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
     if (c.ema13 != null && !isNaN(c.ema13)) {
       emaPts.push(`${cx.toFixed(1)},${getY(c.ema13).toFixed(1)}`);
     }
+    if (c.mima17 != null && !isNaN(c.mima17)) m17Pts.push(`${cx.toFixed(1)},${getY(c.mima17).toFixed(1)}`);
+    if (c.mima72 != null && !isNaN(c.mima72)) m72Pts.push(`${cx.toFixed(1)},${getY(c.mima72).toFixed(1)}`);
+    if (c.mima144 != null && !isNaN(c.mima144)) m144Pts.push(`${cx.toFixed(1)},${getY(c.mima144).toFixed(1)}`);
+    if (c.pv_support != null && !isNaN(c.pv_support)) pvPts.push(`${cx.toFixed(1)},${getY(c.pv_support).toFixed(1)}`);
+    if (c.pc_resist != null && !isNaN(c.pc_resist)) pcPts.push(`${cx.toFixed(1)},${getY(c.pc_resist).toFixed(1)}`);
+    if (c.smart_upper != null && !isNaN(c.smart_upper)) smUpPts.push(`${cx.toFixed(1)},${getY(c.smart_upper).toFixed(1)}`);
+    if (c.smart_lower != null && !isNaN(c.smart_lower)) smLoPts.push(`${cx.toFixed(1)},${getY(c.smart_lower).toFixed(1)}`);
 
     const prevClose = idx > 0 ? Number(candles[idx - 1].close) : o;
     const diffPct = prevClose > 0 ? (((cl - prevClose) / prevClose) * 100) : 0;
@@ -379,19 +419,39 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
       xLabelsSvg += `<text x="${cx.toFixed(1)}" y="${height - 10}" fill="#94a3b8" font-size="9" font-family="monospace" text-anchor="middle">${dtShort}</text>`;
     }
 
+    let hoverExtra = "";
+    if (overlayMode === "PHICUBE_MIMA" && c.mima17 != null && c.mima72 != null) {
+      hoverExtra = `M17: R$ ${Number(c.mima17).toFixed(2)} | M72: R$ ${Number(c.mima72).toFixed(2)}`;
+    } else if (overlayMode === "GOES_PRICESHOOTER" && c.pv_support != null) {
+      hoverExtra = `CaiuComprou: R$ ${Number(c.pv_support).toFixed(2)} | SmartMA: R$ ${Number(c.smart_lower || cl).toFixed(2)}`;
+    }
+
     candlesSvg += `
       <g class="candle-group">
         <line x1="${cx.toFixed(1)}" y1="${yHigh.toFixed(1)}" x2="${cx.toFixed(1)}" y2="${yLow.toFixed(1)}" stroke="${color}" stroke-width="1.3" />
         <rect x="${(cx - candleW / 2).toFixed(1)}" y="${bodyTop.toFixed(1)}" width="${candleW.toFixed(1)}" height="${bodyH.toFixed(1)}" fill="${color}" rx="1" />
         <rect x="${(cx - stepX / 2).toFixed(1)}" y="${pad.top}" width="${stepX.toFixed(1)}" height="${plotH}" fill="transparent" style="cursor:crosshair;"
-          onmouseenter="atualizarInspecaoCandle('${c.date}', '${o}', '${h}', '${l}', '${cl}', '${c.ema13}', '${varPctStr}', '${color}')" />
+          onmouseenter="atualizarInspecaoCandle('${c.date}', '${o}', '${h}', '${l}', '${cl}', '${c.ema13}', '${varPctStr}', '${color}', '${hoverExtra}')" />
       </g>
     `;
   });
 
-  const emaSvg = emaPts.length > 1
-    ? `<polyline points="${emaPts.join(" ")}" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.9" />`
-    : "";
+  let overlayLinesSvg = "";
+  if (overlayMode === "ELDER") {
+    overlayLinesSvg = emaPts.length > 1
+      ? `<polyline points="${emaPts.join(" ")}" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-opacity="0.9" />`
+      : "";
+  } else if (overlayMode === "PHICUBE_MIMA") {
+    if (m144Pts.length > 1) overlayLinesSvg += `<polyline points="${m144Pts.join(" ")}" fill="none" stroke="#eab308" stroke-width="1.8" stroke-opacity="0.85" />`;
+    if (m72Pts.length > 1) overlayLinesSvg += `<polyline points="${m72Pts.join(" ")}" fill="none" stroke="#f97316" stroke-width="2.0" stroke-opacity="0.9" />`;
+    if (m17Pts.length > 1) overlayLinesSvg += `<polyline points="${m17Pts.join(" ")}" fill="none" stroke="#d946ef" stroke-width="1.8" stroke-opacity="0.9" />`;
+    if (pvPts.length > 1) overlayLinesSvg += `<polyline points="${pvPts.join(" ")}" fill="none" stroke="#10b981" stroke-width="1.4" stroke-dasharray="3,3" stroke-opacity="0.8" />`;
+  } else if (overlayMode === "GOES_PRICESHOOTER") {
+    if (pvPts.length > 1) overlayLinesSvg += `<polyline points="${pvPts.join(" ")}" fill="none" stroke="#10b981" stroke-width="2.2" stroke-opacity="0.95" />`;
+    if (pcPts.length > 1) overlayLinesSvg += `<polyline points="${pcPts.join(" ")}" fill="none" stroke="#f43f5e" stroke-width="1.8" stroke-opacity="0.85" />`;
+    if (smUpPts.length > 1) overlayLinesSvg += `<polyline points="${smUpPts.join(" ")}" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-opacity="0.85" />`;
+    if (smLoPts.length > 1) overlayLinesSvg += `<polyline points="${smLoPts.join(" ")}" fill="none" stroke="#fbbf24" stroke-width="1.5" stroke-opacity="0.85" />`;
+  }
 
   const lastPrevClose = candles.length >= 2 ? Number(candles[candles.length - 2].close) : Number(lastC.open);
   const lastDiffPct = lastPrevClose > 0 ? (((Number(lastC.close) - lastPrevClose) / lastPrevClose) * 100) : 0;
@@ -410,6 +470,29 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const distGatilhoPct = spot > 0 ? (((alvoLinhaRef - spot) / spot) * 100) : 0;
   const distGatilhoStr = `${distGatilhoPct >= 0 ? "+" : ""}${distGatilhoPct.toFixed(1)}%`;
 
+  let legendaDireitaHtml = `
+    <div style="display:inline-flex; align-items:center; gap:6px;">
+      <span style="width:12px; height:2.5px; background:#38bdf8; display:inline-block;"></span>
+      <span style="color:#38bdf8; font-family:monospace;">EMA13: ${lastEmaStr} (${distEmaStr})</span>
+    </div>
+  `;
+  if (overlayMode === "PHICUBE_MIMA") {
+    legendaDireitaHtml = `
+      <div style="display:inline-flex; align-items:center; gap:8px; font-family:monospace; font-size:0.7rem;">
+        <span style="color:#d946ef;">● M17: R$ ${Number(lastC.mima17 || spot).toFixed(2)}</span>
+        <span style="color:#f97316;">● M72: R$ ${Number(lastC.mima72 || spot).toFixed(2)}</span>
+        <span style="color:#eab308;">● M144: R$ ${Number(lastC.mima144 || spot).toFixed(2)}</span>
+      </div>
+    `;
+  } else if (overlayMode === "GOES_PRICESHOOTER") {
+    legendaDireitaHtml = `
+      <div style="display:inline-flex; align-items:center; gap:8px; font-family:monospace; font-size:0.7rem;">
+        <span style="color:#10b981;">▬ Caiu Comprou: R$ ${Number(lastC.pv_support || linhaSup).toFixed(2)}</span>
+        <span style="color:#fbbf24;">▬ Smart MA: R$ ${Number(lastC.smart_lower || spot).toFixed(2)}</span>
+      </div>
+    `;
+  }
+
   return `
     <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px; margin-top:4px;">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; margin-bottom:8px;">
@@ -417,10 +500,17 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
           <span style="font-size:0.82rem; font-weight:700; color:#f1f5f9;">📈 Candlesticks Diários — <span translate="no">${u.ticker}</span></span>
           <span style="font-size:0.68rem; background:rgba(56,189,248,0.15); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:1px 6px; border-radius:4px; font-family:monospace;">${tituloZona}</span>
         </div>
-        <div style="display:flex; gap:4px;">
-          ${[20, 35, 60].map(d => `
-            <button onclick="selecionarJanelaCandles(${d})" style="background:${janela === d ? '#2563eb' : '#1e293b'}; color:${janela === d ? '#fff' : '#94a3b8'}; border:1px solid ${janela === d ? '#3b82f6' : '#334155'}; padding:2px 8px; border-radius:4px; font-size:0.7rem; font-family:monospace; font-weight:700; cursor:pointer;">${d} DU</button>
-          `).join("")}
+        <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+          <div style="display:flex; gap:3px; background:#090d16; padding:2px; border-radius:5px; border:1px solid #1e293b;">
+            <button onclick="selecionarOverlayGrafico('ELDER')" style="background:${overlayMode === 'ELDER' ? '#2563eb' : 'transparent'}; color:${overlayMode === 'ELDER' ? '#fff' : '#94a3b8'}; border:none; padding:2px 7px; border-radius:4px; font-size:0.68rem; font-family:monospace; font-weight:700; cursor:pointer;">⚡ Elder EMA13</button>
+            <button onclick="selecionarOverlayGrafico('PHICUBE_MIMA')" style="background:${overlayMode === 'PHICUBE_MIMA' ? '#059669' : 'transparent'}; color:${overlayMode === 'PHICUBE_MIMA' ? '#fff' : '#94a3b8'}; border:none; padding:2px 7px; border-radius:4px; font-size:0.68rem; font-family:monospace; font-weight:700; cursor:pointer;">🌀 Leque MIMA</button>
+            <button onclick="selecionarOverlayGrafico('GOES_PRICESHOOTER')" style="background:${overlayMode === 'GOES_PRICESHOOTER' ? '#d97706' : 'transparent'}; color:${overlayMode === 'GOES_PRICESHOOTER' ? '#fff' : '#94a3b8'}; border:none; padding:2px 7px; border-radius:4px; font-size:0.68rem; font-family:monospace; font-weight:700; cursor:pointer;">🎯 F. Góes</button>
+          </div>
+          <div style="display:flex; gap:3px;">
+            ${[20, 35, 60].map(d => `
+              <button onclick="selecionarJanelaCandles(${d})" style="background:${janela === d ? '#2563eb' : '#1e293b'}; color:${janela === d ? '#fff' : '#94a3b8'}; border:1px solid ${janela === d ? '#3b82f6' : '#334155'}; padding:2px 7px; border-radius:4px; font-size:0.68rem; font-family:monospace; font-weight:700; cursor:pointer;">${d} DU</button>
+            `).join("")}
+          </div>
         </div>
       </div>
 
@@ -438,7 +528,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
         ${gridSvg}
         ${xLabelsSvg}
         ${zonaFundoSvg}
-        ${emaSvg}
+        ${overlayLinesSvg}
         ${candlesSvg}
         ${zonaLabelsSvg}
       </svg>
@@ -450,7 +540,7 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
             <strong style="color:${corSup}; font-family:monospace;">Linha Sup: R$ ${linhaSup.toFixed(2)} (${distGatilhoStr})</strong>
           </span>
           <div class="tooltip-bubble" onclick="event.stopPropagation()">
-            <div class="tooltip-title" style="color:${corSup};">📏 Linha Horizontal Superior (Triple Screen)</div>
+            <div class="tooltip-title" style="color:${corSup};">📏 Linha Horizontal Superior</div>
             <div class="tooltip-text">${tooltipSup}</div>
           </div>
         </div>
@@ -461,15 +551,12 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
             <strong style="color:${corInf}; font-family:monospace;">Linha Inf: R$ ${linhaInf.toFixed(2)}</strong>
           </span>
           <div class="tooltip-bubble" onclick="event.stopPropagation()">
-            <div class="tooltip-title" style="color:${corInf};">📐 Linha Horizontal Inferior (Triple Screen)</div>
+            <div class="tooltip-title" style="color:${corInf};">📐 Linha Horizontal Inferior</div>
             <div class="tooltip-text">${tooltipInf}</div>
           </div>
         </div>
 
-        <div style="display:inline-flex; align-items:center; gap:6px;">
-          <span style="width:12px; height:2.5px; background:#38bdf8; display:inline-block;"></span>
-          <span style="color:#38bdf8; font-family:monospace;">EMA13: ${lastEmaStr} (${distEmaStr})</span>
-        </div>
+        ${legendaDireitaHtml}
       </div>
     </div>
   `;
@@ -796,6 +883,22 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
             </div>
           </div>
         </div>
+
+        ${u.phicube ? (() => {
+          const p = u.phicube;
+          const mScore = Number(p.mima_alignment_score || 0);
+          const mCol = mScore >= 4 ? "#10b981" : (mScore <= 1 ? "#f43f5e" : "#fbbf24");
+          const pvStr = p.pv_pc_rule === "PV_PROIBIDO_VENDER" ? "🟢 PV (Proibido Vender)" : (p.pv_pc_rule === "PC_PROIBIDO_COMPRAR" ? "🔴 PC (Proibido Comprar)" : "⚪ Neutro");
+          const ccStr = p.caiu_comprou_72 != null ? `R$ ${Number(p.caiu_comprou_72).toFixed(2)}` : "—";
+          return `
+            <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px; margin-top:8px; padding-top:8px; border-top:1px dashed #1e293b; font-size:0.68rem; font-family:monospace;">
+              <span style="color:${mCol}; font-weight:700;">🌀 Leque MIMA: ${mScore}/5</span>
+              <span style="color:#cbd5e1;">${pvStr}</span>
+              <span style="color:#38bdf8;">Caiu Comprou: ${ccStr}</span>
+              ${p.grande_tacada_aligned ? '<span style="background:rgba(16,185,129,0.18); color:#10b981; padding:1px 6px; border-radius:4px; font-weight:700;">⚡ GRANDE TACADA</span>' : ''}
+            </div>
+          `;
+        })() : ""}
       </div>
     `;
   });
@@ -807,7 +910,126 @@ function renderizarRadarOportunidades(underlyings, tickerSelecionado) {
   }
 }
 
-/* 4. RENDERIZADOR DA GRADE OFICIAL DE OPÇÕES B3 (GREGAS BLACK-SCHOLES) */
+/* 3.5 RENDERIZADOR DA TELA 4 FRACTAL (BÚSSOLA PHICUBE & SETUP FERNANDO GÓES) */
+function renderizarBussolaPhiCube(underlyings, filteredOptions, tickerSelecionado) {
+  const container = document.getElementById("phicube-bussola-container");
+  if (!container) return;
+
+  if (!underlyings || underlyings.length === 0) {
+    container.innerHTML = `<div style="color:#64748b;">Dados fractais PhiCube indisponíveis.</div>`;
+    return;
+  }
+
+  const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
+  const p = u.phicube;
+  if (!p) {
+    container.innerHTML = `<div style="color:#64748b;">Execute o pipeline atualizado para carregar a Bússola PhiCube de ${u.ticker}.</div>`;
+    return;
+  }
+
+  const spot = Number(u.spot_price);
+  const mScore = Number(p.mima_alignment_score || 0);
+  const mColor = mScore >= 4 ? "#10b981" : (mScore <= 1 ? "#f43f5e" : "#fbbf24");
+  const pvRuleTxt = p.pv_pc_rule === "PV_PROIBIDO_VENDER"
+    ? "🟢 PROIBIDO VENDER (PV Ativo)"
+    : (p.pv_pc_rule === "PC_PROIBIDO_COMPRAR" ? "🔴 PROIBIDO COMPRAR (PC Ativo)" : "⚪ ZONA NEUTRA");
+  const pvRuleCol = p.pv_pc_rule === "PV_PROIBIDO_VENDER" ? "#10b981" : (p.pv_pc_rule === "PC_PROIBIDO_COMPRAR" ? "#f43f5e" : "#94a3b8");
+
+  const badgeSanto = (st) => {
+    const col = st === "ALTA" ? "#10b981" : (st === "BAIXA" ? "#f43f5e" : "#94a3b8");
+    const ico = st === "ALTA" ? "▲" : (st === "BAIXA" ? "▼" : "●");
+    return `<span style="color:${col}; font-weight:700;">${ico} ${st}</span>`;
+  };
+
+  const hit618 = p.phibo_direction === "ALTA" ? spot >= Number(p.phibo_618) : spot <= Number(p.phibo_618);
+  const hit100 = p.phibo_direction === "ALTA" ? spot >= Number(p.phibo_100) : spot <= Number(p.phibo_100);
+
+  container.innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:14px;">
+      <!-- Coluna 1: Bússola Bo Williams (MIMA + Santo + PV/PC) -->
+      <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:0.85rem; font-weight:700; color:#f1f5f9;">🧭 Bússola Bo Williams — <span translate="no">${u.ticker}</span></span>
+          <span style="font-size:0.72rem; font-family:monospace; font-weight:700; color:${mColor}; background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px;">Leque MIMA: ${mScore}/5</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.78rem; font-family:monospace;">
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Estado do Leque:</span>
+            <strong style="color:${mColor};">${p.mima_fan_state}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Santos (17 / 72 / 305):</span>
+            <span>17:${badgeSanto(p.santo_17_state)} | 72:${badgeSanto(p.santo_72_state)} | 305:${badgeSanto(p.santo_305_state)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Regra PV / PC:</span>
+            <strong style="color:${pvRuleCol};">${pvRuleTxt}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Difusor André Moraes:</span>
+            <strong style="color:${p.difusor_state === 'ALTA' ? '#10b981' : '#f43f5e'};">${p.difusor_state} (EMA 21/55)</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna 2: Setup Fernando Góes (PriceShooter + A Grande Tacada) -->
+      <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:0.85rem; font-weight:700; color:#f1f5f9;">🎯 Fernando Góes (<span translate="no">PriceShooter</span>)</span>
+          <span style="font-size:0.7rem; font-family:monospace; font-weight:700; color:${p.grande_tacada_aligned ? '#10b981' : '#fbbf24'}; background:rgba(255,255,255,0.05); padding:2px 8px; border-radius:4px;">
+            ${p.grande_tacada_aligned ? '⚡ GRANDE TACADA ALINHADA' : '⏳ AGUARDANDO ALINHAMENTO 8-34-144'}
+          </span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.78rem; font-family:monospace;">
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Suporte Caiu Comprou (72):</span>
+            <strong style="color:#10b981;">R$ ${Number(p.caiu_comprou_72 || 0).toFixed(2)}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Resist. Levantou Cortou (72):</span>
+            <strong style="color:#f43f5e;">R$ ${Number(p.levantou_cortou_72 || 0).toFixed(2)}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Escada <span translate="no">Smart MA</span> (Corpo):</span>
+            <span style="color:#38bdf8;">Inf: R$ ${Number(p.smart_ma_lower || spot).toFixed(2)} | Sup: R$ ${Number(p.smart_ma_upper || spot).toFixed(2)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;"><span translate="no">PSBanda</span> (Sinal 4 vs 17/72):</span>
+            <strong style="color:${p.psbanda_state === 'COMPRA' ? '#10b981' : (p.psbanda_state === 'VENDA' ? '#f43f5e' : '#94a3b8')};">${p.psbanda_state}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Coluna 3: Projeções Áureas Phibo (Calibragem de Alvos e Opções) -->
+      <div style="background:#0d121d; border:1px solid #242f45; border-radius:8px; padding:14px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+          <span style="font-size:0.85rem; font-weight:700; color:#f1f5f9;">📐 Alvos Phibo Automáticos (72 DU)</span>
+          <span style="font-size:0.7rem; font-family:monospace; font-weight:700; color:#fbbf24; background:rgba(251,191,36,0.15); padding:2px 8px; border-radius:4px;">Projeção: ${p.phibo_direction}</span>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px; font-size:0.78rem; font-family:monospace;">
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Swing 72 Barras (Mín → Máx):</span>
+            <span style="color:#cbd5e1;">R$ ${Number(p.phibo_swing_low).toFixed(2)} → R$ ${Number(p.phibo_swing_high).toFixed(2)}</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Alvo Phibo 61,8%:</span>
+            <strong style="color:${hit618 ? '#94a3b8' : '#fbbf24'};">R$ ${Number(p.phibo_618).toFixed(2)} ${hit618 ? '[Batido]' : '🎯'}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Alvo Phibo 100,0%:</span>
+            <strong style="color:${hit100 ? '#94a3b8' : '#fbbf24'};">R$ ${Number(p.phibo_100).toFixed(2)} ${hit100 ? '[Batido]' : '🎯'}</strong>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#111622; border-radius:4px;">
+            <span style="color:#94a3b8;">Alvo Phibo 161,8% (Expansão):</span>
+            <strong style="color:#10b981;">R$ ${Number(p.phibo_1618).toFixed(2)} 🚀</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/* 4. RENDERIZADOR DA GRADE OFICIAL DE OPÇÕES B3 (2 PERFIS: TRIPLE SCREEN ITM/ATM VS. F. GÓES OTM) */
 function renderizarGradeOpcoesB3(options) {
   const tbody = document.getElementById("tabela-grade-opcoes-corpo") || document.querySelector("#options-table tbody");
   if (!tbody) return;
@@ -819,36 +1041,117 @@ function renderizarGradeOpcoesB3(options) {
     return;
   }
 
-  options.forEach((opt, idx) => {
+  options.forEach((opt) => {
     const tr = document.createElement("tr");
     const delta = opt.greeks ? Number(opt.greeks.delta) : 0;
     const gamma = opt.greeks ? Number(opt.greeks.gamma) : 0;
     const vega = opt.greeks ? Number(opt.greeks.vega) : 0;
     const theta = opt.greeks ? Number(opt.greeks.theta_du) : 0;
+    const spot = Number(opt.spot_price || 0);
+    const strike = Number(opt.strike || 0);
+    const premio = Number(opt.theoretical_price || 0);
 
-    const isRec = (delta >= 0.25 && delta <= 0.40) || idx === 0;
-    if (isRec) {
-      tr.style.backgroundColor = "rgba(251, 191, 36, 0.08)";
-      tr.style.borderLeft = "3px solid #fbbf24";
+    const isTripleScreenProfile = delta >= 0.48 && delta <= 0.78 && premio > 0.38;
+    const isGoesProfile = strike > spot && premio >= 0.08 && premio <= 0.38;
+    const isShortLegSpread = strike > spot && premio > 0.38 && delta < 0.48;
+    const isDeepItm = delta > 0.78;
+
+    let moneynessTag = "ATM";
+    let moneynessCol = "#38bdf8";
+    if (strike < spot * 0.985) {
+      moneynessTag = "ITM";
+      moneynessCol = "#10b981";
+    } else if (strike > spot * 1.015) {
+      moneynessTag = "OTM";
+      moneynessCol = "#fbbf24";
     }
 
-    const strikeFmt = Number(opt.strike).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    const premioFmt = Number(opt.theoretical_price).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-    const alvo150 = (Number(opt.theoretical_price) * 2.5).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    let alvoValorFmt = "";
+    let alvoSub = "";
+    let alvoCol = "#10b981";
+    let perfilBadgeHtml = "";
+
+    if (isTripleScreenProfile) {
+      tr.style.backgroundColor = "rgba(16, 185, 129, 0.07)";
+      tr.style.borderLeft = "3px solid #10b981";
+      alvoValorFmt = (premio * 1.75).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      alvoSub = "+75% (Swing 2R)";
+      alvoCol = "#10b981";
+      perfilBadgeHtml = `
+        <div class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+          <span style="font-size:0.68rem; background:rgba(16,185,129,0.18); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:3px 8px; border-radius:4px; font-weight:700; cursor:help;">
+            🛡️ TRIPLE SCREEN (${moneynessTag} • Aporte Maior / Swing)
+          </span>
+          <div class="tooltip-bubble" onclick="event.stopPropagation()">
+            <div class="tooltip-title" style="color:#10b981;">🛡️ Perfil Estrutural Triple Screen (ITM / ATM)</div>
+            <div class="tooltip-text">Opção com Delta elevado (&Delta; = ${delta.toFixed(2)}) e menor proporção de valor extrínseco. Ideal para aportes maiores no Swing Trade de 8 a 20 pregões do Triple Screen (saída de Sobrevenda %K &lt; 30% rumo ao Alvo 2R), sofrendo muito menos corrosão proporcional pelo Theta (&Theta;) ou servindo como Ponta Comprada da Trava de Alta.</div>
+          </div>
+        </div>
+      `;
+    } else if (isGoesProfile) {
+      tr.style.backgroundColor = "rgba(251, 191, 36, 0.09)";
+      tr.style.borderLeft = "3px solid #fbbf24";
+      alvoValorFmt = (premio * 2.50).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      alvoSub = "+150% (Tiro Curto)";
+      alvoCol = "#fbbf24";
+      perfilBadgeHtml = `
+        <div class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+          <span style="font-size:0.68rem; background:rgba(251,191,36,0.22); color:#fbbf24; border:1px solid rgba(251,191,36,0.5); padding:3px 8px; border-radius:4px; font-weight:700; cursor:help;">
+            🎯 TIRO CURTO F. GÓES (OTM • Faixa 10 a 30 centavos)
+          </span>
+          <div class="tooltip-bubble" onclick="event.stopPropagation()">
+            <div class="tooltip-title" style="color:#fbbf24;">🎯 Regra dos Centavos Fernando Góes (R$ 0,10 a R$ 0,30 OTM)</div>
+            <div class="tooltip-text">Opção OTM na faixa canônica de centavos (Prêmio = R$ ${premio.toFixed(2)}, &Delta; = ${delta.toFixed(2)}, &Gamma; = ${gamma.toFixed(3)}). Permite entrar com fração pequena do capital e alto número de contratos para buscar explosão assimétrica (+100% a +200%) em 1 a 5 pregões no Caiu Comprou / Grande Tacada, com risco máximo estritamente travado nos centavos pagos.</div>
+          </div>
+        </div>
+      `;
+    } else if (isShortLegSpread) {
+      alvoValorFmt = (premio * 0.40).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      alvoSub = "Financia Trava (Short)";
+      alvoCol = "#38bdf8";
+      perfilBadgeHtml = `
+        <div class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
+          <span style="font-size:0.68rem; background:rgba(56,189,248,0.14); color:#38bdf8; border:1px solid rgba(56,189,248,0.35); padding:2px 7px; border-radius:4px; font-weight:600; cursor:help;">
+            📐 OTM INTERMEDIÁRIA (Ponta Vendida da Trava)
+          </span>
+          <div class="tooltip-bubble" onclick="event.stopPropagation()">
+            <div class="tooltip-title" style="color:#38bdf8;">📐 OTM Intermediária (Acima de R$ 0,38 • Ponta Vendida)</div>
+            <div class="tooltip-text">Prêmio unitário elevado demais para compra a seco na regra de centavos do Fernando Góes, porém com excelente prêmio extrínseco para ser VENDIDA contra uma Call ITM/ATM na Trava de Alta do Triple Screen (abatendo o custo da operação e neutralizando o Theta).</div>
+          </div>
+        </div>
+      `;
+    } else if (isDeepItm) {
+      alvoValorFmt = (premio * 1.45).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      alvoSub = "+45% (Delta Puro)";
+      alvoCol = "#38bdf8";
+      perfilBadgeHtml = `<span style="font-size:0.68rem; background:rgba(56,189,248,0.12); color:#38bdf8; border:1px solid rgba(56,189,248,0.3); padding:2px 7px; border-radius:4px; font-weight:600;">🔒 DEEP ITM (Substituto Sintético)</span>`;
+    } else {
+      alvoValorFmt = (premio * 3.00).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      alvoSub = "+200% (Pozinho)";
+      alvoCol = "#94a3b8";
+      perfilBadgeHtml = `<span style="font-size:0.68rem; background:rgba(148,163,184,0.12); color:#94a3b8; border:1px solid rgba(148,163,184,0.25); padding:2px 7px; border-radius:4px;">⚡ POZINHO EXTREMO (&lt; R$ 0,08)</span>`;
+    }
+
+    const strikeFmt = strike.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    const premioFmt = premio.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+    const ivPctStr = opt.iv ? `IV: ${(Number(opt.iv) * 100).toFixed(1)}%` : "";
+    const b3MetaStr = opt.is_real_b3_ticker
+      ? `<span style="display:block; font-size:0.63rem; font-family:monospace; color:#38bdf8; font-weight:500;">B3 Real • ${opt.num_trades || 0} neg.${opt.has_market_maker ? " • FM ✔" : ""}</span>`
+      : "";
 
     tr.innerHTML = `
-      <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;"><span translate="no">${opt.symbol}</span></td>
-      <td style="padding:10px 12px; font-family:monospace;"><span translate="no">${strikeFmt}</span></td>
+      <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;"><span translate="no">${opt.symbol}</span>${b3MetaStr}</td>
+      <td style="padding:10px 12px; font-family:monospace;"><span translate="no">${strikeFmt}</span> <span style="font-size:0.65rem; color:${moneynessCol}; font-weight:700;">(${moneynessTag})</span></td>
       <td style="padding:10px 12px;"><span style="font-size:0.7rem; background:rgba(245,158,11,0.15); color:#fde68a; padding:2px 6px; border-radius:4px;"><span translate="no">${opt.type}</span> ${opt.style || ''}</span></td>
       <td style="padding:10px 12px; font-family:monospace;">${opt.du} DU</td>
       <td style="padding:10px 12px; font-family:monospace; color:#94a3b8;">${opt.maturity_date}</td>
-      <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:#f1f5f9;">${premioFmt}</td>
-      <td style="padding:10px 12px; font-family:monospace;">${delta.toFixed(2)}</td>
+      <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:#f1f5f9;">${premioFmt} <span style="display:block; font-size:0.63rem; color:#94a3b8; font-weight:400;">${ivPctStr}</span></td>
+      <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:${isTripleScreenProfile ? '#10b981' : (isGoesProfile ? '#fbbf24' : '#cbd5e1')};">${delta.toFixed(2)}</td>
       <td style="padding:10px 12px; font-family:monospace;">${gamma.toFixed(3)}</td>
       <td style="padding:10px 12px; font-family:monospace;">${vega.toFixed(2)}</td>
       <td style="padding:10px 12px; font-family:monospace; color:#f59e0b;">${theta.toFixed(4)}/d</td>
-      <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:#10b981;">${alvo150}</td>
-      <td style="padding:10px 12px;">${isRec ? '<span style="font-size:0.7rem; background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.4); padding:2px 8px; border-radius:4px; font-weight:700;">⭐ RECOMENDADA</span>' : '<span style="color:#64748b; font-size:0.7rem;">Monitorada</span>'}</td>
+      <td style="padding:10px 12px; font-family:monospace; font-weight:700; color:${alvoCol};">${alvoValorFmt} <span style="font-size:0.65rem; color:#94a3b8; display:block;">${alvoSub}</span></td>
+      <td style="padding:10px 12px;">${perfilBadgeHtml}</td>
     `;
     tbody.appendChild(tr);
   });
@@ -976,81 +1279,169 @@ function renderizarConeVolatilidade(coneOrOptions, containerId = "vol-cone-conta
   `;
 }
 
-/* 6. RENDERIZADOR DA TRAVA DE ALTA (BULL CALL SPREAD) */
+/* 6. RENDERIZADOR DA MESA DE DERIVATIVOS (SWING ESTRUTURAL TRIPLE SCREEN VS. TIRO CURTO F. GÓES) */
 function renderizarTravaAlta(underlyings, options, tickerSelecionado) {
   const container = document.getElementById("trava-alta-container") || document.getElementById("spread-container");
   if (!container) return;
 
   const u = underlyings.find(x => x.ticker === tickerSelecionado) || underlyings[0];
+  const spot = Number(u.spot_price || 40.0);
 
-  // Find ATM or close to ATM for K1
-  let optK1 = null;
-  let optK2 = null;
+  let optLongTS = null;
+  let optShortTS = null;
+  let optGoesOTM = null;
 
   if (options && options.length >= 2) {
-      // Sort options by strike
-      const sortedOptions = [...options].sort((a, b) => Number(a.strike) - Number(b.strike));
-      // Find first strike >= spot
-      optK1 = sortedOptions.find(o => Number(o.strike) >= Number(u.spot_price));
-      if (!optK1) optK1 = sortedOptions[sortedOptions.length - 2];
+    const sortedOptions = [...options].sort((a, b) => Number(a.strike) - Number(b.strike));
 
-      const k1Index = sortedOptions.indexOf(optK1);
-      optK2 = sortedOptions[Math.min(k1Index + 1, sortedOptions.length - 1)];
-      if (optK1 === optK2 && k1Index > 0) {
-          optK1 = sortedOptions[k1Index - 1];
-      }
+    // Perfil 1 (Triple Screen Estrutural): Ponta Comprada ITM/ATM (Delta ~0.50 a 0.72) e Ponta Vendida OTM
+    optLongTS = sortedOptions.find(o => Number(o.greeks?.delta) >= 0.50 && Number(o.greeks?.delta) <= 0.75)
+      || sortedOptions.find(o => Number(o.strike) <= spot)
+      || sortedOptions[0];
+
+    const k1Idx = sortedOptions.indexOf(optLongTS);
+    optShortTS = sortedOptions[Math.min(k1Idx + 2, sortedOptions.length - 1)];
+    if (optShortTS === optLongTS && k1Idx < sortedOptions.length - 1) {
+      optShortTS = sortedOptions[k1Idx + 1];
+    }
+
+    // Perfil 2 (Fernando Góes Tiro Curto): Regra canônica dos centavos (R$ 0,10 a R$ 0,32 OTM, máx R$ 0,38)
+    const goesIdealBand = sortedOptions.filter(
+      o => Number(o.strike) > spot && Number(o.theoretical_price) >= 0.10 && Number(o.theoretical_price) <= 0.32
+    );
+    const goesExtendedBand = sortedOptions.filter(
+      o => Number(o.strike) > spot && Number(o.theoretical_price) >= 0.08 && Number(o.theoretical_price) <= 0.38
+    );
+
+    if (goesIdealBand.length > 0) {
+      // Prioriza a série mais líquida dentro da faixa de R$ 0,10 a R$ 0,32 (ou mais próxima de R$ 0,22)
+      optGoesOTM = [...goesIdealBand].sort((a, b) => {
+        const tradesDiff = Number(b.num_trades || 0) - Number(a.num_trades || 0);
+        if (Math.abs(tradesDiff) >= 10) return tradesDiff;
+        return Math.abs(Number(a.theoretical_price) - 0.22) - Math.abs(Number(b.theoretical_price) - 0.22);
+      })[0];
+    } else if (goesExtendedBand.length > 0) {
+      optGoesOTM = [...goesExtendedBand].sort(
+        (a, b) => Math.abs(Number(a.theoretical_price) - 0.22) - Math.abs(Number(b.theoretical_price) - 0.22)
+      )[0];
+    } else {
+      const otmAll = sortedOptions.filter(o => Number(o.strike) > spot);
+      optGoesOTM = (otmAll.length > 0 ? otmAll : sortedOptions).reduce((best, cur) =>
+        Math.abs(Number(cur.theoretical_price) - 0.20) < Math.abs(Number(best.theoretical_price) - 0.20) ? cur : best
+      );
+    }
   }
 
-  const k1Strike = optK1 ? Number(optK1.strike) : 42.0;
-  const k2Strike = optK2 ? Number(optK2.strike) : k1Strike + 2.0;
-  const premioK1 = optK1 ? Number(optK1.theoretical_price) : 0.50;
-  const premioK2 = optK2 ? Number(optK2.theoretical_price) : premioK1 * 0.45;
+  const k1Strike = optLongTS ? Number(optLongTS.strike) : spot * 0.96;
+  const k2Strike = optShortTS ? Number(optShortTS.strike) : spot * 1.04;
+  const premioK1 = optLongTS ? Number(optLongTS.theoretical_price) : 1.20;
+  const premioK2 = optShortTS ? Number(optShortTS.theoretical_price) : 0.45;
+  const deltaK1 = optLongTS?.greeks ? Number(optLongTS.greeks.delta) : 0.62;
+  const deltaK2 = optShortTS?.greeks ? Number(optShortTS.greeks.delta) : 0.32;
 
   const debitoLiquido = Math.max(0.01, premioK1 - premioK2);
   const ganhoMaximo = Math.max(0, (k2Strike - k1Strike) - debitoLiquido);
   const ratio = ganhoMaximo / debitoLiquido;
+  const phi = u.phicube || null;
+
+  const goesStrike = optGoesOTM ? Number(optGoesOTM.strike) : spot * 1.15;
+  const goesPremio = optGoesOTM ? Number(optGoesOTM.theoretical_price) : 0.22;
+  const goesDelta = optGoesOTM?.greeks ? Number(optGoesOTM.greeks.delta) : 0.12;
+  const goesGamma = optGoesOTM?.greeks ? Number(optGoesOTM.greeks.gamma) : 0.04;
+  const goesTheta = optGoesOTM?.greeks ? Number(optGoesOTM.greeks.theta_du) : -0.01;
+  const goesTrades = optGoesOTM?.num_trades ? ` • ${optGoesOTM.num_trades} neg.` : "";
 
   container.innerHTML = `
-    <div style="background:linear-gradient(135deg, rgba(30,41,59,0.5), rgba(15,23,42,0.8)); border:1px solid rgba(59,130,246,0.3); border-radius:10px; padding:16px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <div>
-          <h4 style="font-size:1rem; font-weight:700; color:#f1f5f9;">Trava de Alta (Bull Call Spread) — <span translate="no">${u.ticker}</span></h4>
-          <span style="font-size:0.75rem; color:#64748b;">Horizonte: Vencimento ${optK1 ? optK1.maturity_date : ''} (${optK1 ? optK1.du : 21} DU)</span>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:16px;">
+      <!-- Card 1: Perfil Estrutural Triple Screen (ITM/ATM • Swing Longo / Aporte Maior) -->
+      <div style="background:linear-gradient(135deg, rgba(16,185,129,0.08), rgba(15,23,42,0.9)); border:1px solid rgba(16,185,129,0.35); border-radius:10px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:8px; flex-wrap:wrap;">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:#f1f5f9;">🛡️ 1. Swing Estrutural Triple Screen (Trava ITM/ATM)</h4>
+            <span style="font-size:0.72rem; color:#94a3b8;">Horizonte: 8 a 20 DU (Venc: ${optLongTS ? optLongTS.maturity_date : ''} • ${optLongTS ? optLongTS.du : 21} DU)</span>
+          </div>
+          <span style="font-size:0.68rem; background:rgba(16,185,129,0.2); color:#10b981; border:1px solid rgba(16,185,129,0.4); padding:2px 8px; border-radius:4px; font-weight:700;">APORTE MAIOR • DELTA FORTE</span>
         </div>
-        <div>
-          <span style="font-size:0.7rem; background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.4); padding:2px 8px; border-radius:4px; font-weight:700;">HOMOLOGADA</span>
+
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.35); border-left:3px solid #10b981;">
+            <div style="font-size:0.65rem; color:#10b981; font-weight:700;">COMPRA ITM/ATM (LONG &Delta; ${deltaK1.toFixed(2)})</div>
+            <div style="font-size:0.95rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optLongTS ? optLongTS.symbol : 'CALL LONG'}</span></div>
+            <div style="font-size:0.72rem; color:#94a3b8;">Strike: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
+          </div>
+          <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.35); border-left:3px solid #38bdf8;">
+            <div style="font-size:0.65rem; color:#38bdf8; font-weight:700;">VENDA OTM (SHORT &Delta; ${deltaK2.toFixed(2)} • Neutraliza &Theta;)</div>
+            <div style="font-size:0.95rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optShortTS ? optShortTS.symbol : 'CALL SHORT'}</span></div>
+            <div style="font-size:0.72rem; color:#94a3b8;">Strike: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:10px;">
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Débito Líquido</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#f43f5e;">R$ ${debitoLiquido.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Lucro Máx</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#10b981;">R$ ${ganhoMaximo.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Retorno/Risco</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#10b981;">${ratio.toFixed(2)}x (+${(ratio * 100).toFixed(0)}%)</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;"><span translate="no">Break-Even</span></div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#38bdf8;">R$ ${(k1Strike + debitoLiquido).toFixed(2)}</div>
+          </div>
+        </div>
+        <div style="font-size:0.72rem; color:#94a3b8; background:rgba(0,0,0,0.25); padding:8px 10px; border-radius:6px;">
+          💡 <strong>Racional Atuarial (Elder):</strong> Compra Delta dentro/no dinheiro (&Delta;=${deltaK1.toFixed(2)}) após desconto profundo no diário (%K &lt; 30%) e financia o tempo (&Theta;) vendendo OTM intermediária. Adequada para aporte estrutural maior em Swing Trade longo.
         </div>
       </div>
 
-      <div style="display:flex; gap:10px; margin-bottom:14px;">
-        <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #10b981;">
-          <div style="font-size:0.65rem; color:#10b981; font-weight:700;">PONTA COMPRADA (LONG)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optK1 ? optK1.symbol : 'CALL LONG'}</span></div>
-          <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k1Strike.toFixed(2)} | Prêmio: R$ ${premioK1.toFixed(2)}</div>
+      <!-- Card 2: Perfil Tiro Curto Fernando Góes (OTM • Regra 10 a 30 Centavos) -->
+      <div style="background:linear-gradient(135deg, rgba(251,191,36,0.08), rgba(15,23,42,0.9)); border:1px solid rgba(251,191,36,0.35); border-radius:10px; padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px; gap:8px; flex-wrap:wrap;">
+          <div>
+            <h4 style="font-size:0.95rem; font-weight:700; color:#f1f5f9;">🎯 2. Tiro Curto Fernando Góes (Call OTM 10 a 30 Centavos)</h4>
+            <span style="font-size:0.72rem; color:#94a3b8;">Horizonte: 1 a 5 DU (Saída Rápida na Explosão / Alvo Phibo: R$ ${phi ? Number(phi.phibo_100).toFixed(2) : (spot * 1.05).toFixed(2)})</span>
+          </div>
+          <span style="font-size:0.68rem; background:rgba(251,191,36,0.2); color:#fbbf24; border:1px solid rgba(251,191,36,0.45); padding:2px 8px; border-radius:4px; font-weight:700;">CAPITAL PEQUENO • FAIXA R$ 0,10 A R$ 0,30</span>
         </div>
-        <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.3); border-left:3px solid #f59e0b;">
-          <div style="font-size:0.65rem; color:#f59e0b; font-weight:700;">PONTA VENDIDA (SHORT)</div>
-          <div style="font-size:1rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optK2 ? optK2.symbol : 'CALL SHORT'}</span></div>
-          <div style="font-size:0.75rem; color:#94a3b8;"><span translate="no">Strike</span>: R$ ${k2Strike.toFixed(2)} | Prêmio: R$ ${premioK2.toFixed(2)}</div>
-        </div>
-      </div>
 
-      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px;">
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Débito (Risco)</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#f43f5e;">R$ ${debitoLiquido.toFixed(2)}</div>
+        <div style="display:flex; gap:10px; margin-bottom:12px;">
+          <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.35); border-left:3px solid #fbbf24;">
+            <div style="font-size:0.65rem; color:#fbbf24; font-weight:700;">CALL OTM CENTAVOS (&Delta; ${goesDelta.toFixed(2)} | &Gamma; ${goesGamma.toFixed(3)}${goesTrades})</div>
+            <div style="font-size:0.95rem; font-weight:800; font-family:monospace; color:#f1f5f9;"><span translate="no">${optGoesOTM ? optGoesOTM.symbol : 'CALL OTM'}</span></div>
+            <div style="font-size:0.72rem; color:#94a3b8;">Strike OTM: R$ ${goesStrike.toFixed(2)} | Custo Unitário: <strong style="color:#fbbf24;">R$ ${goesPremio.toFixed(2)}</strong></div>
+          </div>
+          <div style="flex:1; padding:10px; border-radius:6px; background:rgba(0,0,0,0.35); border-left:3px solid #10b981;">
+            <div style="font-size:0.65rem; color:#10b981; font-weight:700;">SUPORTE CAIU COMPROU 72 / GATILHO GÓES</div>
+            <div style="font-size:0.95rem; font-weight:800; font-family:monospace; color:#10b981;">R$ ${phi && phi.caiu_comprou_72 ? Number(phi.caiu_comprou_72).toFixed(2) : (spot * 0.98).toFixed(2)}</div>
+            <div style="font-size:0.72rem; color:#94a3b8;">${phi && phi.grande_tacada_aligned ? '⚡ Leque 8-34-144 Alinhado' : '⏳ Aguardar Virada Smart MA'}</div>
+          </div>
         </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Ganho Máximo</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#10b981;">R$ ${ganhoMaximo.toFixed(2)}</div>
+
+        <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:8px; margin-bottom:10px;">
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Custo (Centavos)</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#fbbf24;">R$ ${goesPremio.toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Alvo 1 (+100% / 2x)</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#38bdf8;">R$ ${(goesPremio * 2.0).toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">Alvo 2 (+200% / 3x)</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#10b981;">R$ ${(goesPremio * 3.0).toFixed(2)}</div>
+          </div>
+          <div style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.06); padding:8px; border-radius:6px;">
+            <div style="font-size:0.62rem; color:#64748b; text-transform:uppercase;">&Theta; Diário</div>
+            <div style="font-family:monospace; font-size:0.9rem; font-weight:700; color:#f43f5e;">${goesTheta.toFixed(4)}/d</div>
+          </div>
         </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Retorno/Risco</div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#fbbf24;">${ratio.toFixed(2)}x (+${(ratio * 100).toFixed(0)}%)</div>
-        </div>
-        <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:8px; border-radius:6px;">
-          <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;"><span translate="no">Break-Even</span></div>
-          <div style="font-family:monospace; font-size:0.95rem; font-weight:700; color:#38bdf8;">R$ ${(k1Strike + debitoLiquido).toFixed(2)}</div>
+        <div style="font-size:0.72rem; color:#94a3b8; background:rgba(0,0,0,0.25); padding:8px 10px; border-radius:6px;">
+          💡 <strong>Racional Assimétrico (Góes):</strong> Tiro curto em opção OTM com fração pequena dos recursos. Busca aceleração explosiva de Gamma (&Gamma;=${goesGamma.toFixed(3)}) em 1 a 5 pregões na reação do suporte Caiu Comprou, realizando lucro rápido antes que o Theta corroa o prêmio.
         </div>
       </div>
     </div>
@@ -1065,7 +1456,7 @@ function obterCaminhosDados() {
     : pathAtual.substring(0, pathAtual.lastIndexOf("/") + 1);
   const urlAbsoluta = `${window.location.origin}${basePath}data/latest.json`;
   const urlRawGitHub = "https://raw.githubusercontent.com/Durso16atu/b3-triple-screen-v2/main/data/latest.json";
-  return [urlRawGitHub, urlAbsoluta, "data/latest.json", "./data/latest.json", "../data/latest.json"];
+  return ["../data/latest.json", "./data/latest.json", "data/latest.json", urlAbsoluta, urlRawGitHub];
 }
 
 const APPS_SCRIPT_URL = window.APPS_SCRIPT_URL || "";

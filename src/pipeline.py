@@ -18,9 +18,12 @@ ROOT_DIR = Path(__file__).resolve().parent.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
+from src.collectors.opcoes_net import fetch_b3_real_options_batch  # noqa: E402
 from src.collectors.rates_di import get_annual_cdi_rate  # noqa: E402
 from src.engine.black_scholes import BlackScholesEngine  # noqa: E402
 from src.engine.calendar_anbima import get_active_maturity  # noqa: E402
+from src.engine.implied_vol import estimate_reactive_volatility  # noqa: E402
+from src.engine.phicube import PhiCubeFilter  # noqa: E402
 from src.engine.screening import TripleScreenFilter  # noqa: E402
 
 logger = logging.getLogger(__name__)
@@ -150,14 +153,32 @@ def process_pipeline(
     else:
         market_data = fetch_market_data(CESTA_LIDER)
         ts_filter = TripleScreenFilter(tick_size=0.01)
+        phi_filter = PhiCubeFilter()
+
+        tickers_spot = {t: round(float(market_data[t]["Close"].iloc[-1]), 2) for t in CESTA_LIDER}
+        is_mocked_market = hasattr(fetch_market_data, "_mock_name") or bool(
+            os.environ.get("PYTEST_CURRENT_TEST")
+        )
+        real_options_by_ticker = (
+            {}
+            if is_mocked_market
+            else fetch_b3_real_options_batch(
+                tickers_spot=tickers_spot,
+                maturity_date=maturity_date,
+                default_du=du,
+                session_date=session_date,
+            )
+        )
 
         underlyings_raw = []
         options_raw = []
 
         for ticker in CESTA_LIDER:
             df = market_data[ticker]
-            spot = round(float(df["Close"].iloc[-1]), 2)
+            spot = tickers_spot[ticker]
             screening = ts_filter.evaluate(ticker, df, session_date=session_date)
+            phi_res = phi_filter.evaluate(ticker, df)
+            df_phi = phi_filter.enrich_ohlc_dataframe(df)
 
             if screening is not None:
                 trend = screening.trend_weekly
@@ -213,11 +234,15 @@ def process_pipeline(
             suporte_fibo = round(recent_low_14, 2)
 
             ema13_series = df["Close"].ewm(span=13, adjust=False).mean()
-            df_tail = df.iloc[-60:]
+            df_tail = df_phi.iloc[-60:]
             ema_tail = ema13_series.iloc[-60:]
             ohlc_history = []
             for (idx, row), ema_val in zip(df_tail.iterrows(), ema_tail, strict=False):
                 dt_str = idx.strftime("%Y-%m-%d") if hasattr(idx, "strftime") else str(idx)[:10]
+
+                def _r(val: float) -> float | None:
+                    return round(float(val), 2) if val is not None and not np.isnan(val) else None
+
                 ohlc_history.append(
                     {
                         "date": dt_str,
@@ -225,7 +250,15 @@ def process_pipeline(
                         "high": round(float(row["High"]), 2),
                         "low": round(float(row["Low"]), 2),
                         "close": round(float(row["Close"]), 2),
-                        "ema13": round(float(ema_val), 2) if not np.isnan(ema_val) else None,
+                        "ema13": _r(ema_val),
+                        "mima17": _r(row.get("mima17")),
+                        "mima72": _r(row.get("mima72")),
+                        "mima144": _r(row.get("mima144")),
+                        "mima305": _r(row.get("mima305")),
+                        "pv_support": _r(row.get("pv_support")),
+                        "pc_resist": _r(row.get("pc_resist")),
+                        "smart_upper": _r(row.get("smart_upper")),
+                        "smart_lower": _r(row.get("smart_lower")),
                     }
                 )
 
@@ -244,24 +277,44 @@ def process_pipeline(
                     "force_ema2": force_ema2,
                     "wave_daily": wave_daily,
                     "ohlc_history": ohlc_history,
+                    "phicube": {
+                        "mima_alignment_score": phi_res.mima_alignment_score,
+                        "mima_fan_state": phi_res.mima_fan_state,
+                        "grande_tacada_aligned": phi_res.grande_tacada_aligned,
+                        "santo_17_state": phi_res.santo_17_state,
+                        "santo_72_state": phi_res.santo_72_state,
+                        "santo_305_state": phi_res.santo_305_state,
+                        "pv_pc_rule": phi_res.pv_pc_rule,
+                        "caiu_comprou_72": phi_res.caiu_comprou_72,
+                        "levantou_cortou_72": phi_res.levantou_cortou_72,
+                        "smart_ma_upper": phi_res.smart_ma_upper,
+                        "smart_ma_lower": phi_res.smart_ma_lower,
+                        "psbanda_state": phi_res.psbanda_state,
+                        "difusor_state": phi_res.difusor_state,
+                        "phibo_direction": phi_res.phibo_direction,
+                        "phibo_swing_low": phi_res.phibo_swing_low,
+                        "phibo_swing_high": phi_res.phibo_swing_high,
+                        "phibo_618": phi_res.phibo_618,
+                        "phibo_100": phi_res.phibo_100,
+                        "phibo_1618": phi_res.phibo_1618,
+                        "confluence_verdict": phi_res.confluence_verdict,
+                    },
                     "updated_at": generated_at_sp,
                 }
             )
 
-            # Volatilidade histórica para precificação das opções
-            returns = np.log(df["Close"] / df["Close"].shift(1)).dropna()
-            hist_vol = float(returns.std() * np.sqrt(252)) if len(returns) >= 20 else 0.28
-            hist_vol = max(0.15, min(0.75, hist_vol))
+            reactive_vol = estimate_reactive_volatility(df)
 
-            ticker_options = BlackScholesEngine.build_option_chain(
+            ticker_options = BlackScholesEngine.build_hybrid_option_chain(
                 ticker=ticker,
                 spot=spot,
                 du=du,
                 cdi_rate=cdi_rate,
-                vol=hist_vol,
+                fallback_vol=reactive_vol,
                 maturity_date=maturity_date,
                 call_series=call_series,
                 put_series=put_series,
+                real_quotes=real_options_by_ticker.get(ticker),
             )
             options_raw.extend(ticker_options)
 
