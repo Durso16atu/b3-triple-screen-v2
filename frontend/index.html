@@ -168,7 +168,12 @@
     </div>
   </header>
 
-  <main class="container">
+  <nav style="display:flex; gap:4px; padding:0 24px; background:var(--card); border-bottom:1px solid var(--border);">
+    <button data-aba="painel" onclick="selecionarAbaPortal('painel')" style="background:transparent; color:var(--muted); border:none; border-bottom:2px solid transparent; padding:10px 18px; font-size:0.85rem; font-weight:700; cursor:pointer;">📊 Painel Triple Screen</button>
+    <button data-aba="banca" onclick="selecionarAbaPortal('banca')" style="background:transparent; color:var(--muted); border:none; border-bottom:2px solid transparent; padding:10px 18px; font-size:0.85rem; font-weight:700; cursor:pointer;">💰 Gestão de Banca</button>
+  </nav>
+
+  <main class="container" id="tab-painel">
 
     <div class="kpi-row">
       <div class="kpi-box">
@@ -284,6 +289,11 @@
 
   </main>
 
+  <main class="container" id="tab-banca" style="display:none;">
+    <div id="banca-root" style="margin-top:20px;"><div style="color:var(--dim);">Carregando Gestão de Banca...</div></div>
+  </main>
+
   <script src="js/app.js?v=3.7"></script>
+  <script src="js/components/banca.js?v=1.0"></script>
 </body>
 </html>
