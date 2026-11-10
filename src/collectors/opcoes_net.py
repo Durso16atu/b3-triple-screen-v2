@@ -157,6 +157,7 @@ def _parse_opcoes_net_payload(
     target_maturity: str,
     default_du: int,
     spot_fallback: float,
+    expected_call_series: str | None = None,
 ) -> list[ListedOptionQuote]:
     """Converte o JSON bruto de cotacoesOpcoes do Opções.Net.Br em objetos tipados."""
     ref_du = default_du
@@ -176,6 +177,14 @@ def _parse_opcoes_net_payload(
         raw_sym = str(row[0] or "").strip()
         opt_type = str(row[2] or "").strip().upper()
         if not raw_sym or opt_type != "CALL":
+            continue
+
+        symbol = raw_sym.split("_")[0]
+        if (
+            expected_call_series
+            and len(symbol) >= 5
+            and symbol[4].upper() != expected_call_series.upper()
+        ):
             continue
 
         strike_raw = row[5]
@@ -219,7 +228,6 @@ def _parse_opcoes_net_payload(
         except (TypeError, ValueError):
             fin_vol = 0.0
 
-        symbol = raw_sym.split("_")[0]
         mod_raw = str(row[3] or "E").strip().upper()
         style = "AMERICAN" if mod_raw == "A" else "EUROPEAN"
         has_mm = bool(str(row[1] or "").strip())
@@ -252,6 +260,7 @@ def fetch_b3_real_options_batch(
     maturity_date: date | str,
     default_du: int,
     session_date: date | str | None = None,
+    call_series: str | None = None,
     cache_path: Path = DEFAULT_CACHE_PATH,
     request_delay_sec: float = 0.72,
     timeout: int = 8,
@@ -263,7 +272,8 @@ def fetch_b3_real_options_batch(
         if isinstance(session_date, date)
         else str(session_date or date.today().isoformat())
     )
-    session_key = f"{sess_str}:{mat_str}"
+    series_key = (call_series or "").upper()
+    session_key = f"{sess_str}:{mat_str}:{series_key}" if series_key else f"{sess_str}:{mat_str}"
 
     cached_entries = _load_daily_cache(cache_path, session_key)
     result: dict[str, list[ListedOptionQuote]] = {}
@@ -280,9 +290,17 @@ def fetch_b3_real_options_batch(
     for ticker, spot in tickers_spot.items():
         if ticker in cached_entries and cached_entries[ticker]:
             try:
-                restored = [ListedOptionQuote(**item) for item in cached_entries[ticker]]
-                result[ticker] = select_representative_liquid_calls(restored, spot)
-                continue
+                restored = [
+                    ListedOptionQuote(**item)
+                    for item in cached_entries[ticker]
+                    if not series_key
+                    or (
+                        len(item.get("symbol", "")) >= 5 and item["symbol"][4].upper() == series_key
+                    )
+                ]
+                if restored:
+                    result[ticker] = select_representative_liquid_calls(restored, spot)
+                    continue
             except Exception:
                 pass
 
@@ -296,7 +314,7 @@ def fetch_b3_real_options_batch(
                         OPCOES_NET_URL,
                         params={
                             "idAcao": alias,
-                            "listarVencimentos": "true",
+                            "listarVencimentos": "false",
                             "cotacoes": "true",
                             "vencimentos": mat_str,
                         },
@@ -311,6 +329,7 @@ def fetch_b3_real_options_batch(
                             target_maturity=mat_str,
                             default_du=default_du,
                             spot_fallback=spot,
+                            expected_call_series=series_key or None,
                         )
                         break
                     if resp.status_code == 429:

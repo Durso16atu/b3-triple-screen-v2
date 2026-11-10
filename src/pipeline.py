@@ -167,6 +167,7 @@ def process_pipeline(
                 maturity_date=maturity_date,
                 default_du=du,
                 session_date=session_date,
+                call_series=call_series,
             )
         )
 
