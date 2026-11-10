@@ -179,12 +179,35 @@ class BlackScholesEngine:
         raw_strikes = [
             round(spot * (1.0 + i * strike_step_pct), 1) for i in range(i_min, i_max + 1)
         ]
+
+        # Garante strikes OTM na faixa Fernando Góes (R$ 0,10 a R$ 0,30) mesmo em ativos
+        # de preço nominal elevado ou IV alta com vencimentos longos (ex: 27 DU)
+        if du > 0 and spot > 0 and vol > 0:
+            from scipy.optimize import brentq
+
+            atm_p = cls.price(spot, spot, du, cdi_rate, vol, is_call=True).price
+            for target_p in (0.32, 0.22, 0.14):
+                if atm_p > target_p + 0.02:
+                    try:
+                        k_goes = brentq(
+                            lambda k_val, tp=target_p: cls.price(
+                                spot, k_val, du, cdi_rate, vol, is_call=True
+                            ).price
+                            - tp,
+                            spot * 1.01,
+                            spot * 6.0,
+                        )
+                        raw_strikes.append(round(float(k_goes), 1))
+                    except (ValueError, RuntimeError):
+                        pass
+
         strikes = sorted({k for k in raw_strikes if k > 0})
 
-        tentative_call_prices = [
-            round(cls.price(spot, k, du, cdi_rate, vol, is_call=True).price, 2) for k in strikes
+        exact_call_prices = [
+            cls.price(spot, k, du, cdi_rate, vol, is_call=True).price for k in strikes
         ]
-        convex_mask = verify_call_convexity(strikes, tentative_call_prices)
+        tentative_call_prices = [round(p, 2) for p in exact_call_prices]
+        convex_mask = verify_call_convexity(strikes, exact_call_prices)
 
         options: list[dict[str, Any]] = []
         base_symbol = ticker[:4] if len(ticker) >= 4 else ticker
