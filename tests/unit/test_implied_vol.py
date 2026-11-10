@@ -62,4 +62,23 @@ def test_estimate_reactive_volatility_captures_recent_shock():
     long_vol = float(np.log(df["Close"] / df["Close"].shift(1)).dropna().std() * math.sqrt(252))
     reactive_vol = estimate_reactive_volatility(df)
     assert reactive_vol > long_vol
-    assert 0.25 <= reactive_vol <= 0.85
+    assert 0.25 <= reactive_vol <= 0.65
+
+
+def test_estimate_reactive_volatility_ignores_split_artifact():
+    """Garante que saltos espurios de agrupamento no yfinance nao inflacionem a IV."""
+    rng = np.random.default_rng(42)
+    rets = rng.normal(0.0, 0.015, 240)
+    close = 50.0 * np.exp(np.cumsum(rets))
+    # Injeta um salto artificial de agrupamento (-45% num único dia) nos últimos 15 pregões
+    close[-12:] *= 0.55
+    df = pd.DataFrame(
+        {
+            "Open": close * 0.996,
+            "High": close * 1.012,
+            "Low": close * 0.988,
+            "Close": close,
+        }
+    )
+    vol = estimate_reactive_volatility(df)
+    assert 0.18 <= vol <= 0.40

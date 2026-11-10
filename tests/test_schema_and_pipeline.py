@@ -131,6 +131,12 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
         self.assertIsInstance(options, list)
         self.assertGreaterEqual(len(options), 1, "Deve conter pelo menos 1 opção na grade")
 
+        active_mat = self.data.get("metadata", {}).get("active_maturity", {})
+        expected_series = {
+            active_mat.get("call_series", "L"),
+            active_mat.get("put_series", "X"),
+        }
+
         for opt in options:
             self.assertIn("symbol", opt)
             self.assertIn("underlying_ticker", opt)
@@ -140,6 +146,12 @@ class TestSchemaV2AndPipeline(unittest.TestCase):
             self.assertIn("maturity_date", opt)
             self.assertIn("theoretical_price", opt)
             self.assertIn("greeks", opt)
+            self.assertGreaterEqual(len(opt["symbol"]), 5)
+            self.assertIn(
+                opt["symbol"][4],
+                expected_series,
+                f"Série de {opt['symbol']} diverge da série ativa {expected_series}",
+            )
 
             self.assertGreater(opt["strike"], 0)
             self.assertGreaterEqual(opt["du"], 0)

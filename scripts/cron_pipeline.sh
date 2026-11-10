@@ -42,10 +42,10 @@ git pull --rebase --autostash origin main || true
 
 # 5. Se houver alterações em data/latest.json, commita e faz push
 git add data/latest.json
-if git diff --staged --quiet; then
+if git diff --staged --quiet -- data/latest.json; then
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Nenhuma alteração de dados detectada."
 else
-  git commit -m "chore(data): atualizar latest.json intradiario (auto local)"
+  git commit -m "chore(data): atualizar latest.json intradiario (auto local) [skip ci]" -- data/latest.json
   git pull --rebase --autostash -X theirs origin main
   git push origin main
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] Dados atualizados e enviados com sucesso para o GitHub Pages!"

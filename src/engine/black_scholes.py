@@ -190,10 +190,9 @@ class BlackScholesEngine:
                 if atm_p > target_p + 0.02:
                     try:
                         k_goes = brentq(
-                            lambda k_val, tp=target_p: cls.price(
-                                spot, k_val, du, cdi_rate, vol, is_call=True
-                            ).price
-                            - tp,
+                            lambda k_val, tp=target_p: (
+                                cls.price(spot, k_val, du, cdi_rate, vol, is_call=True).price - tp
+                            ),
                             spot * 1.01,
                             spot * 6.0,
                         )
@@ -302,10 +301,12 @@ class BlackScholesEngine:
             try:
                 return float(
                     brentq(
-                        lambda v: black_scholes_analytical(
-                            s_ref, k_val, du_ref, cdi_rate, v, is_call=True
-                        ).price
-                        - mkt_p,
+                        lambda v: (
+                            black_scholes_analytical(
+                                s_ref, k_val, du_ref, cdi_rate, v, is_call=True
+                            ).price
+                            - mkt_p
+                        ),
                         0.05,
                         3.50,
                     )
@@ -405,10 +406,12 @@ class BlackScholesEngine:
                     k_goes = round(
                         float(
                             brentq(
-                                lambda k_val, tp=target_p: cls.price(
-                                    spot, k_val, du, cdi_rate, median_iv, is_call=True
-                                ).price
-                                - tp,
+                                lambda k_val, tp=target_p: (
+                                    cls.price(
+                                        spot, k_val, du, cdi_rate, median_iv, is_call=True
+                                    ).price
+                                    - tp
+                                ),
                                 spot * 1.01,
                                 spot * 6.0,
                             )

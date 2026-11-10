@@ -47,31 +47,50 @@ class ListedOptionQuote:
     ref_du: int
 
 
-def _load_daily_cache(cache_path: Path, session_key: str) -> dict[str, list[dict[str, Any]]]:
-    """Carrega o cache diário em disco (dentro de data/temp/) se pertencer à data atual."""
+def _load_daily_cache(
+    cache_path: Path, session_key: str, maturity_key: str = ""
+) -> tuple[dict[str, list[dict[str, Any]]], float]:
+    """Carrega cache em disco com stale-while-revalidate para a série/vencimento."""
     if not cache_path.exists():
-        return {}
+        return {}, 0.0
     try:
         with open(cache_path, encoding="utf-8") as f:
             payload = json.load(f)
-        if isinstance(payload, dict) and payload.get("session_key") == session_key:
-            entries = payload.get("entries", {})
-            if isinstance(entries, dict):
-                return entries
+        if not isinstance(payload, dict):
+            return {}, 0.0
+        rl_until = float(payload.get("rate_limit_until") or 0.0)
+        cached_key = str(payload.get("session_key") or "")
+        entries = payload.get("entries", {})
+        if not isinstance(entries, dict):
+            return {}, rl_until
+        if cached_key == session_key or (maturity_key and cached_key.endswith(maturity_key)):
+            return entries, rl_until
+        return {}, rl_until
     except Exception as exc:
         logger.debug(f"Cache de opções ignorado ({exc}).")
-    return {}
+    return {}, 0.0
 
 
 def _save_daily_cache(
-    cache_path: Path, session_key: str, entries: dict[str, list[dict[str, Any]]]
+    cache_path: Path,
+    session_key: str,
+    entries: dict[str, list[dict[str, Any]]],
+    rate_limit_until: float = 0.0,
 ) -> None:
-    """Salva atomicamente o cache diário da grade B3 em data/temp/."""
+    """Salva atomicamente o cache da grade B3 e o timestamp de cooldown de rate-limit."""
     try:
         os.makedirs(cache_path.parent, exist_ok=True)
         tmp_path = cache_path.with_suffix(".tmp")
         with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump({"session_key": session_key, "entries": entries}, f, indent=2)
+            json.dump(
+                {
+                    "session_key": session_key,
+                    "rate_limit_until": round(float(rate_limit_until), 2),
+                    "entries": entries,
+                },
+                f,
+                indent=2,
+            )
         os.replace(tmp_path, cache_path)
     except Exception as exc:
         logger.debug(f"Não foi possível persistir cache de opções: {exc}")
@@ -273,10 +292,13 @@ def fetch_b3_real_options_batch(
         else str(session_date or date.today().isoformat())
     )
     series_key = (call_series or "").upper()
-    session_key = f"{sess_str}:{mat_str}:{series_key}" if series_key else f"{sess_str}:{mat_str}"
+    maturity_key = f":{mat_str}:{series_key}" if series_key else f":{mat_str}"
+    session_key = f"{sess_str}{maturity_key}"
 
-    cached_entries = _load_daily_cache(cache_path, session_key)
+    cached_entries, rate_limit_until = _load_daily_cache(cache_path, session_key, maturity_key)
     result: dict[str, list[ListedOptionQuote]] = {}
+    now_ts = time.time()
+    in_cooldown = now_ts < rate_limit_until
 
     http = requests.Session()
     http.headers.update(
@@ -304,11 +326,15 @@ def fetch_b3_real_options_batch(
             except Exception:
                 pass
 
+        if in_cooldown:
+            result[ticker] = []
+            continue
+
         aliases = TICKER_OPCOES_ALIASES.get(ticker, [ticker])
         fetched_quotes: list[ListedOptionQuote] = []
 
         for alias in aliases:
-            for attempt in range(3):
+            for attempt in range(2):
                 try:
                     resp = http.get(
                         OPCOES_NET_URL,
@@ -333,12 +359,21 @@ def fetch_b3_real_options_batch(
                         )
                         break
                     if resp.status_code == 429:
-                        time.sleep(2.1 * (attempt + 1))
-                        continue
+                        if attempt == 0:
+                            time.sleep(1.5)
+                            continue
+                        # Ativa circuit-breaker de 30 minutos para não manter o IP bloqueado
+                        rate_limit_until = time.time() + 1800.0
+                        in_cooldown = True
+                        cache_dirty = True
+                        break
                     break
                 except Exception as exc:
                     logger.debug(f"Aviso ao consultar Opções.Net.Br para {alias}: {exc}")
                     break
+
+            if in_cooldown:
+                break
 
             if request_delay_sec > 0:
                 time.sleep(request_delay_sec)
@@ -355,6 +390,6 @@ def fetch_b3_real_options_batch(
             result[ticker] = []
 
     if cache_dirty:
-        _save_daily_cache(cache_path, session_key, cached_entries)
+        _save_daily_cache(cache_path, session_key, cached_entries, rate_limit_until)
 
     return result

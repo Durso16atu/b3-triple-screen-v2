@@ -602,22 +602,32 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions
     </div>
   `;
 
-  const isAlta = String(u.trend_signal).toUpperCase() === "ALTA" || String(u.trend_signal).toUpperCase() === "BULLISH";
+  const trendUpper = String(u.trend_signal || "NEUTRO").toUpperCase();
+  const isAlta = trendUpper === "ALTA" || trendUpper === "BULLISH";
+  const isBaixa = trendUpper === "BAIXA" || trendUpper === "BEARISH";
+  const trendColor = isAlta ? "#10b981" : (isBaixa ? "#f43f5e" : "#fbbf24");
+  const trendBg = isAlta ? "rgba(16,185,129,0.2)" : (isBaixa ? "rgba(244,63,94,0.2)" : "rgba(251,191,36,0.2)");
+  const descMare = isAlta
+    ? "Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras em recuos."
+    : (isBaixa
+      ? "Tela 1 (Maré Semanal): Tendência primária semanal de BAIXA (EMA 13 e MACD-H cadentes). Compras a seco bloqueadas pelo filtro de Elder."
+      : "Tela 1 (Maré Semanal): Divergência entre EMA 13 e MACD-H semanal (NEUTRO). Aguardar definição direcional da maré.");
   const phaseLabel = u.phase === "INDICACAO_IMEDIATA" ? "🟢 INDICAÇÃO IMEDIATA" : (u.phase === "A_CAMINHO" ? "🟡 A CAMINHO" : "⚪ AGUARDANDO");
   const tooltipFaseTela1 = obterTooltipFase(u.phase, false);
+  const sessDate = (metadata || window.appState.metadata)?.session_date || "SESSÃO B3";
 
   html += `
     <div style="display:flex; align-items:center; gap:16px; padding:14px; background:#111622; border-radius:8px; border:1px solid #242f45; margin-bottom:14px;">
       <div style="display:flex; flex-direction:column; gap:6px; background:#0b0f19; padding:8px; border-radius:16px; border:1px solid #1e293b;">
-        <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta ? '#f43f5e' : '#1e293b'}; opacity:${!isAlta ? '1' : '0.3'};"></div>
-        <div style="width:14px; height:14px; border-radius:50%; background:#1e293b; opacity:0.3;"></div>
+        <div style="width:14px; height:14px; border-radius:50%; background:${isBaixa ? '#f43f5e' : '#1e293b'}; opacity:${isBaixa ? '1' : '0.3'};"></div>
+        <div style="width:14px; height:14px; border-radius:50%; background:${!isAlta && !isBaixa ? '#fbbf24' : '#1e293b'}; opacity:${!isAlta && !isBaixa ? '1' : '0.3'};"></div>
         <div style="width:14px; height:14px; border-radius:50%; background:${isAlta ? '#10b981' : '#1e293b'}; opacity:${isAlta ? '1' : '0.3'}; box-shadow:${isAlta ? '0 0 10px rgba(16,185,129,0.4)' : 'none'};"></div>
       </div>
       <div style="flex:1;">
         <div style="font-size:1.1rem; font-weight:700; color:#f1f5f9; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span><span translate="no">${u.ticker}</span> — Spot: R$ ${Number(u.spot_price).toFixed(2)}</span>
           <span class="tooltip-wrap tooltip-right" onclick="event.stopPropagation()">
-            <span style="font-size:0.75rem; background:rgba(16,185,129,0.2); color:#10b981; padding:2px 6px; border-radius:4px; font-weight:700; cursor:help;">TENDÊNCIA: ${u.trend_signal}</span>
+            <span style="font-size:0.75rem; background:${trendBg}; color:${trendColor}; padding:2px 6px; border-radius:4px; font-weight:700; cursor:help;">TENDÊNCIA: ${u.trend_signal}</span>
             <div class="tooltip-bubble" onclick="event.stopPropagation()">
               <div class="tooltip-title">🧭 Tela 1: A Maré Semanal (Alexander Elder)</div>
               <div class="tooltip-text">Consenso entre a Média Móvel Exponencial de 13 semanas (EMA 13) e o MACD Histograma semanal. Somente tendências de ALTA autorizam operações de compra no sistema.</div>
@@ -632,7 +642,7 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions
           </span>
         </div>
         <p style="font-size:0.8rem; color:#94a3b8; margin-top:4px;">
-          Tela 1 (Maré Semanal): Sinal de expansão altista ativo e homologado. Filtro de Elder liberado para compras.
+          ${descMare}
         </p>
       </div>
     </div>
@@ -644,15 +654,15 @@ function renderizarSemaforoMacro(underlyings, tickerSelecionado, filteredOptions
       </div>
       <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
         <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sinal Triple Screen</div>
-        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${isAlta ? '#10b981' : '#f43f5e'};">${u.trend_signal}</div>
+        <div style="font-family:monospace; font-size:1rem; font-weight:700; color:${trendColor};">${u.trend_signal}</div>
       </div>
       <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
         <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Filtro Elder / Fase</div>
-        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#10b981;">${u.phase === "INDICACAO_IMEDIATA" ? "COMPRA LIBERADA" : (u.phase === "A_CAMINHO" ? "A CAMINHO" : "AGUARDAR")}</div>
+        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:${u.phase === "INDICACAO_IMEDIATA" ? '#10b981' : (u.phase === "A_CAMINHO" ? '#fbbf24' : '#94a3b8')};">${u.phase === "INDICACAO_IMEDIATA" ? "COMPRA LIBERADA" : (u.phase === "A_CAMINHO" ? "A CAMINHO" : "AGUARDAR")}</div>
       </div>
       <div style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.05); padding:10px; border-radius:6px;">
-        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Telemetria B3</div>
-        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">TEMPO REAL</div>
+        <div style="font-size:0.65rem; color:#64748b; text-transform:uppercase;">Sessão B3</div>
+        <div style="font-family:monospace; font-size:0.85rem; font-weight:700; color:#38bdf8;">${sessDate}</div>
       </div>
     </div>
   `;
@@ -1137,7 +1147,7 @@ function renderizarGradeOpcoesB3(options) {
     const ivPctStr = opt.iv ? `IV: ${(Number(opt.iv) * 100).toFixed(1)}%` : "";
     const b3MetaStr = opt.is_real_b3_ticker
       ? `<span style="display:block; font-size:0.63rem; font-family:monospace; color:#38bdf8; font-weight:500;">B3 Real • ${opt.num_trades || 0} neg.${opt.has_market_maker ? " • FM ✔" : ""}</span>`
-      : "";
+      : `<span style="display:block; font-size:0.63rem; font-family:monospace; color:#64748b; font-weight:500;">Teórico BS (BSM)</span>`;
 
     tr.innerHTML = `
       <td style="padding:10px 12px; font-weight:700; color:#f1f5f9;"><span translate="no">${opt.symbol}</span>${b3MetaStr}</td>

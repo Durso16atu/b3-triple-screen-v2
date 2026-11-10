@@ -174,10 +174,14 @@ def process_pipeline(
         underlyings_raw = []
         options_raw = []
 
+        is_intraday = 900 <= (now_sp.hour * 100 + now_sp.minute) < 1815
+
         for ticker in CESTA_LIDER:
             df = market_data[ticker]
             spot = tickers_spot[ticker]
-            screening = ts_filter.evaluate(ticker, df, session_date=session_date)
+            screening = ts_filter.evaluate(
+                ticker, df, session_date=session_date, is_intraday=is_intraday
+            )
             phi_res = phi_filter.evaluate(ticker, df)
             df_phi = phi_filter.enrich_ohlc_dataframe(df)
 
@@ -232,7 +236,12 @@ def process_pipeline(
                 wave_daily = "NEUTRO"
 
             recent_low_14 = float(df["Low"].rolling(min(14, len(df))).min().iloc[-1])
-            suporte_fibo = round(recent_low_14, 2)
+            suporte_fibo = round(
+                float(phi_res.phibo_618)
+                if phi_res.phibo_618 and 0 < phi_res.phibo_618 <= spot
+                else recent_low_14,
+                2,
+            )
 
             ema13_series = df["Close"].ewm(span=13, adjust=False).mean()
             df_tail = df_phi.iloc[-60:]

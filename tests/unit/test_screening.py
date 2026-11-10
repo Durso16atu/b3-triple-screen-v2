@@ -119,11 +119,15 @@ def test_weekly_closed_bar_detection_friday_vs_wednesday():
     """Avaliação na sexta-feira usa a própria semana fechada; na quarta-feira descarta a aberta."""
     ts = TripleScreenFilter(min_closed_weeks=35)
 
-    # Sexta-feira 2026-10-09 é dia de fechamento semanal
+    # Sexta-feira 2026-10-09 é dia de fechamento semanal (pós-pregão)
     df_fri = _generate_synthetic_ohlcv(n_days=220, end_date="2026-10-09")
     assert is_last_trading_day_of_week(date(2026, 10, 9))
-    weekly_fri = ts.calculate_weekly_indicators(df_fri)
+    weekly_fri = ts.calculate_weekly_indicators(df_fri, is_intraday=False)
     assert weekly_fri.index[-1].date() == date(2026, 10, 9)
+
+    # Sexta-feira durante o pregão (is_intraday=True): barra semanal ainda não fechou
+    weekly_fri_intraday = ts.calculate_weekly_indicators(df_fri, is_intraday=True)
+    assert weekly_fri_intraday.index[-1].date() == date(2026, 10, 2)
 
     # Quarta-feira 2026-10-07: pregão intrassemanal, a barra da semana está em formação
     df_wed = df_fri[df_fri.index <= "2026-10-07"].copy()

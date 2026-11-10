@@ -99,12 +99,15 @@ class TripleScreenFilter:
 
     @classmethod
     def calculate_weekly_indicators(
-        cls, df_daily: pd.DataFrame, session_date: date | None = None
+        cls,
+        df_daily: pd.DataFrame,
+        session_date: date | None = None,
+        is_intraday: bool = False,
     ) -> pd.DataFrame:
         """Gera barras semanais fechadas (W-FRI) excluindo semana incompleta em formação.
 
         Usa B3Calendar.is_last_trading_day_of_week para determinar deterministicamente
-        se a última barra diária fecha a semana.
+        se a última barra diária fecha a semana (desde que não esteja em formação intradiária).
         """
         df = cls._normalize_ohlcv(df_daily)
         if df.empty:
@@ -134,7 +137,7 @@ class TripleScreenFilter:
             return weekly
 
         last_daily_date = df.index[-1].date()
-        is_closed = is_last_trading_day_of_week(last_daily_date)
+        is_closed = is_last_trading_day_of_week(last_daily_date) and not is_intraday
 
         # Se o último candle diário não fecha a semana, a barra atual da semana está em aberto
         weekly_closed = weekly if is_closed else weekly.iloc[:-1].copy()
@@ -185,7 +188,11 @@ class TripleScreenFilter:
         return df
 
     def evaluate(
-        self, ticker: str, df_daily: pd.DataFrame, session_date: date | None = None
+        self,
+        ticker: str,
+        df_daily: pd.DataFrame,
+        session_date: date | None = None,
+        is_intraday: bool = False,
     ) -> ScreeningResult | None:
         """Avalia as 3 telas com determinismo temporal estrito."""
         if df_daily is None or df_daily.empty:
@@ -229,7 +236,9 @@ class TripleScreenFilter:
             )
 
         # Tela 1: Maré Semanal
-        weekly = self.calculate_weekly_indicators(df, session_date=session_dt)
+        weekly = self.calculate_weekly_indicators(
+            df, session_date=session_dt, is_intraday=is_intraday
+        )
         if len(weekly) < self.min_closed_weeks:
             return ScreeningResult(
                 ticker=ticker,

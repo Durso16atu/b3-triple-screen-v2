@@ -1,0 +1,61 @@
+{
+  "overview": {
+    "session_date": "2026-11-05",
+    "cdi_rate_annual": 0.105,
+    "days_to_maturity_du": 10,
+    "active_series": "K / W",
+    "market_sentiment": "CAUTELOSO",
+    "key_risks": [
+      "Predominio de tendencias de baixa na cesta monitorada da B3",
+      "Regra PC_PROIBIDO_COMPRAR ativa para multiplos ativos",
+      "Proximidade do vencimento de opcoes com apenas 10 dias uteis restantes"
+    ]
+  },
+  "highlighted_tickers": [
+    {
+      "ticker": "PETR4",
+      "spot_price": 45.95,
+      "trend": "NEUTRO",
+      "phase": "AGUARDANDO",
+      "stoch_k": 6.1,
+      "confluence_verdict": "NEUTRO",
+      "assessment": "Ativo em regiao de sobrevenda acentuada com Estocastico %K em 6.1, porem mantendo tendencia neutra e fase aguardando sem gatilho de entrada.",
+      "hedging_suggestion": null
+    },
+    {
+      "ticker": "VALE3",
+      "spot_price": 62.67,
+      "trend": "BAIXA",
+      "phase": "AGUARDANDO",
+      "stoch_k": 27.27,
+      "confluence_verdict": "VENDA",
+      "assessment": "Tendencia primaria de baixa com veredito de confluencia para venda e regra PC_PROIBIDO_COMPRAR ativa.",
+      "hedging_suggestion": "Avaliar montagem de travas de baixa ou protecoes via puts da serie W."
+    },
+    {
+      "ticker": "BBAS3",
+      "spot_price": 16.49,
+      "trend": "BAIXA",
+      "phase": "AGUARDANDO",
+      "stoch_k": 3.49,
+      "confluence_verdict": "VENDA",
+      "assessment": "Sobrevenda extrema com Estocastico %K em 3.49 sob tendencia de baixa e confluencia de venda.",
+      "hedging_suggestion": null
+    },
+    {
+      "ticker": "BBDC4",
+      "spot_price": 13.77,
+      "trend": "BAIXA",
+      "phase": "AGUARDANDO",
+      "stoch_k": 4.98,
+      "confluence_verdict": "VENDA",
+      "assessment": "Configuracao tecnica desfavoravel com tendencia de baixa, confluencia de venda e restricoes ativas de compra.",
+      "hedging_suggestion": null
+    }
+  ],
+  "actionable_recommendations": [
+    "Cumprir rigorosamente a diretriz [LL-MKT-001]: proibir compras a mercado em ativos sem gatilho de entrada consolidado, priorizando aguardar pullbacks em suportes Fibonacci ou EMA13.",
+    "Monitorar a aceleracao do decay temporal (theta) nas opcoes das series K e W dado o horizonte restrito de 10 dias uteis para o vencimento.",
+    "Abster-se de novas posicoes compradas em ativos que apresentem a regra PC_PROIBIDO_COMPRAR vigente."
+  ]
+}
