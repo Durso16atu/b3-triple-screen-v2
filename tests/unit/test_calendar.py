@@ -189,3 +189,10 @@ def test_get_active_maturity_rules():
     assert act_jan["call_series"] == "A"
     assert act_jan["put_series"] == "M"
     assert act_jan["rolled"] is True
+
+    # Em 10/11/2026: restam 7 DU até 19/11 (< min_du=8 padrão) -> Rola para Dezembro/2026 (L / X)
+    act_dec = get_active_maturity("2026-11-10")
+    assert act_dec["maturity_date"] == date(2026, 12, 18)
+    assert act_dec["call_series"] == "L"
+    assert act_dec["put_series"] == "X"
+    assert act_dec["rolled"] is True

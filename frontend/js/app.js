@@ -186,8 +186,8 @@ function gerarHtmlGraficoCandlestick(u, filteredOptions, metadata) {
   const isArmed = u.phase === "INDICACAO_IMEDIATA" && u.gatilho_entrada != null && u.stop_loss != null;
   const phi = u.phicube || null;
 
-  const callSeries = metadata?.active_maturity?.call_series || "K";
-  const putSeries = metadata?.active_maturity?.put_series || "W";
+  const callSeries = metadata?.active_maturity?.call_series || "L";
+  const putSeries = metadata?.active_maturity?.put_series || "X";
   const prefix = u.ticker.substring(0, 4);
 
   let optCallSymbol = `${prefix}${callSeries}${Math.round(spot * 10)}`;

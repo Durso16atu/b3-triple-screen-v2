@@ -141,7 +141,7 @@ def process_pipeline(
         except Exception:
             cdi_rate = 0.1075
 
-    active_mat = get_active_maturity(session_date, min_du=5)
+    active_mat = get_active_maturity(session_date, min_du=8)
     maturity_date = active_mat["maturity_date"]
     du = active_mat["days_to_maturity_du"]
     call_series = active_mat["call_series"]

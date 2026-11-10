@@ -168,7 +168,7 @@ class B3Calendar:
             cur -= timedelta(days=1)
         return cur
 
-    def get_active_maturity(self, ref_date: date | str, min_du: int = 5) -> dict[str, Any]:
+    def get_active_maturity(self, ref_date: date | str, min_du: int = 8) -> dict[str, Any]:
         """Calcula o vencimento ativo de opções da B3 com rolagem automática.
 
         Se restarem menos de min_du dias de pregão até o vencimento do mês corrente,
@@ -275,6 +275,6 @@ def get_previous_trading_day(d: date | str) -> date:
     return _calendar.get_previous_trading_day(d)
 
 
-def get_active_maturity(ref_date: date | str, min_du: int = 5) -> dict[str, Any]:
+def get_active_maturity(ref_date: date | str, min_du: int = 8) -> dict[str, Any]:
     """Calcula o vencimento ativo de opções da B3 com rolagem automática."""
     return _calendar.get_active_maturity(ref_date, min_du)

@@ -27,7 +27,7 @@
     minNegocios: 5, // liquidez mínima: nº de negócios no dia
     deltaMin: 0.1,
     deltaMax: 0.45,
-    minDU: 5, // evita opções a menos de N dias úteis do vencimento
+    minDU: 8, // evita opções a menos de N dias úteis do vencimento
     premioMin: 0.03, // evita "pó" sem liquidez real
     acertoAssumido: 25, // % de acerto assumido enquanto não há histórico (< 10 trades)
     payoffAssumido: 4, // ganho médio / perda média assumido (R múltiplo)
