@@ -3,6 +3,9 @@ name: CI
 on:
   push:
     branches: [ "main" ]
+    paths-ignore:
+      - "data/latest.json"
+      - "data/briefing_latest.json"
   pull_request:
     branches: [ "main" ]
 
