@@ -1,8 +1,8 @@
 {
   "metadata": {
     "schema_version": "2.0.0",
-    "generated_at_utc": "2026-11-27T21:10:02.373268+00:00",
-    "generated_at": "2026-11-27T18:10:02.373265-03:00",
+    "generated_at_utc": "2026-11-27T21:15:02.587430+00:00",
+    "generated_at": "2026-11-27T18:15:02.587426-03:00",
     "session_date": "2026-11-27",
     "business_date": "2026-11-27",
     "data_source": "yfinance",
@@ -15,7 +15,7 @@
     "cdi_rate_annual": 0.1365,
     "workdays_per_year": 252,
     "engine_version": "2.0.0",
-    "checksum": "461a89963b2b3b0c398f9a7a94280a168046b075739c8c2e440dcb5f8e7e7237",
+    "checksum": "7743d2318fa8880d588c87a1101958f5186485cdeee1402cfd47cee1d42b002a",
     "active_maturity": {
       "maturity_date": "2026-12-18",
       "days_to_maturity_du": 15,
@@ -1023,7 +1023,7 @@
         "phibo_1618": 71.8,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "VALE3",
@@ -2023,20 +2023,20 @@
         "phibo_1618": 37.69,
         "confluence_verdict": "VENDA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "ITUB4",
       "spot_price": 42.82,
-      "trend_signal": "BAIXA",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 39.27,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
       "stoch_k": 62.23,
       "stoch_d": 46.23,
-      "force_ema2": 22754884.88,
+      "force_ema2": 22754867.55,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -3023,12 +3023,12 @@
         "phibo_1618": 59.19,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "BBDC4",
       "spot_price": 16.04,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 13.58,
       "gatilho_entrada": null,
@@ -3037,7 +3037,7 @@
       "stoch_k": 74.17,
       "stoch_d": 49.56,
       "force_ema2": 59121529.86,
-      "wave_daily": "SOBRECOMPRA",
+      "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
         {
@@ -4023,12 +4023,12 @@
         "phibo_1618": 7.76,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "BBAS3",
       "spot_price": 16.83,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 14.02,
       "gatilho_entrada": null,
@@ -5023,13 +5023,13 @@
         "phibo_1618": 5.89,
         "confluence_verdict": "VENDA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "B3SA3",
       "spot_price": 17.25,
-      "trend_signal": "BAIXA",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 13.9,
       "gatilho_entrada": null,
       "stop_loss": null,
@@ -6023,20 +6023,20 @@
         "phibo_1618": 31.97,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "ITSA4",
       "spot_price": 14.08,
-      "trend_signal": "BAIXA",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 12.87,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
       "stoch_k": 67.56,
       "stoch_d": 53.59,
-      "force_ema2": 7317959.47,
+      "force_ema2": 7317947.47,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -7023,7 +7023,7 @@
         "phibo_1618": 19.43,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "BBSE3",
@@ -8023,7 +8023,7 @@
         "phibo_1618": 49.53,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "SANB11",
@@ -9023,13 +9023,13 @@
         "phibo_1618": 19.73,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "BPAC11",
       "spot_price": 60.26,
-      "trend_signal": "BAIXA",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 48.76,
       "gatilho_entrada": null,
       "stop_loss": null,
@@ -9037,7 +9037,7 @@
       "stoch_k": 73.02,
       "stoch_d": 49.43,
       "force_ema2": 67690595.25,
-      "wave_daily": "SOBRECOMPRA",
+      "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
         {
@@ -10023,7 +10023,7 @@
         "phibo_1618": 106.72,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "PETR3",
@@ -11023,7 +11023,7 @@
         "phibo_1618": 79.62,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "PRIO3",
@@ -12023,7 +12023,7 @@
         "phibo_1618": 45.96,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "GGBR4",
@@ -12036,7 +12036,7 @@
       "alvo_2r": null,
       "stoch_k": 83.71,
       "stoch_d": 80.59,
-      "force_ema2": -5958780.86,
+      "force_ema2": -5958691.53,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -13023,12 +13023,12 @@
         "phibo_1618": 32.66,
         "confluence_verdict": "FORTE_COMPRA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "CSNA3",
       "spot_price": 3.88,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 3.24,
       "gatilho_entrada": null,
@@ -13036,7 +13036,7 @@
       "alvo_2r": null,
       "stoch_k": 29.03,
       "stoch_d": 17.74,
-      "force_ema2": 3813541.23,
+      "force_ema2": 3813531.9,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -14023,7 +14023,7 @@
         "phibo_1618": 0.76,
         "confluence_verdict": "VENDA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "USIM5",
@@ -15023,13 +15023,13 @@
         "phibo_1618": 2.55,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "SUZB3",
       "spot_price": 52.16,
-      "trend_signal": "ALTA",
-      "phase": "A_CAMINHO",
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
       "suporte_fibonacci": 50.36,
       "gatilho_entrada": null,
       "stop_loss": null,
@@ -16023,12 +16023,12 @@
         "phibo_1618": 66.4,
         "confluence_verdict": "COMPRA_PULLBACK"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "ELET3",
       "spot_price": 50.63,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 45.22,
       "gatilho_entrada": null,
@@ -17023,20 +17023,20 @@
         "phibo_1618": 34.88,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "CMIG4",
       "spot_price": 11.36,
-      "trend_signal": "NEUTRO",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 10.41,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
       "stoch_k": 77.34,
       "stoch_d": 76.73,
-      "force_ema2": 2491944.24,
+      "force_ema2": 2491850.9,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -18023,7 +18023,7 @@
         "phibo_1618": 13.89,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "ABEV3",
@@ -19023,20 +19023,20 @@
         "phibo_1618": 18.64,
         "confluence_verdict": "COMPRA_PULLBACK"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "MGLU3",
       "spot_price": 10.46,
-      "trend_signal": "NEUTRO",
-      "phase": "AGUARDANDO",
+      "trend_signal": "ALTA",
+      "phase": "A_CAMINHO",
       "suporte_fibonacci": 10.05,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
       "stoch_k": 91.84,
       "stoch_d": 90.56,
-      "force_ema2": 42350059.73,
+      "force_ema2": 42350005.73,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -20023,12 +20023,12 @@
         "phibo_1618": 20.22,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "LREN3",
       "spot_price": 10.41,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 8.89,
       "gatilho_entrada": null,
@@ -20036,7 +20036,7 @@
       "alvo_2r": null,
       "stoch_k": 60.95,
       "stoch_d": 44.07,
-      "force_ema2": 8642179.3,
+      "force_ema2": 8642153.3,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -21023,12 +21023,12 @@
         "phibo_1618": 4.68,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "NTCO3",
       "spot_price": 4.91,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 4.26,
       "gatilho_entrada": null,
@@ -22023,7 +22023,7 @@
         "phibo_1618": 12.79,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "RAIZ4",
@@ -23023,12 +23023,12 @@
         "phibo_1618": 44.25,
         "confluence_verdict": "FORTE_COMPRA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "RENT3",
       "spot_price": 34.53,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 28.36,
       "gatilho_entrada": null,
@@ -24023,12 +24023,12 @@
         "phibo_1618": 8.5,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "VAMO3",
       "spot_price": 3.28,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 2.45,
       "gatilho_entrada": null,
@@ -25023,20 +25023,20 @@
         "phibo_1618": 9.92,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "JBSS3",
       "spot_price": 68.43,
-      "trend_signal": "ALTA",
-      "phase": "A_CAMINHO",
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
       "suporte_fibonacci": 62.47,
       "gatilho_entrada": null,
       "stop_loss": null,
       "alvo_2r": null,
       "stoch_k": 69.44,
       "stoch_d": 75.6,
-      "force_ema2": -4035301.41,
+      "force_ema2": -4035294.8,
       "wave_daily": "NEUTRO",
       "diagnostic_reason": null,
       "ohlc_history": [
@@ -26023,12 +26023,12 @@
         "phibo_1618": 44.06,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "BOVA11",
       "spot_price": 173.9,
-      "trend_signal": "BAIXA",
+      "trend_signal": "NEUTRO",
       "phase": "AGUARDANDO",
       "suporte_fibonacci": 161.48,
       "gatilho_entrada": null,
@@ -27023,13 +27023,13 @@
         "phibo_1618": 248.41,
         "confluence_verdict": "NEUTRO"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     },
     {
       "ticker": "WEGE3",
       "spot_price": 49.78,
-      "trend_signal": "ALTA",
-      "phase": "A_CAMINHO",
+      "trend_signal": "NEUTRO",
+      "phase": "AGUARDANDO",
       "suporte_fibonacci": 48.4,
       "gatilho_entrada": null,
       "stop_loss": null,
@@ -28023,7 +28023,7 @@
         "phibo_1618": 60.13,
         "confluence_verdict": "FORTE_COMPRA"
       },
-      "updated_at": "2026-11-27T18:10:02.373265-03:00"
+      "updated_at": "2026-11-27T18:15:02.587426-03:00"
     }
   ],
   "options": [
