@@ -72,6 +72,7 @@
           "stoch_d": { "type": ["number", "null"], "minimum": 0, "maximum": 100 },
           "force_ema2": { "type": ["number", "null"] },
           "wave_daily": { "type": "string" },
+          "diagnostic_reason": { "type": ["string", "null"] },
           "ohlc_history": {
             "type": "array",
             "items": {

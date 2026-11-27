@@ -6,7 +6,8 @@ import json
 import logging
 import os
 import sys
-from datetime import UTC, datetime
+from collections import Counter
+from datetime import UTC, date, datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
@@ -74,8 +75,32 @@ TICKER_YFINANCE_MAP = {
 }
 
 
+def _clean_ohlcv_df(df_raw: pd.DataFrame) -> pd.DataFrame:
+    """Limpa linhas apenas onde OHLC for NaN, preservando barras com Volume ausente."""
+    ohlc_cols = [c for c in ("Open", "High", "Low", "Close") if c in df_raw.columns]
+    if len(ohlc_cols) < 4:
+        return pd.DataFrame()
+    df_c = df_raw.dropna(subset=ohlc_cols).copy()
+    if df_c.empty:
+        return df_c
+    if "Volume" in df_c.columns:
+        df_c["Volume"] = df_c["Volume"].fillna(0.0)
+    else:
+        df_c["Volume"] = 0.0
+    if getattr(df_c.index, "tz", None) is not None:
+        df_c.index = df_c.index.tz_localize(None)
+    return df_c.sort_index()
+
+
+def _extract_last_bar_date(df: pd.DataFrame) -> date:
+    last_idx = df.index[-1]
+    if hasattr(last_idx, "date"):
+        return last_idx.date()
+    return date.fromisoformat(str(last_idx)[:10])
+
+
 def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
-    """Obtém cotações diárias reais via yfinance com fail-fast estrito."""
+    """Obtém cotações diárias reais via yfinance com fail-fast estrito e reconciliação 5d."""
     try:
         import yfinance as yf
 
@@ -100,19 +125,19 @@ def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
         raise RuntimeError("yfinance retornou DataFrame vazio para a cesta líder.")
 
     data_dict: dict[str, pd.DataFrame] = {}
+    is_multi = isinstance(df_download.columns, pd.MultiIndex)
+    top_cols = set(df_download.columns.get_level_values(0)) if is_multi else set()
     for yf_sym, t in sym_to_ticker.items():
-        if len(yf_syms) == 1:
-            df_t = df_download.dropna()
-            if len(df_t) >= 60:
-                data_dict[t] = df_t
-        elif yf_sym in df_download and not df_download[yf_sym].dropna().empty:
-            df_t = df_download[yf_sym].dropna()
-            if len(df_t) >= 60:
-                data_dict[t] = df_t
-        elif f"{t}.SA" in df_download and not df_download[f"{t}.SA"].dropna().empty:
-            df_t = df_download[f"{t}.SA"].dropna()
-            if len(df_t) >= 60:
-                data_dict[t] = df_t
+        if is_multi and yf_sym in top_cols:
+            df_t = _clean_ohlcv_df(df_download[yf_sym])
+        elif is_multi and f"{t}.SA" in top_cols:
+            df_t = _clean_ohlcv_df(df_download[f"{t}.SA"])
+        elif not is_multi and len(yf_syms) == 1:
+            df_t = _clean_ohlcv_df(df_download)
+        else:
+            df_t = pd.DataFrame()
+        if len(df_t) >= 60:
+            data_dict[t] = df_t
 
     missing = [t for t in tickers if t not in data_dict or data_dict[t].empty]
     if missing:
@@ -120,7 +145,54 @@ def fetch_market_data(tickers: list[str]) -> dict[str, pd.DataFrame]:
         logger.critical(msg)
         raise RuntimeError(msg)
 
+    # Reconciliação pontual via Ticker.history(period="5d") para ativos defasados da moda
+    if not os.environ.get("PYTEST_CURRENT_TEST") and not hasattr(yf.download, "_mock_name"):
+        last_dates = [_extract_last_bar_date(df) for df in data_dict.values()]
+        modal_date = Counter(last_dates).most_common(1)[0][0]
+        for yf_sym, t in sym_to_ticker.items():
+            df_t = data_dict[t]
+            if _extract_last_bar_date(df_t) < modal_date:
+                try:
+                    hist_5d = yf.Ticker(yf_sym).history(
+                        period="5d", interval="1d", auto_adjust=True
+                    )
+                    hist_clean = _clean_ohlcv_df(hist_5d)
+                    if not hist_clean.empty:
+                        cols = ["Open", "High", "Low", "Close", "Volume"]
+                        newer = hist_clean.loc[hist_clean.index > df_t.index[-1], cols]
+                        if not newer.empty:
+                            data_dict[t] = pd.concat([df_t[cols], newer]).sort_index()
+                except Exception as exc:
+                    logger.warning(f"Falha na reconciliação 5d para {t} ({yf_sym}): {exc}")
+
     return data_dict
+
+
+def _assert_no_temporal_regression(output_path: str, candidate_session_date: date) -> None:
+    """Impede sobrescrever snapshot válido com candles mais antigos em falha noturna."""
+    if not os.path.exists(output_path):
+        return
+    try:
+        with open(output_path, encoding="utf-8") as f:
+            existing = json.load(f)
+        bar_dates = [
+            str(u["ohlc_history"][-1]["date"])[:10]
+            for u in existing.get("underlyings", [])
+            if isinstance(u.get("ohlc_history"), list) and u["ohlc_history"]
+        ]
+        if not bar_dates:
+            return
+        existing_modal_date = Counter(bar_dates).most_common(1)[0][0]
+        if candidate_session_date.isoformat() < existing_modal_date:
+            raise RuntimeError(
+                f"Regressão temporal bloqueada: yfinance retornou pregão "
+                f"{candidate_session_date.isoformat()}, anterior ao snapshot já "
+                f"persistido ({existing_modal_date})."
+            )
+    except RuntimeError:
+        raise
+    except Exception as exc:
+        logger.warning(f"Não foi possível inspecionar {output_path} para guarda temporal: {exc}")
 
 
 def process_pipeline(
@@ -128,6 +200,7 @@ def process_pipeline(
     output_path: str,
     mock_data: dict | None = None,
     cdi_rate: float | None = None,
+    enforce_monotonic: bool | None = None,
 ) -> dict:
     """Executa o pipeline atuarial com ingestão real, Triple Screen e não-arbitragem."""
     now_sp = datetime.now(SP_TZ)
@@ -141,24 +214,38 @@ def process_pipeline(
         except Exception:
             cdi_rate = 0.1075
 
-    active_mat = get_active_maturity(session_date, min_du=8)
-    maturity_date = active_mat["maturity_date"]
-    du = active_mat["days_to_maturity_du"]
-    call_series = active_mat["call_series"]
-    put_series = active_mat["put_series"]
-
     if mock_data is not None:
+        active_mat = get_active_maturity(session_date, min_du=8)
+        maturity_date = active_mat["maturity_date"]
+        du = active_mat["days_to_maturity_du"]
+        call_series = active_mat["call_series"]
+        put_series = active_mat["put_series"]
         underlyings_raw = mock_data.get("underlyings", [])
         options_raw = mock_data.get("options", [])
     else:
         market_data = fetch_market_data(CESTA_LIDER)
+        is_mocked_market = hasattr(fetch_market_data, "_mock_name") or bool(
+            os.environ.get("PYTEST_CURRENT_TEST")
+        )
+        bar_dates = [_extract_last_bar_date(df) for df in market_data.values()]
+        market_latest_date = Counter(bar_dates).most_common(1)[0][0]
+        if market_latest_date <= now_sp.date():
+            session_date = market_latest_date
+
+        check_monotonic = (not is_mocked_market) if enforce_monotonic is None else enforce_monotonic
+        if check_monotonic:
+            _assert_no_temporal_regression(output_path, session_date)
+
+        active_mat = get_active_maturity(session_date, min_du=8)
+        maturity_date = active_mat["maturity_date"]
+        du = active_mat["days_to_maturity_du"]
+        call_series = active_mat["call_series"]
+        put_series = active_mat["put_series"]
+
         ts_filter = TripleScreenFilter(tick_size=0.01)
         phi_filter = PhiCubeFilter()
 
         tickers_spot = {t: round(float(market_data[t]["Close"].iloc[-1]), 2) for t in CESTA_LIDER}
-        is_mocked_market = hasattr(fetch_market_data, "_mock_name") or bool(
-            os.environ.get("PYTEST_CURRENT_TEST")
-        )
         real_options_by_ticker = (
             {}
             if is_mocked_market
@@ -174,17 +261,20 @@ def process_pipeline(
         underlyings_raw = []
         options_raw = []
 
-        is_intraday = 900 <= (now_sp.hour * 100 + now_sp.minute) < 1815
+        hm_sp = now_sp.hour * 100 + now_sp.minute
+        is_intraday = (session_date == now_sp.date()) and (900 <= hm_sp < 1815)
 
         for ticker in CESTA_LIDER:
             df = market_data[ticker]
             spot = tickers_spot[ticker]
+            ticker_last_date = _extract_last_bar_date(df)
             screening = ts_filter.evaluate(
                 ticker, df, session_date=session_date, is_intraday=is_intraday
             )
             phi_res = phi_filter.evaluate(ticker, df)
             df_phi = phi_filter.enrich_ohlc_dataframe(df)
 
+            diag_reasons: list[str] = []
             if screening is not None:
                 trend = screening.trend_weekly
                 if screening.signal_status == "ARMADO":
@@ -224,6 +314,8 @@ def process_pipeline(
                 wave_daily = (
                     str(screening.wave_daily) if screening.wave_daily is not None else "NEUTRO"
                 )
+                if screening.diagnostic_reason:
+                    diag_reasons.append(screening.diagnostic_reason)
             else:
                 trend = "NEUTRO"
                 phase = "AGUARDANDO"
@@ -234,6 +326,16 @@ def process_pipeline(
                 stoch_d = None
                 force_ema2 = None
                 wave_daily = "NEUTRO"
+
+            if ticker_last_date < session_date:
+                diag_reasons.append(
+                    f"DEFASAGEM_OHLC: ultimo candle {ticker_last_date.isoformat()} "
+                    f"anterior a sessao {session_date.isoformat()}"
+                )
+            if (stoch_k is None or stoch_d is None or force_ema2 is None) and not diag_reasons:
+                diag_reasons.append("INDICADORES_NULOS")
+
+            diagnostic_reason = "; ".join(diag_reasons) if diag_reasons else None
 
             recent_low_14 = float(df["Low"].rolling(min(14, len(df))).min().iloc[-1])
             suporte_fibo = round(
@@ -286,6 +388,7 @@ def process_pipeline(
                     "stoch_d": stoch_d,
                     "force_ema2": force_ema2,
                     "wave_daily": wave_daily,
+                    "diagnostic_reason": diagnostic_reason,
                     "ohlc_history": ohlc_history,
                     "phicube": {
                         "mima_alignment_score": phi_res.mima_alignment_score,

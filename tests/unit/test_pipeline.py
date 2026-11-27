@@ -140,3 +140,70 @@ def test_main_entrypoint_fail_fast_exit(mock_process):
     with pytest.raises(SystemExit) as exc_info:
         main([])
     assert exc_info.value.code == 1
+
+
+@patch("yfinance.download")
+def test_fetch_market_data_preserves_bar_with_nan_volume(mock_download):
+    """Garante que barra com OHLC íntegro e Volume=NaN não seja descartada."""
+    dates = pd.date_range(end="2026-11-26", periods=100, freq="B")
+    vol = np.full(100, 1000000.0)
+    vol[-1] = np.nan
+    mock_df = pd.DataFrame(
+        {
+            "Open": np.full(100, 50.0),
+            "High": np.full(100, 52.0),
+            "Low": np.full(100, 49.0),
+            "Close": np.linspace(45.0, 51.36, 100),
+            "Volume": vol,
+        },
+        index=dates,
+    )
+    mock_download.return_value = mock_df
+
+    res = fetch_market_data(["WEGE3"])
+    assert str(res["WEGE3"].index[-1])[:10] == "2026-11-26"
+    assert round(float(res["WEGE3"]["Close"].iloc[-1]), 2) == 51.36
+    assert float(res["WEGE3"]["Volume"].iloc[-1]) == 0.0
+
+
+@patch("src.pipeline.fetch_market_data")
+def test_process_pipeline_blocks_temporal_regression_and_propagates_diag(mock_fetch, tmp_path):
+    """Bloqueia sobrescrita por pregão mais antigo e propaga diagnostic_reason em defasagem."""
+    schema_path = "data/schemas/schema_v2.json"
+    out_path = str(tmp_path / "latest_monotonic.json")
+
+    fresh_data = _create_mock_market_data()
+    fresh_dates = pd.date_range(end="2026-11-26", periods=250, freq="B")
+    for t in CESTA_LIDER:
+        fresh_data[t].index = fresh_dates
+    # Simula 1 ativo defasado em 1 pregão (ex: RAIZ4)
+    fresh_data["RAIZ4"] = fresh_data["RAIZ4"].iloc[:-1].copy()
+    mock_fetch.return_value = fresh_data
+
+    payload = process_pipeline(
+        schema_path=schema_path,
+        output_path=out_path,
+        cdi_rate=0.1365,
+        enforce_monotonic=True,
+    )
+    assert payload["metadata"]["session_date"] == "2026-11-26"
+    raiz = next(u for u in payload["underlyings"] if u["ticker"] == "RAIZ4")
+    assert raiz["diagnostic_reason"] is not None
+    assert "DEFASAGEM_OHLC" in raiz["diagnostic_reason"]
+
+    # Simula falha noturna do yfinance regredindo a cesta inteira para 2026-11-25
+    stale_data = {t: df.iloc[:-1].copy() for t, df in fresh_data.items() if t != "RAIZ4"}
+    stale_data["RAIZ4"] = fresh_data["RAIZ4"].copy()
+    mock_fetch.return_value = stale_data
+
+    with pytest.raises(RuntimeError, match="Regressão temporal bloqueada"):
+        process_pipeline(
+            schema_path=schema_path,
+            output_path=out_path,
+            cdi_rate=0.1365,
+            enforce_monotonic=True,
+        )
+
+    with open(out_path, encoding="utf-8") as f:
+        persisted = json.load(f)
+    assert persisted["metadata"]["session_date"] == "2026-11-26"
